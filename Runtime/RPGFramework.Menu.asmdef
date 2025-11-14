@@ -1,0 +1,16 @@
+{
+    "name": "RPGFramework.Menu",
+    "rootNamespace": "RPGFramework.Menu",
+    "references": [
+        "RPGFramework.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

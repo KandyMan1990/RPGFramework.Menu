@@ -1,0 +1,18 @@
+{
+  "name": "com.rpgframework.menu",
+  "version": "0.1.0",
+  "displayName": "RPG Framework Menu",
+  "description": "Menu system for the RPG Framework",
+  "dependencies": {
+    "com.rpgframework.core": "0.1.1"
+  },
+  "unity": "6000.0",
+ "keywords": [
+    "RPG Framework",
+    "Menu"
+  ],
+  "author": {
+    "name": "Elliott Armstrong",
+    "url": "https://github.com/KandyMan1990/RPGFramework.Menu"
+  }
+}
