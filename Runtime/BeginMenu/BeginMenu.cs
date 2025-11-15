@@ -10,6 +10,16 @@ namespace RPGFramework.Menu.BeginMenu
             return Task.CompletedTask;
         }
 
+        Task IMenu.OnSuspendAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        Task IMenu.OnResumeAsync()
+        {
+            return Task.CompletedTask;
+        }
+
         Task IMenu.OnExitAsync()
         {
             return Task.CompletedTask;
