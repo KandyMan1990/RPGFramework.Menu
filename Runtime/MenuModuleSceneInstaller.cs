@@ -1,6 +1,7 @@
 using RPGFramework.Core;
 using RPGFramework.Core.DI;
 using RPGFramework.Menu.SubMenus;
+using RPGFramework.Menu.SubMenus.UI;
 using UnityEngine;
 
 namespace RPGFramework.Menu
@@ -14,6 +15,7 @@ namespace RPGFramework.Menu
         {
             container.BindSingletonFromInstance<IMenuUIProvider, MenuUIProvider>(m_MenuUIProvider);
             container.BindTransient<IBeginMenu, BeginMenu>();
+            container.BindTransient<IBeginMenuUI, BeginMenuUI>();
         }
     }
 }
