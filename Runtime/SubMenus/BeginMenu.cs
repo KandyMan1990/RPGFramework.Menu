@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using RPGFramework.Core;
 
-namespace RPGFramework.Menu.BeginMenu
+namespace RPGFramework.Menu.SubMenus
 {
     public class BeginMenu : IBeginMenu
     {
