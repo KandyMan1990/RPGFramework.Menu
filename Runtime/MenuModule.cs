@@ -10,12 +10,13 @@ namespace RPGFramework.Menu
     {
         private readonly ICoreMenuModule m_CoreModule;
         private readonly IMenuModule     m_MenuModule;
+        private readonly Stack<IMenu>    m_Menus;
+        private readonly IMenuUIProvider m_UIProvider;
 
-        private Stack<IMenu> m_Menus;
-
-        public MenuModule(ICoreMenuModule coreModule)
+        public MenuModule(ICoreMenuModule coreModule, IMenuUIProvider uiProvider)
         {
             m_CoreModule = coreModule;
+            m_UIProvider = uiProvider;
             m_MenuModule = this;
             m_Menus      = new Stack<IMenu>();
         }
@@ -35,20 +36,33 @@ namespace RPGFramework.Menu
             return Task.CompletedTask;
         }
 
-        Task IMenuModule.PushMenu(IMenuModuleArgs menuModuleArgs)
+        async Task IMenuModule.PushMenu(IMenuModuleArgs menuModuleArgs)
         {
-            IMenu menu = (IMenu)m_CoreModule.GetInstance(menuModuleArgs.MenuType);
+            IMenu newMenu = (IMenu)m_CoreModule.GetInstance(menuModuleArgs.MenuType);
 
-            m_Menus.Push(menu);
+            if (m_Menus.TryPeek(out IMenu menu))
+            {
+                await menu.OnSuspendAsync();
+            }
 
-            return menu.OnEnterAsync();
+            m_Menus.Push(newMenu);
+
+            await newMenu.OnEnterAsync();
         }
 
-        Task IMenuModule.PopMenu()
+        async Task IMenuModule.PopMenu()
         {
             IMenu menu = m_Menus.Pop();
+            await menu.OnExitAsync();
 
-            return menu.OnExitAsync();
+            if (m_Menus.TryPeek(out IMenu newMenu))
+            {
+                await newMenu.OnResumeAsync();
+            }
+            else
+            {
+                // TODO: close menu and return to previous module
+            }
         }
     }
 }
