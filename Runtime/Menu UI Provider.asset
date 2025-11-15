@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d724de9fa6fb9419524e0170e324a0, type: 3}
   m_Name: Menu UI Provider
   m_EditorClassIdentifier: RPGFramework.Menu::RPGFramework.Menu.MenuUIProvider
-  m_BeginMenu: {fileID: 9197481963319205126, guid: 5f9af2da6689c1d4cb8cf054000b74f5, type: 3}
+  m_BeginMenu: {fileID: 9197481963319205126, guid: b0b672f0244440b4ca822e71e0600d07, type: 3}
