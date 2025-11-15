@@ -6,19 +6,16 @@ namespace RPGFramework.Menu.SubMenus
 {
     public class BeginMenu : IBeginMenu
     {
-        private readonly IMenuUIProvider m_UIProvider;
+        private readonly IBeginMenuUI m_BeginMenuUI;
 
-        public BeginMenu(IMenuUIProvider uiProvider)
+        public BeginMenu(IBeginMenuUI beginMenuUI)
         {
-            m_UIProvider = uiProvider;
+            m_BeginMenuUI = beginMenuUI;
         }
 
         Task IMenu.OnEnterAsync(VisualElement rootContainer)
         {
-            VisualTreeAsset uiAsset = m_UIProvider.GetMenuUI<IBeginMenu>();
-            uiAsset.CloneTree(rootContainer);
-
-            return Task.CompletedTask;
+            return m_BeginMenuUI.OnEnterAsync(rootContainer);
         }
 
         Task IMenu.OnSuspendAsync()
