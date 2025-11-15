@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Core;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu
 {
@@ -9,14 +11,16 @@ namespace RPGFramework.Menu
         private readonly ICoreMenuModule m_CoreModule;
         private readonly IMenuModule     m_MenuModule;
         private readonly Stack<IMenu>    m_Menus;
-        private readonly IMenuUIProvider m_UIProvider;
+        private readonly VisualElement   m_UIContainer;
 
-        public MenuModule(ICoreMenuModule coreModule, IMenuUIProvider uiProvider)
+        public MenuModule(ICoreMenuModule coreModule)
         {
             m_CoreModule = coreModule;
-            m_UIProvider = uiProvider;
             m_MenuModule = this;
             m_Menus      = new Stack<IMenu>();
+
+            UIDocument uIDocument = Object.FindAnyObjectByType<UIDocument>();
+            m_UIContainer = uIDocument.rootVisualElement;
         }
 
         Task IModule.OnEnterAsync(IModuleArgs args)
@@ -43,7 +47,7 @@ namespace RPGFramework.Menu
 
             m_Menus.Push(newMenu);
 
-            await newMenu.OnEnterAsync();
+            await newMenu.OnEnterAsync(m_UIContainer);
         }
 
         async Task IMenuModule.PopMenu()
