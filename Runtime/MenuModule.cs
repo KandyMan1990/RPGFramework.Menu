@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Core;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace RPGFramework.Menu
 {
@@ -21,13 +19,11 @@ namespace RPGFramework.Menu
             m_Menus      = new Stack<IMenu>();
         }
 
-        async Task IModule.OnEnterAsync(IModuleArgs args)
+        Task IModule.OnEnterAsync(IModuleArgs args)
         {
-            await SceneManager.LoadSceneAsync(nameof(MenuModule));
-
             IMenuModuleArgs menuArgs = (IMenuModuleArgs)args;
 
-            await m_MenuModule.PushMenu(menuArgs);
+            return m_MenuModule.PushMenu(menuArgs);
         }
 
         Task IModule.OnExitAsync()
