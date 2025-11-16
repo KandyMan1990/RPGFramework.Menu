@@ -2,7 +2,8 @@
     "name": "RPGFramework.Menu",
     "rootNamespace": "RPGFramework.Menu",
     "references": [
-        "RPGFramework.Core"
+        "RPGFramework.Core",
+        "RPGFramework.DI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
