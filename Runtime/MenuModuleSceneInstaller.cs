@@ -13,7 +13,7 @@ namespace RPGFramework.Menu
 
         public override void InstallBindings(IDIContainer container)
         {
-            container.BindSingletonFromInstance<IMenuUIProvider, MenuUIProvider>(m_MenuUIProvider);
+            container.BindSingletonFromInstance<IMenuUIProvider>(m_MenuUIProvider);
             container.BindTransient<IBeginMenu, BeginMenu>();
             container.BindTransient<IBeginMenuUI, BeginMenuUI>();
         }
