@@ -3,7 +3,8 @@
     "rootNamespace": "RPGFramework.Menu",
     "references": [
         "RPGFramework.Core",
-        "RPGFramework.DI"
+        "RPGFramework.DI",
+        "RPGFramework.Audio"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

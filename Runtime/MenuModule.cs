@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RPGFramework.Audio;
 using RPGFramework.Core;
+using RPGFramework.Core.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -9,13 +11,15 @@ namespace RPGFramework.Menu
     public class MenuModule : IMenuModule
     {
         private readonly ICoreMenuModule m_CoreModule;
+        private readonly ISfxPlayer      m_SfxPlayer;
         private readonly IMenuModule     m_MenuModule;
         private readonly Stack<IMenu>    m_Menus;
         private readonly VisualElement   m_UIContainer;
 
-        public MenuModule(ICoreMenuModule coreModule)
+        public MenuModule(ICoreMenuModule coreModule, ISfxPlayer sfxPlayer)
         {
             m_CoreModule = coreModule;
+            m_SfxPlayer  = sfxPlayer;
             m_MenuModule = this;
             m_Menus      = new Stack<IMenu>();
 
@@ -25,6 +29,9 @@ namespace RPGFramework.Menu
 
         Task IModule.OnEnterAsync(IModuleArgs args)
         {
+            RPGUIButton.OnClicked     += PlayAudio;
+            RPGUIButton.OnHighlighted += PlayAudio;
+
             IMenuModuleArgs menuArgs = (IMenuModuleArgs)args;
 
             return m_MenuModule.PushMenu(menuArgs);
@@ -32,6 +39,9 @@ namespace RPGFramework.Menu
 
         Task IModule.OnExitAsync()
         {
+            RPGUIButton.OnHighlighted -= PlayAudio;
+            RPGUIButton.OnClicked     -= PlayAudio;
+
             m_CoreModule.ResetModule<MenuModule>();
             return Task.CompletedTask;
         }
@@ -63,6 +73,12 @@ namespace RPGFramework.Menu
             {
                 // TODO: close menu and return to previous module
             }
+        }
+
+        private void PlayAudio()
+        {
+            // TODO: set cursor ID programatically
+            m_SfxPlayer.Play(0);
         }
     }
 }
