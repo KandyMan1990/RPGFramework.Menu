@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using RPGFramework.Core;
 using UnityEngine.UIElements;
 
@@ -10,17 +11,31 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected VisualElement m_RootUI;
 
+        private event Action<int> m_OnPlayAudio;
+
         protected MenuUI(IMenuUIProvider uiProvider)
         {
             m_UIProvider = uiProvider;
         }
 
-        protected abstract Task OnEnterAsync(VisualElement rootContainer);
-        protected abstract Task OnSuspendAsync();
-        protected abstract Task OnResumeAsync();
-        protected abstract Task OnExitAsync();
-        protected abstract void RegisterCallbacks();
-        protected abstract void UnregisterCallbacks();
+        protected abstract Task          OnEnterAsync(VisualElement rootContainer);
+        protected abstract Task          OnSuspendAsync();
+        protected abstract Task          OnResumeAsync();
+        protected abstract Task          OnExitAsync();
+        protected abstract void          RegisterCallbacks();
+        protected abstract void          UnregisterCallbacks();
+        protected abstract VisualElement ElementToFocusOnEnter { get; }
+
+        protected void RaiseOnPlayAudio(int audio)
+        {
+            m_OnPlayAudio?.Invoke(audio);
+        }
+
+        event Action<int> IMenuUI.OnPlayAudio
+        {
+            add => m_OnPlayAudio += value;
+            remove => m_OnPlayAudio -= value;
+        }
 
         async Task IMenuUI.OnEnterAsync(VisualElement rootContainer)
         {
@@ -28,6 +43,8 @@ namespace RPGFramework.Menu.SubMenus.UI
             uiAsset.CloneTree(rootContainer);
 
             await OnEnterAsync(rootContainer);
+
+            ElementToFocusOnEnter?.Focus();
 
             RegisterCallbacks();
         }
