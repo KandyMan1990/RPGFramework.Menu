@@ -13,6 +13,8 @@ namespace RPGFramework.Menu.SubMenus.UI
         private RPGUIButton m_SettingsBtn;
         private RPGUIButton m_QuitBtn;
 
+        protected override VisualElement ElementToFocusOnEnter => m_NewGameBtn;
+
         public BeginMenuUI(IMenuUIProvider uiProvider) : base(uiProvider)
         {
 
@@ -46,23 +48,29 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override void RegisterCallbacks()
         {
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_NewGameBtn,  OnNewGameBtnNavigate,  OnNewGameBtnSubmitted,  OnNewGameBtnClicked);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_LoadGameBtn, OnLoadGameBtnNavigate, OnLoadGameBtnSubmitted, OnLoadGameBtnClicked);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_SettingsBtn, OnSettingsBtnNavigate, OnSettingsBtnSubmitted, OnSettingsBtnClicked);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_QuitBtn,     OnQuitBtnNavigate,     OnQuitBtnSubmitted,     OnQuitBtnClicked);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_NewGameBtn,  OnNewGameBtnNavigate,  OnNewGameBtnSubmitted,  OnNewGameBtnClicked,  OnNewGameBtnFocus);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_LoadGameBtn, OnLoadGameBtnNavigate, OnLoadGameBtnSubmitted, OnLoadGameBtnClicked, OnLoadGameBtnFocus);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_SettingsBtn, OnSettingsBtnNavigate, OnSettingsBtnSubmitted, OnSettingsBtnClicked, OnSettingsBtnFocus);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_QuitBtn,     OnQuitBtnNavigate,     OnQuitBtnSubmitted,     OnQuitBtnClicked,     OnQuitBtnFocus);
         }
 
         protected override void UnregisterCallbacks()
         {
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_QuitBtn,     OnQuitBtnNavigate,     OnQuitBtnSubmitted,     OnQuitBtnClicked);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_SettingsBtn, OnSettingsBtnNavigate, OnSettingsBtnSubmitted, OnSettingsBtnClicked);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_LoadGameBtn, OnLoadGameBtnNavigate, OnLoadGameBtnSubmitted, OnLoadGameBtnClicked);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_NewGameBtn,  OnNewGameBtnNavigate,  OnNewGameBtnSubmitted,  OnNewGameBtnClicked);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_QuitBtn,     OnQuitBtnNavigate,     OnQuitBtnSubmitted,     OnQuitBtnClicked,     OnQuitBtnFocus);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_SettingsBtn, OnSettingsBtnNavigate, OnSettingsBtnSubmitted, OnSettingsBtnClicked, OnSettingsBtnFocus);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_LoadGameBtn, OnLoadGameBtnNavigate, OnLoadGameBtnSubmitted, OnLoadGameBtnClicked, OnLoadGameBtnFocus);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_NewGameBtn,  OnNewGameBtnNavigate,  OnNewGameBtnSubmitted,  OnNewGameBtnClicked,  OnNewGameBtnFocus);
         }
 
         private void OnNewGameBtnNavigate(NavigationMoveEvent evt)
         {
             UIToolkitInputUtility.Navigate(evt, m_NewGameBtn, m_QuitBtn, m_LoadGameBtn);
+        }
+
+        private void OnNewGameBtnFocus(FocusInEvent evt)
+        {
+            // TODO: pass in specific id
+            RaiseOnPlayAudio(0);
         }
 
         private void OnNewGameBtnSubmitted(NavigationSubmitEvent evt)
@@ -78,11 +86,18 @@ namespace RPGFramework.Menu.SubMenus.UI
         private void OnNewGameBtnCallback()
         {
             UnityEngine.Debug.Log("OnNewGameBtnCallback");
+            RaiseOnPlayAudio(0);
         }
 
         private void OnLoadGameBtnNavigate(NavigationMoveEvent evt)
         {
             UIToolkitInputUtility.Navigate(evt, m_LoadGameBtn, m_NewGameBtn, m_SettingsBtn);
+        }
+
+        private void OnLoadGameBtnFocus(FocusInEvent evt)
+        {
+            // TODO: pass in specific id
+            RaiseOnPlayAudio(0);
         }
 
         private void OnLoadGameBtnSubmitted(NavigationSubmitEvent evt)
@@ -98,11 +113,18 @@ namespace RPGFramework.Menu.SubMenus.UI
         private void OnLoadGameBtnCallback()
         {
             UnityEngine.Debug.Log("OnLoadGameBtnCallback");
+            RaiseOnPlayAudio(0);
         }
 
         private void OnSettingsBtnNavigate(NavigationMoveEvent evt)
         {
             UIToolkitInputUtility.Navigate(evt, m_SettingsBtn, m_LoadGameBtn, m_QuitBtn);
+        }
+
+        private void OnSettingsBtnFocus(FocusInEvent evt)
+        {
+            // TODO: pass in specific id
+            RaiseOnPlayAudio(0);
         }
 
         private void OnSettingsBtnSubmitted(NavigationSubmitEvent evt)
@@ -118,11 +140,18 @@ namespace RPGFramework.Menu.SubMenus.UI
         private void OnSettingsBtnCallback()
         {
             UnityEngine.Debug.Log("OnSettingsBtnCallback");
+            RaiseOnPlayAudio(0);
         }
 
         private void OnQuitBtnNavigate(NavigationMoveEvent evt)
         {
             UIToolkitInputUtility.Navigate(evt, m_QuitBtn, m_SettingsBtn, m_NewGameBtn);
+        }
+
+        private void OnQuitBtnFocus(FocusInEvent evt)
+        {
+            // TODO: pass in specific id
+            RaiseOnPlayAudio(0);
         }
 
         private void OnQuitBtnSubmitted(NavigationSubmitEvent evt)
@@ -138,6 +167,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         private void OnQuitBtnCallback()
         {
             UnityEngine.Debug.Log("OnQuitBtnCallback");
+            RaiseOnPlayAudio(0);
         }
     }
 }
