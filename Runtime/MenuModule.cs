@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
-using RPGFramework.Core.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -29,9 +28,6 @@ namespace RPGFramework.Menu
 
         Task IModule.OnEnterAsync(IModuleArgs args)
         {
-            RPGUIButton.OnClicked     += PlayAudio;
-            RPGUIButton.OnHighlighted += PlayAudio;
-
             IMenuModuleArgs menuArgs = (IMenuModuleArgs)args;
 
             return m_MenuModule.PushMenu(menuArgs);
@@ -39,9 +35,6 @@ namespace RPGFramework.Menu
 
         Task IModule.OnExitAsync()
         {
-            RPGUIButton.OnHighlighted -= PlayAudio;
-            RPGUIButton.OnClicked     -= PlayAudio;
-
             m_CoreModule.ResetModule<MenuModule>();
             return Task.CompletedTask;
         }
@@ -75,10 +68,9 @@ namespace RPGFramework.Menu
             }
         }
 
-        private void PlayAudio()
+        void IMenuModule.PlaySfx(int id)
         {
-            // TODO: set cursor ID programatically
-            m_SfxPlayer.Play(0);
+            m_SfxPlayer.Play(id);
         }
     }
 }
