@@ -5,7 +5,8 @@
   "description": "Menu system for the RPG Framework",
   "dependencies": {
     "com.rpgframework.core": "0.1.1",
-    "com.rpgframework.di": "0.1.0"
+    "com.rpgframework.di": "0.1.0",
+    "com.rpgframework.audio": "0.5.2"
   },
   "unity": "6000.0",
   "keywords": [
