@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
@@ -15,9 +16,8 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override VisualElement ElementToFocusOnEnter => m_NewGameBtn;
 
-        public BeginMenuUI(IMenuUIProvider uiProvider) : base(uiProvider)
+        public BeginMenuUI(IMenuUIProvider uiProvider, IGenericAudioIdProvider audioIdProvider) : base(uiProvider, audioIdProvider)
         {
-
         }
 
         protected override Task OnEnterAsync(VisualElement rootContainer)
@@ -69,8 +69,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnNewGameBtnFocus(FocusInEvent evt)
         {
-            // TODO: pass in specific id
-            RaiseOnPlayAudio(0);
+            RaiseOnPlayAudio(m_AudioIdProvider.ButtonNavigate);
         }
 
         private void OnNewGameBtnSubmitted(NavigationSubmitEvent evt)
@@ -85,8 +84,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnNewGameBtnCallback()
         {
-            UnityEngine.Debug.Log("OnNewGameBtnCallback");
-            RaiseOnPlayAudio(0);
+            RaiseOnPlayAudio(m_AudioIdProvider.ButtonPositive);
         }
 
         private void OnLoadGameBtnNavigate(NavigationMoveEvent evt)
@@ -96,8 +94,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnLoadGameBtnFocus(FocusInEvent evt)
         {
-            // TODO: pass in specific id
-            RaiseOnPlayAudio(0);
+            RaiseOnPlayAudio(m_AudioIdProvider.ButtonNavigate);
         }
 
         private void OnLoadGameBtnSubmitted(NavigationSubmitEvent evt)
@@ -112,8 +109,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnLoadGameBtnCallback()
         {
-            UnityEngine.Debug.Log("OnLoadGameBtnCallback");
-            RaiseOnPlayAudio(0);
+            RaiseOnPlayAudio(m_AudioIdProvider.ButtonPositive);
         }
 
         private void OnSettingsBtnNavigate(NavigationMoveEvent evt)
@@ -123,8 +119,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnSettingsBtnFocus(FocusInEvent evt)
         {
-            // TODO: pass in specific id
-            RaiseOnPlayAudio(0);
+            RaiseOnPlayAudio(m_AudioIdProvider.ButtonNavigate);
         }
 
         private void OnSettingsBtnSubmitted(NavigationSubmitEvent evt)
@@ -139,8 +134,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnSettingsBtnCallback()
         {
-            UnityEngine.Debug.Log("OnSettingsBtnCallback");
-            RaiseOnPlayAudio(0);
+            RaiseOnPlayAudio(m_AudioIdProvider.ButtonPositive);
         }
 
         private void OnQuitBtnNavigate(NavigationMoveEvent evt)
@@ -150,8 +144,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnQuitBtnFocus(FocusInEvent evt)
         {
-            // TODO: pass in specific id
-            RaiseOnPlayAudio(0);
+            RaiseOnPlayAudio(m_AudioIdProvider.ButtonNavigate);
         }
 
         private void OnQuitBtnSubmitted(NavigationSubmitEvent evt)
@@ -166,8 +159,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnQuitBtnCallback()
         {
-            UnityEngine.Debug.Log("OnQuitBtnCallback");
-            RaiseOnPlayAudio(0);
+            RaiseOnPlayAudio(m_AudioIdProvider.ButtonNegative);
         }
     }
 }
