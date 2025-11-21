@@ -3,6 +3,7 @@ using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
@@ -13,6 +14,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         private RPGUIButton m_LoadGameBtn;
         private RPGUIButton m_SettingsBtn;
         private RPGUIButton m_QuitBtn;
+        private Label       m_VersionLabel;
 
         protected override VisualElement ElementToFocusOnEnter => m_NewGameBtn;
 
@@ -22,11 +24,14 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override Task OnEnterAsync(VisualElement rootContainer)
         {
-            m_RootUI      = rootContainer.Q<VisualElement>("BeginMenu");
-            m_NewGameBtn  = m_RootUI.Q<RPGUIButton>("NewGameBtn");
-            m_LoadGameBtn = m_RootUI.Q<RPGUIButton>("LoadGameBtn");
-            m_SettingsBtn = m_RootUI.Q<RPGUIButton>("SettingsBtn");
-            m_QuitBtn     = m_RootUI.Q<RPGUIButton>("QuitBtn");
+            m_RootUI       = rootContainer.Q<VisualElement>("BeginMenu");
+            m_NewGameBtn   = m_RootUI.Q<RPGUIButton>("NewGameBtn");
+            m_LoadGameBtn  = m_RootUI.Q<RPGUIButton>("LoadGameBtn");
+            m_SettingsBtn  = m_RootUI.Q<RPGUIButton>("SettingsBtn");
+            m_QuitBtn      = m_RootUI.Q<RPGUIButton>("QuitBtn");
+            m_VersionLabel = m_RootUI.Q<Label>("VersionLabel");
+
+            m_VersionLabel.text = $"v{Application.version}";
 
             return Task.CompletedTask;
         }
