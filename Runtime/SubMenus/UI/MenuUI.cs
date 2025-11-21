@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using UnityEngine.UIElements;
 
@@ -9,13 +10,16 @@ namespace RPGFramework.Menu.SubMenus.UI
     {
         private readonly IMenuUIProvider m_UIProvider;
 
+        protected readonly IGenericAudioIdProvider m_AudioIdProvider;
+
         protected VisualElement m_RootUI;
 
-        private event Action<int> m_OnPlayAudio;
+        private event Action<int> OnPlayAudio;
 
-        protected MenuUI(IMenuUIProvider uiProvider)
+        protected MenuUI(IMenuUIProvider uiProvider, IGenericAudioIdProvider audioIdProvider)
         {
-            m_UIProvider = uiProvider;
+            m_UIProvider      = uiProvider;
+            m_AudioIdProvider = audioIdProvider;
         }
 
         protected abstract Task          OnEnterAsync(VisualElement rootContainer);
@@ -28,13 +32,13 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected void RaiseOnPlayAudio(int audio)
         {
-            m_OnPlayAudio?.Invoke(audio);
+            OnPlayAudio?.Invoke(audio);
         }
 
         event Action<int> IMenuUI.OnPlayAudio
         {
-            add => m_OnPlayAudio += value;
-            remove => m_OnPlayAudio -= value;
+            add => OnPlayAudio += value;
+            remove => OnPlayAudio -= value;
         }
 
         async Task IMenuUI.OnEnterAsync(VisualElement rootContainer)
