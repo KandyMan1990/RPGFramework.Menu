@@ -4,7 +4,8 @@
     "references": [
         "RPGFramework.Core",
         "RPGFramework.DI",
-        "RPGFramework.Audio"
+        "RPGFramework.Audio",
+        "RPGFramework.Localisation"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
