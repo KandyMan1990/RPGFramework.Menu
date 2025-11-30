@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
+using RPGFramework.Localisation;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
@@ -11,15 +12,19 @@ namespace RPGFramework.Menu.SubMenus.UI
         private readonly IMenuUIProvider m_UIProvider;
 
         protected readonly IGenericAudioIdProvider m_AudioIdProvider;
+        protected readonly ILocalisationService    m_LocalisationService;
 
         protected VisualElement m_RootUI;
 
         private event Action<int> OnPlayAudio;
 
-        protected MenuUI(IMenuUIProvider uiProvider, IGenericAudioIdProvider audioIdProvider)
+        protected MenuUI(IMenuUIProvider         uiProvider,
+                         IGenericAudioIdProvider audioIdProvider,
+                         ILocalisationService    localisationService)
         {
-            m_UIProvider      = uiProvider;
-            m_AudioIdProvider = audioIdProvider;
+            m_UIProvider          = uiProvider;
+            m_AudioIdProvider     = audioIdProvider;
+            m_LocalisationService = localisationService;
         }
 
         protected abstract Task          OnEnterAsync(VisualElement rootContainer);
@@ -28,6 +33,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         protected abstract Task          OnExitAsync();
         protected abstract void          RegisterCallbacks();
         protected abstract void          UnregisterCallbacks();
+        protected abstract void          LocaliseUI();
         protected abstract VisualElement ElementToFocusOnEnter { get; }
 
         protected void RaiseOnPlayAudio(int audio)
@@ -50,6 +56,8 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             ElementToFocusOnEnter?.Focus();
 
+            LocaliseUI();
+
             RegisterCallbacks();
         }
 
@@ -63,6 +71,8 @@ namespace RPGFramework.Menu.SubMenus.UI
         async Task IMenuUI.OnResumeAsync()
         {
             await OnResumeAsync();
+
+            LocaliseUI();
 
             RegisterCallbacks();
         }
