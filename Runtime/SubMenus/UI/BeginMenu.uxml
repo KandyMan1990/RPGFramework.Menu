@@ -2,7 +2,7 @@
     <Style src="project://database/Packages/com.rpgframework.core/Runtime/UI%20Toolkit/UIShared.uss?fileID=7433441132597879392&amp;guid=94d472c2b9a84d747912b7c0d4c5d053&amp;type=3#UIShared" />
     <ui:VisualElement name="BeginMenu" style="flex-grow: 1; background-color: rgb(54, 8, 68); margin-top: 2%; margin-right: 5%; margin-bottom: 2%; margin-left: 5%; border-left-color: rgba(209, 209, 209, 0.87); border-right-color: rgba(209, 209, 209, 0.87); border-top-color: rgba(209, 209, 209, 0.87); border-bottom-color: rgba(209, 209, 209, 0.87); border-top-width: 4px; border-right-width: 4px; border-bottom-width: 4px; border-left-width: 4px; border-top-left-radius: 100px; border-top-right-radius: 100px; border-bottom-right-radius: 100px; border-bottom-left-radius: 100px;">
         <ui:VisualElement name="TitleContainer" style="height: 25%;">
-            <ui:Label text="Game Name" name="Title" class="rpg-ui-label" style="width: 100%; height: 100%; -unity-text-align: middle-center; font-size: 100px;" />
+            <ui:Label text="Game Name" name="TitleLabel" class="rpg-ui-label" style="width: 100%; height: 100%; -unity-text-align: middle-center; font-size: 100px;" />
         </ui:VisualElement>
         <ui:VisualElement name="ContentContainer" style="flex-direction: column; margin-right: 0%; margin-top: 0%; margin-bottom: 0%; font-size: 48px; flex-grow: 1; align-items: center;">
             <ui:VisualElement name="ButtonsContainer" style="flex-grow: 1; justify-content: space-evenly; margin-top: 5%; margin-bottom: 5%;">

@@ -3,6 +3,7 @@ using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
+using RPGFramework.Localisation;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -10,21 +11,31 @@ namespace RPGFramework.Menu.SubMenus.UI
 {
     public class BeginMenuUI : MenuUI<IBeginMenu>, IBeginMenuUI
     {
+        private Label       m_TitleLabel;
         private RPGUIButton m_NewGameBtn;
         private RPGUIButton m_LoadGameBtn;
         private RPGUIButton m_SettingsBtn;
         private RPGUIButton m_QuitBtn;
         private Label       m_VersionLabel;
 
+        private IBeginMenuLocalisationArgs m_LocalisationArgs;
+
         protected override VisualElement ElementToFocusOnEnter => m_NewGameBtn;
 
-        public BeginMenuUI(IMenuUIProvider uiProvider, IGenericAudioIdProvider audioIdProvider) : base(uiProvider, audioIdProvider)
+        public BeginMenuUI(IBeginMenuLocalisationArgs localisationArgs,
+                           IMenuUIProvider            uiProvider,
+                           IGenericAudioIdProvider    audioIdProvider,
+                           ILocalisationService       localisationService) : base(uiProvider,
+                                                                                  audioIdProvider,
+                                                                                  localisationService)
         {
+            m_LocalisationArgs = localisationArgs;
         }
 
         protected override Task OnEnterAsync(VisualElement rootContainer)
         {
             m_RootUI       = rootContainer.Q<VisualElement>("BeginMenu");
+            m_TitleLabel   = m_RootUI.Q<Label>("TitleLabel");
             m_NewGameBtn   = m_RootUI.Q<RPGUIButton>("NewGameBtn");
             m_LoadGameBtn  = m_RootUI.Q<RPGUIButton>("LoadGameBtn");
             m_SettingsBtn  = m_RootUI.Q<RPGUIButton>("SettingsBtn");
@@ -32,6 +43,11 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_VersionLabel = m_RootUI.Q<Label>("VersionLabel");
 
             m_VersionLabel.text = $"v{Application.version}";
+
+            foreach (string sheetName in m_LocalisationArgs.DataSheetsToLoad)
+            {
+                m_LocalisationService.LoadNewLocalisationData(sheetName);
+            }
 
             return Task.CompletedTask;
         }
@@ -65,6 +81,15 @@ namespace RPGFramework.Menu.SubMenus.UI
             UIToolkitInputUtility.UnregisterButtonCallbacks(m_SettingsBtn, OnSettingsBtnNavigate, OnSettingsBtnSubmitted, OnSettingsBtnClicked, OnSettingsBtnFocus);
             UIToolkitInputUtility.UnregisterButtonCallbacks(m_LoadGameBtn, OnLoadGameBtnNavigate, OnLoadGameBtnSubmitted, OnLoadGameBtnClicked, OnLoadGameBtnFocus);
             UIToolkitInputUtility.UnregisterButtonCallbacks(m_NewGameBtn,  OnNewGameBtnNavigate,  OnNewGameBtnSubmitted,  OnNewGameBtnClicked,  OnNewGameBtnFocus);
+        }
+
+        protected override void LocaliseUI()
+        {
+            m_TitleLabel.text  = m_LocalisationService.Get(m_LocalisationArgs.GameTitle);
+            m_NewGameBtn.text  = m_LocalisationService.Get(m_LocalisationArgs.NewGame);
+            m_LoadGameBtn.text = m_LocalisationService.Get(m_LocalisationArgs.LoadGame);
+            m_SettingsBtn.text = m_LocalisationService.Get(m_LocalisationArgs.Settings);
+            m_QuitBtn.text     = m_LocalisationService.Get(m_LocalisationArgs.QuitGame);
         }
 
         private void OnNewGameBtnNavigate(NavigationMoveEvent evt)
