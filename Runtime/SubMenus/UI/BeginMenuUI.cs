@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Input;
@@ -11,6 +12,32 @@ namespace RPGFramework.Menu.SubMenus.UI
 {
     public class BeginMenuUI : MenuUI<IBeginMenu>, IBeginMenuUI
     {
+        event Action IBeginMenuUI.OnNewGame
+        {
+            add => m_OnNewGame += value;
+            remove => m_OnNewGame -= value;
+        }
+        event Action IBeginMenuUI.OnLoadGame
+        {
+            add => m_OnLoadGame += value;
+            remove => m_OnLoadGame -= value;
+        }
+        event Action IBeginMenuUI.OnSettings
+        {
+            add => m_OnSettings += value;
+            remove => m_OnSettings -= value;
+        }
+        event Action IBeginMenuUI.OnQuit
+        {
+            add => m_OnQuit += value;
+            remove => m_OnQuit -= value;
+        }
+
+        private event Action m_OnNewGame;
+        private event Action m_OnLoadGame;
+        private event Action m_OnSettings;
+        private event Action m_OnQuit;
+
         private Label       m_TitleLabel;
         private RPGUIButton m_NewGameBtn;
         private RPGUIButton m_LoadGameBtn;
@@ -115,6 +142,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         private void OnNewGameBtnCallback()
         {
             RaiseOnPlayAudio(m_AudioIdProvider.ButtonPositive);
+            m_OnNewGame?.Invoke();
         }
 
         private void OnLoadGameBtnNavigate(NavigationMoveEvent evt)
@@ -140,6 +168,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         private void OnLoadGameBtnCallback()
         {
             RaiseOnPlayAudio(m_AudioIdProvider.ButtonPositive);
+            m_OnLoadGame?.Invoke();
         }
 
         private void OnSettingsBtnNavigate(NavigationMoveEvent evt)
@@ -165,6 +194,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         private void OnSettingsBtnCallback()
         {
             RaiseOnPlayAudio(m_AudioIdProvider.ButtonPositive);
+            m_OnSettings?.Invoke();
         }
 
         private void OnQuitBtnNavigate(NavigationMoveEvent evt)
@@ -190,6 +220,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         private void OnQuitBtnCallback()
         {
             RaiseOnPlayAudio(m_AudioIdProvider.ButtonNegative);
+            m_OnQuit?.Invoke();
         }
     }
 }
