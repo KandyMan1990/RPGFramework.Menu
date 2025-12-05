@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using RPGFramework.Core;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus

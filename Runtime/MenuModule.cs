@@ -9,13 +9,13 @@ namespace RPGFramework.Menu
 {
     public class MenuModule : IMenuModule
     {
-        private readonly ICoreMenuModule m_CoreModule;
-        private readonly ISfxPlayer      m_SfxPlayer;
-        private readonly IMenuModule     m_MenuModule;
-        private readonly Stack<IMenu>    m_Menus;
-        private readonly VisualElement   m_UIContainer;
+        private readonly ICoreModule   m_CoreModule;
+        private readonly ISfxPlayer    m_SfxPlayer;
+        private readonly IMenuModule   m_MenuModule;
+        private readonly Stack<IMenu>  m_Menus;
+        private readonly VisualElement m_UIContainer;
 
-        public MenuModule(ICoreMenuModule coreModule, ISfxPlayer sfxPlayer)
+        public MenuModule(ICoreModule coreModule, ISfxPlayer sfxPlayer)
         {
             m_CoreModule = coreModule;
             m_SfxPlayer  = sfxPlayer;
@@ -35,7 +35,7 @@ namespace RPGFramework.Menu
 
         Task IModule.OnExitAsync()
         {
-            m_CoreModule.ResetModule<MenuModule>();
+            m_CoreModule.ResetModule<IMenuModule, MenuModule>();
             return Task.CompletedTask;
         }
 

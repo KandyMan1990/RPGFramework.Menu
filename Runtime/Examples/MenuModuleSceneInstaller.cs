@@ -1,4 +1,3 @@
-using RPGFramework.Core;
 using RPGFramework.DI;
 using RPGFramework.Menu.SubMenus;
 using RPGFramework.Menu.SubMenus.UI;

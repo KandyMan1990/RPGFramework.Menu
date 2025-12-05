@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using RPGFramework.Audio;
-using RPGFramework.Core;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
