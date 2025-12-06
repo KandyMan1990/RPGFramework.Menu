@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
+using RPGFramework.Core.SharedTypes;
 using UnityEngine;
 using UnityEngine.UIElements;
 

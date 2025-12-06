@@ -5,7 +5,8 @@
         "RPGFramework.Core",
         "RPGFramework.DI",
         "RPGFramework.Audio",
-        "RPGFramework.Localisation"
+        "RPGFramework.Localisation",
+        "RPGFramework.Core.SharedTypes"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

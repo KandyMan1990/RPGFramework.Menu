@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using RPGFramework.Core;
+using RPGFramework.Core.SharedTypes;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu
