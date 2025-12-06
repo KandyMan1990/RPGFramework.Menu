@@ -1,32 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using RPGFramework.Core.SharedTypes;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu
 {
-    public interface IMenuModule : IModule
-    {
-        Task PushMenu(IMenuModuleArgs menuModuleArgs);
-        Task PopMenu();
-        void PlaySfx(int id);
-    }
-
-    public interface IMenuModuleArgs : IModuleArgs
-    {
-        Type MenuType { get; }
-    }
-
-    public readonly struct MenuModuleArgs : IMenuModuleArgs
-    {
-        public Type MenuType { get; }
-
-        public MenuModuleArgs(Type menuType)
-        {
-            MenuType = menuType;
-        }
-    }
-
     public interface IMenuUIProvider
     {
         VisualTreeAsset GetMenuUI<T>() where T : IMenu;
