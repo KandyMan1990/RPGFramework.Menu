@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.SharedTypes;
+using RPGFramework.Menu.SharedTypes;
 using UnityEngine;
 using UnityEngine.UIElements;
 
