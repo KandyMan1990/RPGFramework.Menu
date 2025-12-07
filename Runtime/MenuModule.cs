@@ -47,7 +47,7 @@ namespace RPGFramework.Menu
 
             if (m_Menus.TryPeek(out IMenu menu))
             {
-                await menu.OnSuspendAsync();
+                await menu.OnSuspendAsync(newMenu.HidePreviousUiOnSuspend);
             }
 
             m_Menus.Push(newMenu);

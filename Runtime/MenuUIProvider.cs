@@ -14,7 +14,7 @@ namespace RPGFramework.Menu
         {
             Type type = typeof(T);
 
-            if (type == typeof(IBeginMenu)) return m_BeginMenu;
+            if (type == typeof(IBeginMenuUI)) return m_BeginMenu;
 
             throw new NotImplementedException($"The type {type} is not implemented");
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine.UIElements;
 
@@ -6,13 +7,14 @@ namespace RPGFramework.Menu
 {
     public interface IMenuUIProvider
     {
-        VisualTreeAsset GetMenuUI<T>() where T : IMenu;
+        VisualTreeAsset GetMenuUI<T>() where T : IMenuUI;
     }
 
     public interface IMenu
     {
-        Task OnEnterAsync(VisualElement rootContainer);
-        Task OnSuspendAsync();
+        bool HidePreviousUiOnSuspend { get; }
+        Task OnEnterAsync(VisualElement parent, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
+        Task OnSuspendAsync(bool        hideUi);
         Task OnResumeAsync();
         Task OnExitAsync();
     }
@@ -20,8 +22,10 @@ namespace RPGFramework.Menu
     public interface IMenuUI
     {
         event Action<int> OnPlayAudio;
-        Task              OnEnterAsync(VisualElement rootContainer);
-        Task              OnSuspendAsync();
+        event Action      OnBackButtonPressed;
+        VisualElement     GetDefaultFocusedElement();
+        Task              OnEnterAsync(VisualElement parent, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
+        Task              OnSuspendAsync(bool        hideUi);
         Task              OnResumeAsync();
         Task              OnExitAsync();
     }
