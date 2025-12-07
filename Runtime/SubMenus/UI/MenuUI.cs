@@ -1,86 +1,170 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Audio;
+using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
 {
-    public abstract class MenuUI<T> : IMenuUI where T : IMenu
+    public abstract class MenuUI<TMenuUI> : IMenuUI where TMenuUI : IMenuUI
     {
-        private readonly IMenuUIProvider m_UIProvider;
+        event Action<int> IMenuUI.OnPlayAudio
+        {
+            add => m_OnPlayAudio += value;
+            remove => m_OnPlayAudio -= value;
+        }
+        event Action IMenuUI.OnBackButtonPressed
+        {
+            add => m_OnBackButtonPressed += value;
+            remove => m_OnBackButtonPressed -= value;
+        }
 
+        VisualElement IMenuUI.GetDefaultFocusedElement() => GetDefaultFocusedElement();
+
+        private event Action<int> m_OnPlayAudio;
+        private event Action      m_OnBackButtonPressed;
+
+        protected abstract VisualElement GetDefaultFocusedElement();
+
+        protected readonly ILocalisationArgs       m_LocalisationArgs;
+        protected readonly IMenuUIProvider         m_UIProvider;
         protected readonly IGenericAudioIdProvider m_AudioIdProvider;
         protected readonly ILocalisationService    m_LocalisationService;
 
-        protected VisualElement m_RootUI;
+        protected VisualElement m_UIInstance;
 
-        private event Action<int> OnPlayAudio;
-
-        protected MenuUI(IMenuUIProvider         uiProvider,
+        protected MenuUI(ILocalisationArgs       localisationArgs,
+                         IMenuUIProvider         uiProvider,
                          IGenericAudioIdProvider audioIdProvider,
                          ILocalisationService    localisationService)
         {
+            m_LocalisationArgs    = localisationArgs;
             m_UIProvider          = uiProvider;
             m_AudioIdProvider     = audioIdProvider;
             m_LocalisationService = localisationService;
         }
 
-        protected abstract Task          OnEnterAsync(VisualElement rootContainer);
-        protected abstract Task          OnSuspendAsync();
-        protected abstract Task          OnResumeAsync();
-        protected abstract Task          OnExitAsync();
-        protected abstract void          RegisterCallbacks();
-        protected abstract void          UnregisterCallbacks();
-        protected abstract void          LocaliseUI();
-        protected abstract VisualElement ElementToFocusOnEnter { get; }
+        async Task IMenuUI.OnEnterAsync(VisualElement parent, Dictionary<string, object> args)
+        {
+            VisualTreeAsset uiAsset = m_UIProvider.GetMenuUI<TMenuUI>();
+            m_UIInstance = uiAsset.Instantiate();
+            //TODO: discard template container
+            m_UIInstance.style.flexGrow = 1;
+
+            parent.Add(m_UIInstance);
+
+            Task[] dataSheetsToLoad = new Task[m_LocalisationArgs.DataSheetsToLoad.Length];
+            for (int i = 0; i < m_LocalisationArgs.DataSheetsToLoad.Length; i++)
+            {
+                string sheetName = m_LocalisationArgs.DataSheetsToLoad[i];
+                dataSheetsToLoad[i] = m_LocalisationService.LoadNewLocalisationDataAsync(sheetName);
+            }
+
+            await Task.WhenAll(dataSheetsToLoad);
+
+            await OnEnterAsync(args);
+
+            HookupUI();
+
+            LocaliseUI();
+
+            RegisterCallbacks();
+
+            GetDefaultFocusedElement()?.Focus();
+
+            OnEnterComplete();
+        }
+
+        Task IMenuUI.OnSuspendAsync(bool hideUi)
+        {
+            UnregisterCallbacks();
+
+            ShowUI(!hideUi);
+
+            return OnSuspendAsync(hideUi);
+        }
+
+        Task IMenuUI.OnResumeAsync()
+        {
+            ShowUI(true);
+
+            LocaliseUI();
+
+            RegisterCallbacks();
+
+            return OnResumeAsync();
+        }
+
+        async Task IMenuUI.OnExitAsync()
+        {
+            UnregisterCallbacks();
+
+            await OnExitAsync();
+
+            m_UIInstance.RemoveFromHierarchy();
+            m_UIInstance = null;
+        }
+
+        protected virtual Task OnEnterAsync(Dictionary<string, object> args)
+        {
+            return Task.CompletedTask;
+        }
+
+        protected virtual void OnEnterComplete()
+        {
+
+        }
+
+        protected virtual Task OnSuspendAsync(bool hideUi)
+        {
+            return Task.CompletedTask;
+        }
+
+        protected virtual Task OnResumeAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        protected virtual Task OnExitAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        protected virtual void HookupUI()
+        {
+
+        }
+
+        protected virtual void LocaliseUI()
+        {
+
+        }
+
+        protected virtual void RegisterCallbacks()
+        {
+
+        }
+
+        protected virtual void UnregisterCallbacks()
+        {
+
+        }
+
+        protected virtual void ShowUI(bool isShow)
+        {
+            m_UIInstance.SetEnabledAndVisible(isShow);
+        }
 
         protected void RaiseOnPlayAudio(int audio)
         {
-            OnPlayAudio?.Invoke(audio);
+            m_OnPlayAudio?.Invoke(audio);
         }
 
-        event Action<int> IMenuUI.OnPlayAudio
+        protected void RaiseOnBackButtonPressed()
         {
-            add => OnPlayAudio += value;
-            remove => OnPlayAudio -= value;
-        }
-
-        async Task IMenuUI.OnEnterAsync(VisualElement rootContainer)
-        {
-            VisualTreeAsset uiAsset = m_UIProvider.GetMenuUI<T>();
-            uiAsset.CloneTree(rootContainer);
-
-            await OnEnterAsync(rootContainer);
-
-            ElementToFocusOnEnter?.Focus();
-
-            LocaliseUI();
-
-            RegisterCallbacks();
-        }
-
-        Task IMenuUI.OnSuspendAsync()
-        {
-            UnregisterCallbacks();
-
-            return OnSuspendAsync();
-        }
-
-        async Task IMenuUI.OnResumeAsync()
-        {
-            await OnResumeAsync();
-
-            LocaliseUI();
-
-            RegisterCallbacks();
-        }
-
-        Task IMenuUI.OnExitAsync()
-        {
-            UnregisterCallbacks();
-
-            return OnExitAsync();
+            m_OnBackButtonPressed?.Invoke();
         }
     }
 }
