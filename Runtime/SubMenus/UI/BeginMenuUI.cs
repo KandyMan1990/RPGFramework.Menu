@@ -115,7 +115,8 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnNewGameBtnCallback()
         {
-            RaiseOnPlayAudio(m_AudioIdProvider.ButtonPositive);
+            //TODO: temporarily use item consumed until we have new game sfx
+            RaiseOnPlayAudio(m_AudioIdProvider.ItemConsumed);
             m_OnNewGame?.Invoke();
         }
 

@@ -1,4 +1,5 @@
-﻿using RPGFramework.Menu.SharedTypes;
+﻿using RPGFramework.Core;
+using RPGFramework.Menu.SharedTypes;
 
 namespace RPGFramework.Menu.SubMenus
 {
@@ -18,18 +19,26 @@ namespace RPGFramework.Menu.SubMenus
         protected override void RegisterCallbacks()
         {
             m_BeginMenuUI.OnPlayAudio += PlaySfx;
+            m_BeginMenuUI.OnNewGame   += OnNewGame;
             m_BeginMenuUI.OnQuit      += OnQuit;
         }
 
         protected override void UnregisterCallbacks()
         {
             m_BeginMenuUI.OnQuit      -= OnQuit;
+            m_BeginMenuUI.OnNewGame   -= OnNewGame;
             m_BeginMenuUI.OnPlayAudio -= PlaySfx;
         }
 
         private void PlaySfx(int id)
         {
             m_MenuModule.PlaySfx(id);
+        }
+
+        private void OnNewGame()
+        {
+            //TODO: tell core to init default save map
+            m_MenuModule.ReturnToPreviousModuleAsync().FireAndForget();
         }
 
         private void OnQuit()

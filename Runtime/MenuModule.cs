@@ -38,6 +38,7 @@ namespace RPGFramework.Menu
         Task IModule.OnExitAsync()
         {
             m_CoreModule.ResetModule<IMenuModule, MenuModule>();
+
             return Task.CompletedTask;
         }
 
@@ -66,13 +67,22 @@ namespace RPGFramework.Menu
             }
             else
             {
-                // TODO: close menu and return to previous module
+                await m_MenuModule.ReturnToPreviousModuleAsync();
             }
         }
 
         void IMenuModule.PlaySfx(int id)
         {
             m_SfxPlayer.Play(id);
+        }
+
+        Task IMenuModule.ReturnToPreviousModuleAsync()
+        {
+            //TODO: get info from save map (module and args for module e.g. IFieldModule, Field 0)
+
+            // return m_CoreModule.LoadModuleAsync(typeof(saveInfo.CurrentModule), saveInfo.CurrentModuleArgs);
+            
+            return Task.CompletedTask;
         }
     }
 }
