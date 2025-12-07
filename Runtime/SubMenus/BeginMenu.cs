@@ -1,51 +1,44 @@
-﻿using System.Threading.Tasks;
-using RPGFramework.Menu.SharedTypes;
-using UnityEngine.UIElements;
+﻿using RPGFramework.Menu.SharedTypes;
 
 namespace RPGFramework.Menu.SubMenus
 {
-    public class BeginMenu : IBeginMenu
+    public class BeginMenu : Menu<IBeginMenuUI>, IBeginMenu
     {
+        protected override bool m_HidePreviousUiOnSuspend => false;
+
         private readonly IMenuModule  m_MenuModule;
         private readonly IBeginMenuUI m_BeginMenuUI;
 
-        public BeginMenu(IMenuModule menuModule, IBeginMenuUI beginMenuUI)
+        public BeginMenu(IMenuModule  menuModule,
+                         IBeginMenuUI beginMenuUI) : base(beginMenuUI)
         {
             m_MenuModule  = menuModule;
             m_BeginMenuUI = beginMenuUI;
         }
-
-        Task IMenu.OnEnterAsync(VisualElement rootContainer)
+        protected override void RegisterCallbacks()
         {
             m_BeginMenuUI.OnPlayAudio += PlaySfx;
-
-            return m_BeginMenuUI.OnEnterAsync(rootContainer);
+            m_BeginMenuUI.OnQuit      += OnQuit;
         }
 
-        Task IMenu.OnSuspendAsync()
+        protected override void UnregisterCallbacks()
         {
+            m_BeginMenuUI.OnQuit      -= OnQuit;
             m_BeginMenuUI.OnPlayAudio -= PlaySfx;
-
-            return Task.CompletedTask;
-        }
-
-        Task IMenu.OnResumeAsync()
-        {
-            m_BeginMenuUI.OnPlayAudio += PlaySfx;
-
-            return Task.CompletedTask;
-        }
-
-        Task IMenu.OnExitAsync()
-        {
-            m_BeginMenuUI.OnPlayAudio -= PlaySfx;
-
-            return Task.CompletedTask;
         }
 
         private void PlaySfx(int id)
         {
             m_MenuModule.PlaySfx(id);
+        }
+
+        private void OnQuit()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
         }
     }
 }
