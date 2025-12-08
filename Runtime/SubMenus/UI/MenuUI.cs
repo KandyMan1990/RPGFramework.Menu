@@ -49,11 +49,9 @@ namespace RPGFramework.Menu.SubMenus.UI
         async Task IMenuUI.OnEnterAsync(VisualElement parent, Dictionary<string, object> args)
         {
             VisualTreeAsset uiAsset = m_UIProvider.GetMenuUI<TMenuUI>();
-            m_UIInstance = uiAsset.Instantiate();
-            //TODO: discard template container
-            m_UIInstance.style.flexGrow = 1;
+            uiAsset.CloneTree(parent);
 
-            parent.Add(m_UIInstance);
+            m_UIInstance = parent[parent.childCount - 1];
 
             Task[] dataSheetsToLoad = new Task[m_LocalisationArgs.DataSheetsToLoad.Length];
             for (int i = 0; i < m_LocalisationArgs.DataSheetsToLoad.Length; i++)
