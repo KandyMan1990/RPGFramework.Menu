@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.SharedTypes;
+using RPGFramework.DI;
 using RPGFramework.Menu.SharedTypes;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -12,14 +13,16 @@ namespace RPGFramework.Menu
     public class MenuModule : IMenuModule
     {
         private readonly ICoreModule   m_CoreModule;
+        private readonly IDIResolver   m_DIResolver;
         private readonly ISfxPlayer    m_SfxPlayer;
         private readonly IMenuModule   m_MenuModule;
         private readonly Stack<IMenu>  m_Menus;
         private readonly VisualElement m_UIContainer;
 
-        public MenuModule(ICoreModule coreModule, ISfxPlayer sfxPlayer)
+        public MenuModule(ICoreModule coreModule, IDIResolver diResolver, ISfxPlayer sfxPlayer)
         {
             m_CoreModule = coreModule;
+            m_DIResolver = diResolver;
             m_SfxPlayer  = sfxPlayer;
             m_MenuModule = this;
             m_Menus      = new Stack<IMenu>();
@@ -44,7 +47,7 @@ namespace RPGFramework.Menu
 
         async Task IMenuModule.PushMenu(IMenuModuleArgs menuModuleArgs)
         {
-            IMenu newMenu = (IMenu)m_CoreModule.GetInstance(menuModuleArgs.MenuType);
+            IMenu newMenu = (IMenu)m_DIResolver.Resolve(menuModuleArgs.MenuType);
 
             if (m_Menus.TryPeek(out IMenu menu))
             {
@@ -81,7 +84,7 @@ namespace RPGFramework.Menu
             //TODO: get info from save map (module and args for module e.g. IFieldModule, Field 0)
 
             // return m_CoreModule.LoadModuleAsync(typeof(saveInfo.CurrentModule), saveInfo.CurrentModuleArgs);
-            
+
             return Task.CompletedTask;
         }
     }
