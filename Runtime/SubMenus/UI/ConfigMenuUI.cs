@@ -145,12 +145,14 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             if (evt.direction == NavigationMoveEvent.Direction.Left)
             {
+                OnBtnFocus(null);
                 m_OnLanguageChanged?.Invoke(-1);
                 return;
             }
 
             if (evt.direction == NavigationMoveEvent.Direction.Right)
             {
+                OnBtnFocus(null);
                 m_OnLanguageChanged?.Invoke(1);
             }
         }
