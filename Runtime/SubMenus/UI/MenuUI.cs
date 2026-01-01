@@ -65,9 +65,9 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             RegisterCallbacks();
 
-            GetDefaultFocusedElement()?.Focus();
-
             ShowUI(true);
+
+            GetDefaultFocusedElement()?.Focus();
 
             OnEnterComplete();
         }
