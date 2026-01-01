@@ -5,7 +5,7 @@ namespace RPGFramework.Menu.SubMenus
 {
     public class BeginMenu : Menu<IBeginMenuUI>, IBeginMenu
     {
-        protected override bool m_HidePreviousUiOnSuspend => false;
+        protected override bool m_HidePreviousUiOnSuspend => true;
 
         private readonly IMenuModule  m_MenuModule;
         private readonly IBeginMenuUI m_BeginMenuUI;
@@ -19,14 +19,16 @@ namespace RPGFramework.Menu.SubMenus
         protected override void RegisterCallbacks()
         {
             m_BeginMenuUI.OnPlayAudio += PlaySfx;
-            m_BeginMenuUI.OnNewGame   += OnNewGame;
-            m_BeginMenuUI.OnQuit      += OnQuit;
+            m_BeginMenuUI.OnNewGamePressed   += OnNewGamePressed;
+            m_BeginMenuUI.OnSettingsPressed  += OnSettingsPressed;
+            m_BeginMenuUI.OnQuitPressed      += OnQuitPressed;
         }
 
         protected override void UnregisterCallbacks()
         {
-            m_BeginMenuUI.OnQuit      -= OnQuit;
-            m_BeginMenuUI.OnNewGame   -= OnNewGame;
+            m_BeginMenuUI.OnQuitPressed      -= OnQuitPressed;
+            m_BeginMenuUI.OnSettingsPressed  -= OnSettingsPressed;
+            m_BeginMenuUI.OnNewGamePressed   -= OnNewGamePressed;
             m_BeginMenuUI.OnPlayAudio -= PlaySfx;
         }
 
@@ -35,13 +37,20 @@ namespace RPGFramework.Menu.SubMenus
             m_MenuModule.PlaySfx(id);
         }
 
-        private void OnNewGame()
+        private void OnNewGamePressed()
         {
             //TODO: tell core to init default save map
             m_MenuModule.ReturnToPreviousModuleAsync().FireAndForget();
         }
 
-        private void OnQuit()
+        private void OnSettingsPressed()
+        {
+            IMenuModuleArgs args = new MenuModuleArgs<IConfigMenu>();
+
+            m_MenuModule.PushMenu(args).FireAndForget();
+        }
+
+        private void OnQuitPressed()
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;

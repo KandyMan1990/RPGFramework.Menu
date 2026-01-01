@@ -53,14 +53,9 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             m_UIInstance = parent[parent.childCount - 1];
 
-            Task[] dataSheetsToLoad = new Task[m_LocalisationArgs.DataSheetsToLoad.Length];
-            for (int i = 0; i < m_LocalisationArgs.DataSheetsToLoad.Length; i++)
-            {
-                string sheetName = m_LocalisationArgs.DataSheetsToLoad[i];
-                dataSheetsToLoad[i] = m_LocalisationService.LoadNewLocalisationDataAsync(sheetName);
-            }
+            ShowUI(false);
 
-            await Task.WhenAll(dataSheetsToLoad);
+            await m_LocalisationService.LoadNewLocalisationDataAsync(m_LocalisationArgs.DataSheetsToLoad);
 
             await OnEnterAsync(args);
 
@@ -71,6 +66,8 @@ namespace RPGFramework.Menu.SubMenus.UI
             RegisterCallbacks();
 
             GetDefaultFocusedElement()?.Focus();
+
+            ShowUI(true);
 
             OnEnterComplete();
         }
@@ -84,15 +81,17 @@ namespace RPGFramework.Menu.SubMenus.UI
             return OnSuspendAsync(hideUi);
         }
 
-        Task IMenuUI.OnResumeAsync()
+        async Task IMenuUI.OnResumeAsync()
         {
-            ShowUI(true);
+            await m_LocalisationService.LoadNewLocalisationDataAsync(m_LocalisationArgs.DataSheetsToLoad);
 
             LocaliseUI();
 
             RegisterCallbacks();
 
-            return OnResumeAsync();
+            ShowUI(true);
+
+            await OnResumeAsync();
         }
 
         async Task IMenuUI.OnExitAsync()
@@ -127,27 +126,25 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected virtual Task OnExitAsync()
         {
+            m_LocalisationService.UnloadLocalisationData(m_LocalisationArgs.DataSheetsToLoad);
+
             return Task.CompletedTask;
         }
 
         protected virtual void HookupUI()
         {
-
         }
 
         protected virtual void LocaliseUI()
         {
-
         }
 
         protected virtual void RegisterCallbacks()
         {
-
         }
 
         protected virtual void UnregisterCallbacks()
         {
-
         }
 
         protected virtual void ShowUI(bool isShow)
@@ -163,6 +160,11 @@ namespace RPGFramework.Menu.SubMenus.UI
         protected void RaiseOnBackButtonPressed()
         {
             m_OnBackButtonPressed?.Invoke();
+        }
+
+        protected void OnBtnFocus(FocusInEvent evt)
+        {
+            RaiseOnPlayAudio(m_AudioIdProvider.ButtonNavigate);
         }
     }
 }

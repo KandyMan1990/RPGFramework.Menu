@@ -15,6 +15,8 @@ namespace RPGFramework.Menu
             container.BindSingletonFromInstance<IMenuUIProvider>(m_MenuUIProvider);
             container.BindTransient<IBeginMenu, BeginMenu>();
             container.BindTransient<IBeginMenuUI, BeginMenuUI>();
+            container.BindTransient<IConfigMenu, ConfigMenu>();
+            container.BindTransient<IConfigMenuUI, ConfigMenuUI>();
         }
     }
 }

@@ -32,14 +32,28 @@ namespace RPGFramework.Menu
 
     public interface IBeginMenu : IMenu
     {
+    }
 
+    public interface IConfigMenu : IMenu
+    {
     }
 
     public interface IBeginMenuUI : IMenuUI
     {
-        event Action OnNewGame;
-        event Action OnLoadGame;
-        event Action OnSettings;
-        event Action OnQuit;
+        event Action OnNewGamePressed;
+        event Action OnLoadGamePressed;
+        event Action OnSettingsPressed;
+        event Action OnQuitPressed;
+    }
+
+    public interface IConfigMenuUI : IMenuUI
+    {
+        event Action<int>   OnLanguageChanged;
+        event Action        OnControlsPressed;
+        event Action<float> OnMusicVolumeChanged;
+        event Action<float> OnSfxVolumeChanged;
+        event Action<float> OnBattleMessageSpeedChanged;
+        event Action<float> OnFieldMessageSpeedChanged;
+        void                RefreshLocalisation();
     }
 }
