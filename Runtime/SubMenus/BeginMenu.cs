@@ -18,18 +18,18 @@ namespace RPGFramework.Menu.SubMenus
         }
         protected override void RegisterCallbacks()
         {
-            m_BeginMenuUI.OnPlayAudio += PlaySfx;
-            m_BeginMenuUI.OnNewGamePressed   += OnNewGamePressed;
-            m_BeginMenuUI.OnSettingsPressed  += OnSettingsPressed;
-            m_BeginMenuUI.OnQuitPressed      += OnQuitPressed;
+            m_BeginMenuUI.OnPlayAudio       += PlaySfx;
+            m_BeginMenuUI.OnNewGamePressed  += OnNewGamePressed;
+            m_BeginMenuUI.OnSettingsPressed += OnSettingsPressed;
+            m_BeginMenuUI.OnQuitPressed     += OnQuitPressed;
         }
 
         protected override void UnregisterCallbacks()
         {
-            m_BeginMenuUI.OnQuitPressed      -= OnQuitPressed;
-            m_BeginMenuUI.OnSettingsPressed  -= OnSettingsPressed;
-            m_BeginMenuUI.OnNewGamePressed   -= OnNewGamePressed;
-            m_BeginMenuUI.OnPlayAudio -= PlaySfx;
+            m_BeginMenuUI.OnQuitPressed     -= OnQuitPressed;
+            m_BeginMenuUI.OnSettingsPressed -= OnSettingsPressed;
+            m_BeginMenuUI.OnNewGamePressed  -= OnNewGamePressed;
+            m_BeginMenuUI.OnPlayAudio       -= PlaySfx;
         }
 
         private void PlaySfx(int id)

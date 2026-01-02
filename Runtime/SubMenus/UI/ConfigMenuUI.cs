@@ -206,9 +206,10 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_OnControlsPressed?.Invoke();
         }
 
-        private static void OnSliderChanged(Slider slider, NavigationMoveEvent evt, Action<float> action)
+        private void OnSliderChanged(Slider slider, NavigationMoveEvent evt, Action<float> action)
         {
-            float value = slider.value;
+            const float epsilon = 0.001f;
+            float       value   = slider.value;
 
             if (evt.direction == NavigationMoveEvent.Direction.Left)
             {
@@ -219,8 +220,9 @@ namespace RPGFramework.Menu.SubMenus.UI
                 value = math.clamp(value + SLIDER_INCREMENTAL_VALUE, 0f, 1f);
             }
 
-            if (slider.value != value)
+            if (math.abs(slider.value - value) > epsilon)
             {
+                OnBtnFocus(null);
                 slider.value = value;
                 action?.Invoke(value);
             }
