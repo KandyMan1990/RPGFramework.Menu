@@ -19,9 +19,9 @@ namespace RPGFramework.Menu.SubMenus
         
         async Task IMenu.OnEnterAsync(VisualElement parent, Dictionary<string, object> args)
         {
-            await m_MenuUI.OnEnterAsync(parent, args);
-
             await OnEnterAsync(args);
+
+            await m_MenuUI.OnEnterAsync(parent, args);
 
             RegisterCallbacks();
         }
@@ -37,11 +37,11 @@ namespace RPGFramework.Menu.SubMenus
 
         async Task IMenu.OnResumeAsync()
         {
+            await OnResumeAsync();
+
             await m_MenuUI.OnResumeAsync();
 
             RegisterCallbacks();
-
-            await OnResumeAsync();
         }
 
         async Task IMenu.OnExitAsync()
