@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
+using RPGFramework.Core.Input;
 using RPGFramework.Core.SharedTypes;
 using RPGFramework.DI;
 using RPGFramework.Menu.SharedTypes;
@@ -19,6 +20,8 @@ namespace RPGFramework.Menu
         private readonly Stack<IMenu>  m_Menus;
         private readonly VisualElement m_UIContainer;
 
+        private InputAdapter m_InputAdapter;
+
         public MenuModule(ICoreModule coreModule, IDIResolver diResolver, ISfxPlayer sfxPlayer)
         {
             m_CoreModule = coreModule;
@@ -33,6 +36,10 @@ namespace RPGFramework.Menu
 
         Task IModule.OnEnterAsync(IModuleArgs args)
         {
+            m_InputAdapter = Object.FindFirstObjectByType<InputAdapter>();
+            m_DIResolver.InjectInto(m_InputAdapter);
+            m_InputAdapter.Enable();
+
             IMenuModuleArgs menuArgs = (IMenuModuleArgs)args;
 
             return m_MenuModule.PushMenu(menuArgs);
@@ -40,6 +47,8 @@ namespace RPGFramework.Menu
 
         Task IModule.OnExitAsync()
         {
+            m_InputAdapter.Disable();
+
             m_CoreModule.ResetModule<IMenuModule, MenuModule>();
 
             return Task.CompletedTask;
