@@ -20,7 +20,7 @@ namespace RPGFramework.Menu.SubMenus
         private readonly IGlobalConfig        m_GlobalConfig;
         private readonly ILocalisationService m_LocalisationService;
 
-        private ConfigData m_ConfigData;
+        private ConfigData_V1 m_ConfigData;
 
         public ConfigMenu(IMenuModule          menuModule,
                           IConfigMenuUI        configMenuUI,
@@ -36,7 +36,7 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override Task OnEnterAsync(Dictionary<string, object> args)
         {
-            if (!m_GlobalConfig.TryGet(out ConfigData configData))
+            if (!m_GlobalConfig.TryGetSection(GlobalConfigKeys.CORE, Versions.GLOBAL_CONFIG, out ConfigData_V1 configData, out uint storedVersion))
             {
                 throw new InvalidDataException($"{nameof(ConfigMenu)}::{nameof(OnEnterAsync)} Failed to get global config data");
             }
@@ -55,7 +55,7 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override Task OnExitAsync()
         {
-            m_GlobalConfig.Set(m_ConfigData);
+            m_GlobalConfig.SetSection(GlobalConfigKeys.CORE, Versions.GLOBAL_CONFIG, m_ConfigData);
 
             return base.OnExitAsync();
         }

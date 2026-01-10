@@ -36,9 +36,9 @@ namespace RPGFramework.Menu.SubMenus
         {
             await base.OnEnterAsync(args);
 
-            if (!m_GlobalConfig.TryGet(out ConfigData data))
+            if (!m_GlobalConfig.TryGetSection(GlobalConfigKeys.CORE, Versions.GLOBAL_CONFIG, out ConfigData_V1 configData, out uint storedVersion))
             {
-                data = new ConfigData();
+                configData = new ConfigData_V1();
 
                 string[] languages = await m_LocalisationService.GetAllLanguages();
 
@@ -46,16 +46,16 @@ namespace RPGFramework.Menu.SubMenus
 
                 string newLanguage = languageIndex >= 0 ? languages[languageIndex] : "en-GB";
 
-                data.SetLanguage(newLanguage);
-                data.MusicVolume        = 1f;
-                data.SfxVolume          = 1f;
-                data.BattleMessageSpeed = 0.5f;
-                data.FieldMessageSpeed  = 0.5f;
+                configData.SetLanguage(newLanguage);
+                configData.MusicVolume        = 1f;
+                configData.SfxVolume          = 1f;
+                configData.BattleMessageSpeed = 0.5f;
+                configData.FieldMessageSpeed  = 0.5f;
 
-                m_GlobalConfig.Set(data);
+                m_GlobalConfig.SetSection(GlobalConfigKeys.CORE, Versions.GLOBAL_CONFIG, configData);
             }
 
-            string language = data.GetLanguage();
+            string language = configData.GetLanguage();
 
             await m_LocalisationService.SetCurrentLanguage(language);
         }
