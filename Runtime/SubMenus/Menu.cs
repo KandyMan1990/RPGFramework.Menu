@@ -1,22 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using RPGFramework.Core.Input;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus
 {
-    public abstract class Menu<TMenuUI> : IMenu where TMenuUI : IMenuUI
+    public abstract class Menu<TMenuUI> : IInputContext, IMenu where TMenuUI : IMenuUI
     {
         bool IMenu.HidePreviousUiOnSuspend => m_HidePreviousUiOnSuspend;
-        
+
         protected abstract bool m_HidePreviousUiOnSuspend { get; }
-        
-        protected readonly TMenuUI m_MenuUI;
-        
-        protected Menu(TMenuUI menuUI)
+
+        protected readonly TMenuUI      m_MenuUI;
+        protected readonly IInputRouter m_InputRouter;
+
+        protected Menu(TMenuUI menuUI, IInputRouter inputRouter)
         {
-            m_MenuUI = menuUI;
+            m_MenuUI      = menuUI;
+            m_InputRouter = inputRouter;
         }
-        
+
         async Task IMenu.OnEnterAsync(VisualElement parent, Dictionary<string, object> args)
         {
             await OnEnterAsync(args);
@@ -24,6 +27,10 @@ namespace RPGFramework.Menu.SubMenus
             await m_MenuUI.OnEnterAsync(parent, args);
 
             RegisterCallbacks();
+
+            m_InputRouter.Push(this);
+
+            await OnEnterComplete();
         }
 
         async Task IMenu.OnSuspendAsync(bool hideUi)
@@ -46,14 +53,26 @@ namespace RPGFramework.Menu.SubMenus
 
         async Task IMenu.OnExitAsync()
         {
+            m_InputRouter.Pop(this);
+
             UnregisterCallbacks();
-            
+
             await m_MenuUI.OnExitAsync();
 
             await OnExitAsync();
         }
 
+        bool IInputContext.Handle(ControlSlot slot)
+        {
+            return HandleControl(slot);
+        }
+
         protected virtual Task OnEnterAsync(Dictionary<string, object> args)
+        {
+            return Task.CompletedTask;
+        }
+
+        protected virtual Task OnEnterComplete()
         {
             return Task.CompletedTask;
         }
@@ -75,12 +94,14 @@ namespace RPGFramework.Menu.SubMenus
 
         protected virtual void RegisterCallbacks()
         {
-            
+
         }
 
         protected virtual void UnregisterCallbacks()
         {
-            
+
         }
+
+        protected abstract bool HandleControl(ControlSlot slot);
     }
 }
