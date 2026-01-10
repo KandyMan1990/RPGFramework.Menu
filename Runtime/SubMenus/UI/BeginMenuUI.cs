@@ -146,6 +146,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnLoadGameBtnCallback()
         {
+            m_LastFocusedElement = m_LoadGameBtn;
             RaiseOnPlayAudio(m_AudioIdProvider.ButtonPositive);
             m_OnLoadGamePressed?.Invoke();
         }
@@ -167,6 +168,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnSettingsBtnCallback()
         {
+            m_LastFocusedElement = m_SettingsBtn;
             RaiseOnPlayAudio(m_AudioIdProvider.ButtonPositive);
             m_OnSettingsPressed?.Invoke();
         }

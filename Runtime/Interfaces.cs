@@ -24,6 +24,7 @@ namespace RPGFramework.Menu
         event Action<int> OnPlayAudio;
         event Action      OnBackButtonPressed;
         VisualElement     GetDefaultFocusedElement();
+        VisualElement     GetLastFocusedElement();
         Task              OnEnterAsync(VisualElement parent, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
         Task              OnSuspendAsync(bool        hideUi);
         Task              OnResumeAsync();
@@ -55,5 +56,9 @@ namespace RPGFramework.Menu
         event Action<float> OnBattleMessageSpeedChanged;
         event Action<float> OnFieldMessageSpeedChanged;
         void                RefreshLocalisation();
+        void                SetMusicVolume(float        volume);
+        void                SetSfxVolume(float          volume);
+        void                SetBattleMessageSpeed(float speed);
+        void                SetFieldMessageSpeed(float  speed);
     }
 }

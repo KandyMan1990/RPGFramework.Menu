@@ -80,11 +80,6 @@ namespace RPGFramework.Menu.SubMenus.UI
         {
         }
 
-        void IConfigMenuUI.RefreshLocalisation()
-        {
-            LocaliseUI();
-        }
-
         protected override void HookupUI()
         {
             m_TitleLabel               = m_UIInstance.Q<Label>("TitleLabel");
@@ -117,8 +112,6 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override void RegisterCallbacks()
         {
-            // TODO: back button to return to begin menu
-
             UIToolkitInputUtility.RegisterButtonCallbacks(m_LanguageBtn,           OnLanguageBtnNavigate,           null,                   null,                 OnBtnFocus);
             UIToolkitInputUtility.RegisterButtonCallbacks(m_ControlsBtn,           OnControlsBtnNavigate,           OnControlsBtnSubmitted, OnControlsBtnClicked, OnBtnFocus);
             UIToolkitInputUtility.RegisterButtonCallbacks(m_MusicVolumeBtn,        OnMusicVolumeBtnNavigate,        null,                   null,                 OnBtnFocus);
@@ -135,8 +128,31 @@ namespace RPGFramework.Menu.SubMenus.UI
             UIToolkitInputUtility.UnregisterButtonCallbacks(m_MusicVolumeBtn,        OnMusicVolumeBtnNavigate,        null,                   null,                 OnBtnFocus);
             UIToolkitInputUtility.UnregisterButtonCallbacks(m_ControlsBtn,           OnControlsBtnNavigate,           OnControlsBtnSubmitted, OnControlsBtnClicked, OnBtnFocus);
             UIToolkitInputUtility.UnregisterButtonCallbacks(m_LanguageBtn,           OnLanguageBtnNavigate,           null,                   null,                 OnBtnFocus);
+        }
 
-            // TODO: back button to return to begin menu
+        void IConfigMenuUI.RefreshLocalisation()
+        {
+            LocaliseUI();
+        }
+
+        void IConfigMenuUI.SetMusicVolume(float volume)
+        {
+            m_MusicVolumeSlider.value = volume;
+        }
+
+        void IConfigMenuUI.SetSfxVolume(float volume)
+        {
+            m_SfxVolumeSlider.value = volume;
+        }
+
+        void IConfigMenuUI.SetBattleMessageSpeed(float speed)
+        {
+            m_BattleMessageSpeedSlider.value = speed;
+        }
+
+        void IConfigMenuUI.SetFieldMessageSpeed(float speed)
+        {
+            m_FieldMessageSpeedSlider.value = speed;
         }
 
         private void OnLanguageBtnNavigate(NavigationMoveEvent evt)
@@ -202,6 +218,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnControlsBtnCallback()
         {
+            m_LastFocusedElement = m_ControlsBtn;
             RaiseOnPlayAudio(m_AudioIdProvider.ButtonNavigate);
             m_OnControlsPressed?.Invoke();
         }

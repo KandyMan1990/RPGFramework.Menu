@@ -22,6 +22,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         }
 
         VisualElement IMenuUI.GetDefaultFocusedElement() => GetDefaultFocusedElement();
+        VisualElement IMenuUI.GetLastFocusedElement()    => m_LastFocusedElement;
 
         private event Action<int> m_OnPlayAudio;
         private event Action      m_OnBackButtonPressed;
@@ -34,6 +35,8 @@ namespace RPGFramework.Menu.SubMenus.UI
         protected readonly ILocalisationService    m_LocalisationService;
 
         protected VisualElement m_UIInstance;
+
+        protected VisualElement m_LastFocusedElement;
 
         protected MenuUI(ILocalisationArgs       localisationArgs,
                          IMenuUIProvider         uiProvider,
@@ -92,6 +95,9 @@ namespace RPGFramework.Menu.SubMenus.UI
             ShowUI(true);
 
             await OnResumeAsync();
+
+            m_LastFocusedElement?.Focus();
+            m_LastFocusedElement = null;
         }
 
         async Task IMenuUI.OnExitAsync()
