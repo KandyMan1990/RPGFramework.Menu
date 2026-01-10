@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.Data;
 using RPGFramework.Core.GlobalConfig;
+using RPGFramework.Core.Input;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
 
@@ -23,8 +24,9 @@ namespace RPGFramework.Menu.SubMenus
 
         public ConfigMenu(IMenuModule          menuModule,
                           IConfigMenuUI        configMenuUI,
+                          IInputRouter         inputRouter,
                           IGlobalConfig        globalConfig,
-                          ILocalisationService localisationService) : base(configMenuUI)
+                          ILocalisationService localisationService) : base(configMenuUI, inputRouter)
         {
             m_MenuModule          = menuModule;
             m_ConfigMenuUI        = configMenuUI;
@@ -42,6 +44,13 @@ namespace RPGFramework.Menu.SubMenus
             m_ConfigData = configData;
 
             return base.OnEnterAsync(args);
+        }
+
+        protected override Task OnEnterComplete()
+        {
+            SetSliders();
+
+            return base.OnEnterComplete();
         }
 
         protected override Task OnExitAsync()
@@ -71,6 +80,16 @@ namespace RPGFramework.Menu.SubMenus
             m_ConfigMenuUI.OnControlsPressed           -= OnControlsPressed;
             m_ConfigMenuUI.OnLanguageChanged           -= OnLanguageChanged;
             m_ConfigMenuUI.OnPlayAudio                 -= PlaySfx;
+        }
+
+        protected override bool HandleControl(ControlSlot slot)
+        {
+            if (slot == ControlSlot.Secondary)
+            {
+                m_MenuModule.PopMenu().FireAndForget();
+            }
+
+            return true;
         }
 
         private void PlaySfx(int id)
@@ -124,6 +143,14 @@ namespace RPGFramework.Menu.SubMenus
         private void OnFieldMessageSpeedChanged(float value)
         {
             m_ConfigData.FieldMessageSpeed = value;
+        }
+
+        private void SetSliders()
+        {
+            m_ConfigMenuUI.SetMusicVolume(m_ConfigData.MusicVolume);
+            m_ConfigMenuUI.SetSfxVolume(m_ConfigData.SfxVolume);
+            m_ConfigMenuUI.SetBattleMessageSpeed(m_ConfigData.BattleMessageSpeed);
+            m_ConfigMenuUI.SetFieldMessageSpeed(m_ConfigData.FieldMessageSpeed);
         }
     }
 }

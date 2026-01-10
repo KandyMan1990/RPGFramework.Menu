@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.Data;
 using RPGFramework.Core.GlobalConfig;
+using RPGFramework.Core.Input;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
 
@@ -21,8 +22,9 @@ namespace RPGFramework.Menu.SubMenus
 
         public BeginMenu(IMenuModule          menuModule,
                          IBeginMenuUI         beginMenuUI,
+                         IInputRouter         inputRouter,
                          IGlobalConfig        globalConfig,
-                         ILocalisationService localisationService) : base(beginMenuUI)
+                         ILocalisationService localisationService) : base(beginMenuUI, inputRouter)
         {
             m_MenuModule          = menuModule;
             m_BeginMenuUI         = beginMenuUI;
@@ -72,6 +74,11 @@ namespace RPGFramework.Menu.SubMenus
             m_BeginMenuUI.OnSettingsPressed -= OnSettingsPressed;
             m_BeginMenuUI.OnNewGamePressed  -= OnNewGamePressed;
             m_BeginMenuUI.OnPlayAudio       -= PlaySfx;
+        }
+
+        protected override bool HandleControl(ControlSlot slot)
+        {
+            return false;
         }
 
         private void PlaySfx(int id)
