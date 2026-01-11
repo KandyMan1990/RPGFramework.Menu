@@ -6,6 +6,7 @@ using RPGFramework.Core;
 using RPGFramework.Core.Data;
 using RPGFramework.Core.GlobalConfig;
 using RPGFramework.Core.Input;
+using RPGFramework.Core.SaveDataService;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
 
@@ -19,17 +20,20 @@ namespace RPGFramework.Menu.SubMenus
         private readonly IBeginMenuUI         m_BeginMenuUI;
         private readonly IGlobalConfig        m_GlobalConfig;
         private readonly ILocalisationService m_LocalisationService;
+        private readonly ISaveDataService     m_SaveDataService;
 
         public BeginMenu(IMenuModule          menuModule,
                          IBeginMenuUI         beginMenuUI,
                          IInputRouter         inputRouter,
                          IGlobalConfig        globalConfig,
-                         ILocalisationService localisationService) : base(beginMenuUI, inputRouter)
+                         ILocalisationService localisationService,
+                         ISaveDataService     saveDataService) : base(beginMenuUI, inputRouter)
         {
             m_MenuModule          = menuModule;
             m_BeginMenuUI         = beginMenuUI;
             m_GlobalConfig        = globalConfig;
             m_LocalisationService = localisationService;
+            m_SaveDataService     = saveDataService;
         }
 
         protected override async Task OnEnterAsync(Dictionary<string, object> args)
@@ -88,7 +92,9 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnNewGamePressed()
         {
-            //TODO: tell core to init default save map
+            object defaultSaveFile = m_SaveDataService.CreateDefaultSaveFile();
+            m_SaveDataService.SetCurrentSaveFile(defaultSaveFile);
+
             m_MenuModule.ReturnToPreviousModuleAsync().FireAndForget();
         }
 
