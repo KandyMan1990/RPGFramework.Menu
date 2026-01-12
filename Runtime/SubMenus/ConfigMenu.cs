@@ -36,7 +36,7 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override Task OnEnterAsync(Dictionary<string, object> args)
         {
-            if (!m_GlobalConfig.TryGetSection(GlobalConfigKeys.CORE, Versions.GLOBAL_CONFIG, out ConfigData_V1 configData, out uint storedVersion))
+            if (!m_GlobalConfig.TryGetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, Versions.GLOBAL_CONFIG, out ConfigData_V1 configData, out uint storedVersion))
             {
                 throw new InvalidDataException($"{nameof(ConfigMenu)}::{nameof(OnEnterAsync)} Failed to get global config data");
             }
@@ -55,7 +55,7 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override Task OnExitAsync()
         {
-            m_GlobalConfig.SetSection(GlobalConfigKeys.CORE, Versions.GLOBAL_CONFIG, m_ConfigData);
+            m_GlobalConfig.SetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, Versions.GLOBAL_CONFIG, m_ConfigData);
 
             return base.OnExitAsync();
         }

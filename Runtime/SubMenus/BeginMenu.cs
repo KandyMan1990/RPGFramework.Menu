@@ -21,26 +21,29 @@ namespace RPGFramework.Menu.SubMenus
         private readonly IGlobalConfig        m_GlobalConfig;
         private readonly ILocalisationService m_LocalisationService;
         private readonly ISaveDataService     m_SaveDataService;
+        private readonly ISaveFactory         m_SaveFactory;
 
         public BeginMenu(IMenuModule          menuModule,
                          IBeginMenuUI         beginMenuUI,
                          IInputRouter         inputRouter,
                          IGlobalConfig        globalConfig,
                          ILocalisationService localisationService,
-                         ISaveDataService     saveDataService) : base(beginMenuUI, inputRouter)
+                         ISaveDataService     saveDataService,
+                         ISaveFactory         saveFactory) : base(beginMenuUI, inputRouter)
         {
             m_MenuModule          = menuModule;
             m_BeginMenuUI         = beginMenuUI;
             m_GlobalConfig        = globalConfig;
             m_LocalisationService = localisationService;
             m_SaveDataService     = saveDataService;
+            m_SaveFactory         = saveFactory;
         }
 
         protected override async Task OnEnterAsync(Dictionary<string, object> args)
         {
             await base.OnEnterAsync(args);
 
-            if (!m_GlobalConfig.TryGetSection(GlobalConfigKeys.CORE, Versions.GLOBAL_CONFIG, out ConfigData_V1 configData, out uint storedVersion))
+            if (!m_GlobalConfig.TryGetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, Versions.GLOBAL_CONFIG, out ConfigData_V1 configData, out uint storedVersion))
             {
                 configData = new ConfigData_V1();
 
@@ -56,7 +59,7 @@ namespace RPGFramework.Menu.SubMenus
                 configData.BattleMessageSpeed = 0.5f;
                 configData.FieldMessageSpeed  = 0.5f;
 
-                m_GlobalConfig.SetSection(GlobalConfigKeys.CORE, Versions.GLOBAL_CONFIG, configData);
+                m_GlobalConfig.SetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, Versions.GLOBAL_CONFIG, configData);
             }
 
             string language = configData.GetLanguage();
@@ -68,6 +71,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             m_BeginMenuUI.OnPlayAudio       += PlaySfx;
             m_BeginMenuUI.OnNewGamePressed  += OnNewGamePressed;
+            m_BeginMenuUI.OnLoadGamePressed += OnLoadGamePressed;
             m_BeginMenuUI.OnSettingsPressed += OnSettingsPressed;
             m_BeginMenuUI.OnQuitPressed     += OnQuitPressed;
         }
@@ -76,6 +80,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             m_BeginMenuUI.OnQuitPressed     -= OnQuitPressed;
             m_BeginMenuUI.OnSettingsPressed -= OnSettingsPressed;
+            m_BeginMenuUI.OnLoadGamePressed -= OnLoadGamePressed;
             m_BeginMenuUI.OnNewGamePressed  -= OnNewGamePressed;
             m_BeginMenuUI.OnPlayAudio       -= PlaySfx;
         }
@@ -92,10 +97,19 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnNewGamePressed()
         {
-            object defaultSaveFile = m_SaveDataService.CreateDefaultSaveFile();
-            m_SaveDataService.SetCurrentSaveFile(defaultSaveFile);
+            string filename = m_SaveDataService.GetUnusedSaveFileName();
+
+            m_SaveDataService.BeginSave(filename);
+
+            m_SaveFactory.CreateDefaultSave(m_SaveDataService);
+
+            m_SaveDataService.CommitSave();
 
             m_MenuModule.ReturnToPreviousModuleAsync().FireAndForget();
+        }
+
+        private void OnLoadGamePressed()
+        {
         }
 
         private void OnSettingsPressed()
