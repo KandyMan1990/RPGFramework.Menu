@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Data;
 using RPGFramework.Core.Input;
@@ -16,59 +14,58 @@ namespace RPGFramework.Menu.SubMenus
     {
         protected override bool m_HidePreviousUiOnSuspend => true;
 
-        private readonly IMenuModule          m_MenuModule;
-        private readonly IBeginMenuUI         m_BeginMenuUI;
-        private readonly ILocalisationService m_LocalisationService;
-        private readonly ISaveDataService     m_SaveDataService;
-        private readonly ISaveFactory         m_SaveFactory;
+        private readonly ILocalisationService    m_LocalisationService;
+        private readonly ISaveDataService        m_SaveDataService;
+        private readonly ISaveFactory            m_SaveFactory;
 
-        public BeginMenu(IMenuModule          menuModule,
-                         IBeginMenuUI         beginMenuUI,
-                         IInputRouter         inputRouter,
-                         ILocalisationService localisationService,
-                         ISaveDataService     saveDataService,
-                         ISaveFactory         saveFactory) : base(beginMenuUI, inputRouter)
+        public BeginMenu(IMenuModule             menuModule,
+                         IBeginMenuUI            beginMenuUI,
+                         IInputRouter            inputRouter,
+                         ILocalisationService    localisationService,
+                         ISaveDataService        saveDataService,
+                         ISaveFactory            saveFactory,
+                         IGenericAudioIdProvider audioIdProvider) : base(beginMenuUI, inputRouter, menuModule, audioIdProvider)
         {
-            m_MenuModule          = menuModule;
-            m_BeginMenuUI         = beginMenuUI;
             m_LocalisationService = localisationService;
             m_SaveDataService     = saveDataService;
             m_SaveFactory         = saveFactory;
         }
 
-        protected override async Task OnEnterAsync(Dictionary<string, object> args)
+        protected override Task OnEnterComplete()
         {
-            await base.OnEnterAsync(args);
+            return SetLanguageAsync();
+        }
 
-            await SetLanguageAsync();
+        protected override async Task OnResumeAsync()
+        {
+            await base.OnResumeAsync();
+
+            if (m_SaveDataService.HasSaveLoaded())
+            {
+                m_MenuModule.PlaySfx(m_AudioIdProvider.ItemConsumed);
+                await m_MenuModule.ReturnToPreviousModuleAsync();
+            }
         }
 
         protected override void RegisterCallbacks()
         {
-            m_BeginMenuUI.OnPlayAudio       += PlaySfx;
-            m_BeginMenuUI.OnNewGamePressed  += OnNewGamePressed;
-            m_BeginMenuUI.OnLoadGamePressed += OnLoadGamePressed;
-            m_BeginMenuUI.OnSettingsPressed += OnSettingsPressed;
-            m_BeginMenuUI.OnQuitPressed     += OnQuitPressed;
+            m_MenuUI.OnPlayAudio       += PlaySfx;
+            m_MenuUI.OnNewGamePressed  += OnNewGamePressed;
+            m_MenuUI.OnLoadGamePressed += OnLoadGamePressed;
+            m_MenuUI.OnQuitPressed     += OnQuitPressed;
         }
 
         protected override void UnregisterCallbacks()
         {
-            m_BeginMenuUI.OnQuitPressed     -= OnQuitPressed;
-            m_BeginMenuUI.OnSettingsPressed -= OnSettingsPressed;
-            m_BeginMenuUI.OnLoadGamePressed -= OnLoadGamePressed;
-            m_BeginMenuUI.OnNewGamePressed  -= OnNewGamePressed;
-            m_BeginMenuUI.OnPlayAudio       -= PlaySfx;
+            m_MenuUI.OnQuitPressed     -= OnQuitPressed;
+            m_MenuUI.OnLoadGamePressed -= OnLoadGamePressed;
+            m_MenuUI.OnNewGamePressed  -= OnNewGamePressed;
+            m_MenuUI.OnPlayAudio       -= PlaySfx;
         }
 
         protected override bool HandleControl(ControlSlot slot)
         {
             return false;
-        }
-
-        private void PlaySfx(int id)
-        {
-            m_MenuModule.PlaySfx(id);
         }
 
         private void OnNewGamePressed()
@@ -81,18 +78,13 @@ namespace RPGFramework.Menu.SubMenus
 
             m_SaveDataService.CommitSave();
 
-            m_MenuModule.ReturnToPreviousModuleAsync().FireAndForget();
+            IMenuModuleArgs args = new MenuModuleArgs<IConfigMenu>();
+
+            m_MenuModule.PushMenu(args).FireAndForget();
         }
 
         private void OnLoadGamePressed()
         {
-        }
-
-        private void OnSettingsPressed()
-        {
-            IMenuModuleArgs args = new MenuModuleArgs<IConfigMenu>();
-
-            m_MenuModule.PushMenu(args).FireAndForget();
         }
 
         private void OnQuitPressed()
@@ -104,39 +96,26 @@ namespace RPGFramework.Menu.SubMenus
 #endif
         }
 
-        private async Task SetLanguageAsync()
+        private Task SetLanguageAsync()
         {
-            ConfigData_V1 data;
-
             if (m_SaveDataService.TryGetLastWrittenSaveFileName(out string filename))
             {
                 m_SaveDataService.BeginSave(filename);
 
                 if (m_SaveDataService.TryGetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData))
                 {
-                    data = configData.Data;
+                    ConfigData_V1 data = configData.Data;
                     m_SaveDataService.ClearSaveDataFromMemory();
+
+                    string language = data.GetLanguage();
+                    return m_LocalisationService.SetCurrentLanguage(language);
                 }
-                else
-                {
-                    throw new InvalidDataException($"{nameof(IBeginMenu)}::{nameof(SetLanguageAsync)} Save file [{filename}] does not contain config data");
-                }
-            }
-            else
-            {
-                // TODO: push a language select popup here instead
-                string[] languages = await m_LocalisationService.GetAllLanguages();
 
-                int languageIndex = Array.IndexOf(languages, CultureInfo.CurrentCulture.Name);
-
-                string newLanguage = languageIndex >= 0 ? languages[languageIndex] : "en-GB";
-
-                data = new ConfigData_V1();
-                data.SetLanguage(newLanguage);
+                throw new InvalidDataException($"{nameof(IBeginMenu)}::{nameof(SetLanguageAsync)} Save file [{filename}] does not contain config data");
             }
 
-            string language = data.GetLanguage();
-            await m_LocalisationService.SetCurrentLanguage(language);
+            IMenuModuleArgs args = new MenuModuleArgs<ILanguageMenu>();
+            return m_MenuModule.PushMenu(args);
         }
     }
 }
