@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Data;
 using RPGFramework.Core.Input;
@@ -15,21 +16,18 @@ namespace RPGFramework.Menu.SubMenus
     {
         protected override bool m_HidePreviousUiOnSuspend => true;
 
-        private readonly IMenuModule          m_MenuModule;
-        private readonly IConfigMenuUI        m_ConfigMenuUI;
         private readonly ISaveDataService     m_SaveDataService;
         private readonly ILocalisationService m_LocalisationService;
 
         private ConfigData_V1 m_ConfigData;
 
-        public ConfigMenu(IMenuModule          menuModule,
-                          IConfigMenuUI        configMenuUI,
-                          IInputRouter         inputRouter,
-                          ISaveDataService     saveDataService,
-                          ILocalisationService localisationService) : base(configMenuUI, inputRouter)
+        public ConfigMenu(IMenuModule             menuModule,
+                          IConfigMenuUI           configMenuUI,
+                          IInputRouter            inputRouter,
+                          ISaveDataService        saveDataService,
+                          ILocalisationService    localisationService,
+                          IGenericAudioIdProvider audioIdProvider) : base(configMenuUI, inputRouter, menuModule, audioIdProvider)
         {
-            m_MenuModule          = menuModule;
-            m_ConfigMenuUI        = configMenuUI;
             m_SaveDataService     = saveDataService;
             m_LocalisationService = localisationService;
         }
@@ -64,39 +62,39 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override void RegisterCallbacks()
         {
-            m_ConfigMenuUI.OnPlayAudio                 += PlaySfx;
-            m_ConfigMenuUI.OnLanguageChanged           += OnLanguageChanged;
-            m_ConfigMenuUI.OnControlsPressed           += OnControlsPressed;
-            m_ConfigMenuUI.OnMusicVolumeChanged        += OnMusicVolumeChanged;
-            m_ConfigMenuUI.OnSfxVolumeChanged          += OnSfxVolumeChanged;
-            m_ConfigMenuUI.OnBattleMessageSpeedChanged += OnBattleMessageSpeedChanged;
-            m_ConfigMenuUI.OnFieldMessageSpeedChanged  += OnFieldMessageSpeedChanged;
+            m_MenuUI.OnPlayAudio                 += PlaySfx;
+            m_MenuUI.OnLanguageChanged           += OnLanguageChanged;
+            m_MenuUI.OnControlsPressed           += OnControlsPressed;
+            m_MenuUI.OnMusicVolumeChanged        += OnMusicVolumeChanged;
+            m_MenuUI.OnSfxVolumeChanged          += OnSfxVolumeChanged;
+            m_MenuUI.OnBattleMessageSpeedChanged += OnBattleMessageSpeedChanged;
+            m_MenuUI.OnFieldMessageSpeedChanged  += OnFieldMessageSpeedChanged;
         }
 
         protected override void UnregisterCallbacks()
         {
-            m_ConfigMenuUI.OnFieldMessageSpeedChanged  -= OnFieldMessageSpeedChanged;
-            m_ConfigMenuUI.OnBattleMessageSpeedChanged -= OnBattleMessageSpeedChanged;
-            m_ConfigMenuUI.OnSfxVolumeChanged          -= OnSfxVolumeChanged;
-            m_ConfigMenuUI.OnMusicVolumeChanged        -= OnMusicVolumeChanged;
-            m_ConfigMenuUI.OnControlsPressed           -= OnControlsPressed;
-            m_ConfigMenuUI.OnLanguageChanged           -= OnLanguageChanged;
-            m_ConfigMenuUI.OnPlayAudio                 -= PlaySfx;
+            m_MenuUI.OnFieldMessageSpeedChanged  -= OnFieldMessageSpeedChanged;
+            m_MenuUI.OnBattleMessageSpeedChanged -= OnBattleMessageSpeedChanged;
+            m_MenuUI.OnSfxVolumeChanged          -= OnSfxVolumeChanged;
+            m_MenuUI.OnMusicVolumeChanged        -= OnMusicVolumeChanged;
+            m_MenuUI.OnControlsPressed           -= OnControlsPressed;
+            m_MenuUI.OnLanguageChanged           -= OnLanguageChanged;
+            m_MenuUI.OnPlayAudio                 -= PlaySfx;
         }
 
         protected override bool HandleControl(ControlSlot slot)
         {
             if (slot == ControlSlot.Secondary)
             {
+                if (!m_MenuModule.IsMenuInStack<IBeginMenu>())
+                {
+                    m_MenuModule.PlaySfx(m_AudioIdProvider.ButtonNegative);
+                }
+
                 m_MenuModule.PopMenu().FireAndForget();
             }
 
             return true;
-        }
-
-        private void PlaySfx(int id)
-        {
-            m_MenuModule.PlaySfx(id);
         }
 
         private void OnLanguageChanged(int direction)
@@ -115,7 +113,7 @@ namespace RPGFramework.Menu.SubMenus
 
                 m_ConfigData.SetLanguage(newLanguage);
 
-                m_ConfigMenuUI.RefreshLocalisation();
+                m_MenuUI.RefreshLocalisation();
             }
 
             Run().FireAndForget();
@@ -149,10 +147,10 @@ namespace RPGFramework.Menu.SubMenus
 
         private void SetSliders()
         {
-            m_ConfigMenuUI.SetMusicVolume(m_ConfigData.MusicVolume);
-            m_ConfigMenuUI.SetSfxVolume(m_ConfigData.SfxVolume);
-            m_ConfigMenuUI.SetBattleMessageSpeed(m_ConfigData.BattleMessageSpeed);
-            m_ConfigMenuUI.SetFieldMessageSpeed(m_ConfigData.FieldMessageSpeed);
+            m_MenuUI.SetMusicVolume(m_ConfigData.MusicVolume);
+            m_MenuUI.SetSfxVolume(m_ConfigData.SfxVolume);
+            m_MenuUI.SetBattleMessageSpeed(m_ConfigData.BattleMessageSpeed);
+            m_MenuUI.SetFieldMessageSpeed(m_ConfigData.FieldMessageSpeed);
         }
     }
 }

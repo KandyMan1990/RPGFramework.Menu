@@ -218,7 +218,6 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnControlsBtnCallback()
         {
-            m_LastFocusedElement = m_ControlsBtn;
             RaiseOnPlayAudio(m_AudioIdProvider.ButtonNavigate);
             m_OnControlsPressed?.Invoke();
         }
