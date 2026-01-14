@@ -4,8 +4,8 @@ using System.IO;
 using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.Data;
-using RPGFramework.Core.GlobalConfig;
 using RPGFramework.Core.Input;
+using RPGFramework.Core.SaveDataService;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
 
@@ -17,7 +17,7 @@ namespace RPGFramework.Menu.SubMenus
 
         private readonly IMenuModule          m_MenuModule;
         private readonly IConfigMenuUI        m_ConfigMenuUI;
-        private readonly IGlobalConfig        m_GlobalConfig;
+        private readonly ISaveDataService     m_SaveDataService;
         private readonly ILocalisationService m_LocalisationService;
 
         private ConfigData_V1 m_ConfigData;
@@ -25,23 +25,23 @@ namespace RPGFramework.Menu.SubMenus
         public ConfigMenu(IMenuModule          menuModule,
                           IConfigMenuUI        configMenuUI,
                           IInputRouter         inputRouter,
-                          IGlobalConfig        globalConfig,
+                          ISaveDataService     saveDataService,
                           ILocalisationService localisationService) : base(configMenuUI, inputRouter)
         {
             m_MenuModule          = menuModule;
             m_ConfigMenuUI        = configMenuUI;
-            m_GlobalConfig        = globalConfig;
+            m_SaveDataService     = saveDataService;
             m_LocalisationService = localisationService;
         }
 
         protected override Task OnEnterAsync(Dictionary<string, object> args)
         {
-            if (!m_GlobalConfig.TryGetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, Versions.GLOBAL_CONFIG, out ConfigData_V1 configData, out uint storedVersion))
+            if (!m_SaveDataService.TryGetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData))
             {
-                throw new InvalidDataException($"{nameof(ConfigMenu)}::{nameof(OnEnterAsync)} Failed to get global config data");
+                throw new InvalidDataException($"{nameof(IConfigMenu)}::{nameof(OnEnterAsync)} Config data not found in save data");
             }
 
-            m_ConfigData = configData;
+            m_ConfigData = configData.Data;
 
             return base.OnEnterAsync(args);
         }
@@ -55,7 +55,9 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override Task OnExitAsync()
         {
-            m_GlobalConfig.SetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, Versions.GLOBAL_CONFIG, m_ConfigData);
+            SaveSection<ConfigData_V1> data = new SaveSection<ConfigData_V1>(Versions.GLOBAL_CONFIG, m_ConfigData);
+
+            m_SaveDataService.SetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, data);
 
             return base.OnExitAsync();
         }

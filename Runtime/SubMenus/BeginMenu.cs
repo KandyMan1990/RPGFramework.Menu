@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.Data;
-using RPGFramework.Core.GlobalConfig;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveDataService;
 using RPGFramework.Localisation;
@@ -18,7 +18,6 @@ namespace RPGFramework.Menu.SubMenus
 
         private readonly IMenuModule          m_MenuModule;
         private readonly IBeginMenuUI         m_BeginMenuUI;
-        private readonly IGlobalConfig        m_GlobalConfig;
         private readonly ILocalisationService m_LocalisationService;
         private readonly ISaveDataService     m_SaveDataService;
         private readonly ISaveFactory         m_SaveFactory;
@@ -26,14 +25,12 @@ namespace RPGFramework.Menu.SubMenus
         public BeginMenu(IMenuModule          menuModule,
                          IBeginMenuUI         beginMenuUI,
                          IInputRouter         inputRouter,
-                         IGlobalConfig        globalConfig,
                          ILocalisationService localisationService,
                          ISaveDataService     saveDataService,
                          ISaveFactory         saveFactory) : base(beginMenuUI, inputRouter)
         {
             m_MenuModule          = menuModule;
             m_BeginMenuUI         = beginMenuUI;
-            m_GlobalConfig        = globalConfig;
             m_LocalisationService = localisationService;
             m_SaveDataService     = saveDataService;
             m_SaveFactory         = saveFactory;
@@ -43,28 +40,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             await base.OnEnterAsync(args);
 
-            if (!m_GlobalConfig.TryGetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, Versions.GLOBAL_CONFIG, out ConfigData_V1 configData, out uint storedVersion))
-            {
-                configData = new ConfigData_V1();
-
-                string[] languages = await m_LocalisationService.GetAllLanguages();
-
-                int languageIndex = Array.IndexOf(languages, CultureInfo.CurrentCulture.Name);
-
-                string newLanguage = languageIndex >= 0 ? languages[languageIndex] : "en-GB";
-
-                configData.SetLanguage(newLanguage);
-                configData.MusicVolume        = 1f;
-                configData.SfxVolume          = 1f;
-                configData.BattleMessageSpeed = 0.5f;
-                configData.FieldMessageSpeed  = 0.5f;
-
-                m_GlobalConfig.SetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, Versions.GLOBAL_CONFIG, configData);
-            }
-
-            string language = configData.GetLanguage();
-
-            await m_LocalisationService.SetCurrentLanguage(language);
+            await SetLanguageAsync();
         }
 
         protected override void RegisterCallbacks()
@@ -126,6 +102,41 @@ namespace RPGFramework.Menu.SubMenus
 #else
             Application.Quit();
 #endif
+        }
+
+        private async Task SetLanguageAsync()
+        {
+            ConfigData_V1 data;
+
+            if (m_SaveDataService.TryGetLastWrittenSaveFileName(out string filename))
+            {
+                m_SaveDataService.BeginSave(filename);
+
+                if (m_SaveDataService.TryGetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData))
+                {
+                    data = configData.Data;
+                    m_SaveDataService.ClearSaveDataFromMemory();
+                }
+                else
+                {
+                    throw new InvalidDataException($"{nameof(IBeginMenu)}::{nameof(SetLanguageAsync)} Save file [{filename}] does not contain config data");
+                }
+            }
+            else
+            {
+                // TODO: push a language select popup here instead
+                string[] languages = await m_LocalisationService.GetAllLanguages();
+
+                int languageIndex = Array.IndexOf(languages, CultureInfo.CurrentCulture.Name);
+
+                string newLanguage = languageIndex >= 0 ? languages[languageIndex] : "en-GB";
+
+                data = new ConfigData_V1();
+                data.SetLanguage(newLanguage);
+            }
+
+            string language = data.GetLanguage();
+            await m_LocalisationService.SetCurrentLanguage(language);
         }
     }
 }
