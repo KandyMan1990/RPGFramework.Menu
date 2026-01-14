@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: RPGFramework.Menu::RPGFramework.Menu.MenuUIProvider
   m_BeginMenu: {fileID: 9197481963319205126, guid: b0b672f0244440b4ca822e71e0600d07, type: 3}
   m_ConfigMenu: {fileID: 9197481963319205126, guid: 367a5d1485eeda54989228d820502700, type: 3}
+  m_LanguageMenu: {fileID: 9197481963319205126, guid: 38499b0b3225300469ad67a8721139d2, type: 3}

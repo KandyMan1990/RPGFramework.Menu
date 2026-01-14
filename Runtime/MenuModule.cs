@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Audio;
@@ -6,8 +7,8 @@ using RPGFramework.Core.Input;
 using RPGFramework.Core.SharedTypes;
 using RPGFramework.DI;
 using RPGFramework.Menu.SharedTypes;
-using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace RPGFramework.Menu
 {
@@ -95,6 +96,24 @@ namespace RPGFramework.Menu
             // return m_CoreModule.LoadModuleAsync(typeof(saveInfo.CurrentModule), saveInfo.CurrentModuleArgs);
 
             return Task.CompletedTask;
+        }
+        bool IMenuModule.IsMenuInStack<T>()
+        {
+            Type type = typeof(T);
+            if (type.GetInterface(nameof(IMenu)) == null)
+            {
+                return false;
+            }
+
+            foreach (IMenu menu in m_Menus)
+            {
+                if (menu is T)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

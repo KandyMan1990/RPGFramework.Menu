@@ -7,7 +7,6 @@ namespace RPGFramework.Menu
         string GameTitle { get; }
         string NewGame   { get; }
         string LoadGame  { get; }
-        string Settings  { get; }
         string QuitGame  { get; }
     }
 
@@ -16,22 +15,41 @@ namespace RPGFramework.Menu
         public string   GameTitle        { get; }
         public string   NewGame          { get; }
         public string   LoadGame         { get; }
-        public string   Settings         { get; }
         public string   QuitGame         { get; }
         public string[] DataSheetsToLoad { get; }
 
         public BeginMenuLocalisationArgs(string   gameTitle,
                                          string   newGame,
                                          string   loadGame,
-                                         string   settings,
                                          string   quitGame,
                                          string[] dataSheetsToLoad)
         {
             GameTitle        = gameTitle;
             NewGame          = newGame;
             LoadGame         = loadGame;
-            Settings         = settings;
             QuitGame         = quitGame;
+            DataSheetsToLoad = dataSheetsToLoad;
+        }
+    }
+
+    public interface ILanguageMenuLocalisationArgs : ILocalisationArgs
+    {
+        public string ScreenTitle   { get; }
+        public string Language { get; }
+    }
+
+    public class LanguageMenuLocalisationArgs : ILanguageMenuLocalisationArgs
+    {
+        public string   ScreenTitle      { get; }
+        public string   Language    { get; }
+        public string[] DataSheetsToLoad { get; }
+
+        public LanguageMenuLocalisationArgs(string   screenTitle,
+                                            string   language,
+                                            string[] dataSheetsToLoad)
+        {
+            ScreenTitle      = screenTitle;
+            Language    = language;
             DataSheetsToLoad = dataSheetsToLoad;
         }
     }

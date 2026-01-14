@@ -31,6 +31,10 @@ namespace RPGFramework.Menu
         Task              OnExitAsync();
     }
 
+    public interface ILanguageMenu : IMenu
+    {
+    }
+
     public interface IBeginMenu : IMenu
     {
     }
@@ -39,11 +43,16 @@ namespace RPGFramework.Menu
     {
     }
 
+    public interface ILanguageMenuUI : IMenuUI
+    {
+        event Action<int> OnLanguageChanged;
+        void              RefreshLocalisation();
+    }
+
     public interface IBeginMenuUI : IMenuUI
     {
         event Action OnNewGamePressed;
         event Action OnLoadGamePressed;
-        event Action OnSettingsPressed;
         event Action OnQuitPressed;
     }
 
