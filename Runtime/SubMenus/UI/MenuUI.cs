@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
@@ -73,15 +74,21 @@ namespace RPGFramework.Menu.SubMenus.UI
             GetDefaultFocusedElement()?.Focus();
 
             OnEnterComplete();
+
+            await OnShowAnimationAsync();
         }
 
-        Task IMenuUI.OnSuspendAsync(bool hideUi)
+        async Task IMenuUI.OnSuspendAsync(bool hideUi)
         {
+            m_LastFocusedElement = (VisualElement)m_UIInstance.focusController.focusedElement;
+
             UnregisterCallbacks();
+
+            await OnHideAnimationAsync();
 
             ShowUI(!hideUi);
 
-            return OnSuspendAsync(hideUi);
+            await OnSuspendAsync(hideUi);
         }
 
         async Task IMenuUI.OnResumeAsync()
@@ -98,11 +105,15 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             m_LastFocusedElement?.Focus();
             m_LastFocusedElement = null;
+
+            await OnShowAnimationAsync();
         }
 
         async Task IMenuUI.OnExitAsync()
         {
             UnregisterCallbacks();
+
+            await OnHideAnimationAsync();
 
             await OnExitAsync();
 
@@ -171,6 +182,16 @@ namespace RPGFramework.Menu.SubMenus.UI
         protected void OnBtnFocus(FocusInEvent evt)
         {
             RaiseOnPlayAudio(m_AudioIdProvider.ButtonNavigate);
+        }
+
+        protected virtual async Task OnShowAnimationAsync()
+        {
+            await Awaitable.NextFrameAsync();
+        }
+
+        protected virtual async Task OnHideAnimationAsync()
+        {
+            await Awaitable.NextFrameAsync();
         }
     }
 }
