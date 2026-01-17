@@ -43,13 +43,17 @@ namespace RPGFramework.Menu
             return m_MenuModule.PushMenu(menuArgs);
         }
 
-        Task IModule.OnExitAsync()
+        async Task IModule.OnExitAsync()
         {
             m_InputAdapter.Disable();
 
-            m_CoreModule.ResetModule<IMenuModule, MenuModule>();
+            while (m_Menus.Count > 0)
+            {
+                IMenu menu = m_Menus.Pop();
+                await menu.OnExitAsync();
+            }
 
-            return Task.CompletedTask;
+            m_CoreModule.ResetModule<IMenuModule, MenuModule>();
         }
 
         async Task IMenuModule.PushMenu(IMenuModuleArgs menuModuleArgs)
