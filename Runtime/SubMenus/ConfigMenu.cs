@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using RPGFramework.Audio;
 using RPGFramework.Core;
+using RPGFramework.Core.Audio;
 using RPGFramework.Core.Data;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveDataService;
@@ -21,12 +21,12 @@ namespace RPGFramework.Menu.SubMenus
 
         private ConfigData_V1 m_ConfigData;
 
-        public ConfigMenu(IMenuModule             menuModule,
-                          IConfigMenuUI           configMenuUI,
-                          IInputRouter            inputRouter,
-                          ISaveDataService        saveDataService,
-                          ILocalisationService    localisationService,
-                          IGenericAudioIdProvider audioIdProvider) : base(configMenuUI, inputRouter, menuModule, audioIdProvider)
+        public ConfigMenu(IMenuModule          menuModule,
+                          IConfigMenuUI        configMenuUI,
+                          IInputRouter         inputRouter,
+                          ISaveDataService     saveDataService,
+                          ILocalisationService localisationService,
+                          IAudioIntentPlayer   audioIntentPlayer) : base(configMenuUI, inputRouter, menuModule, audioIntentPlayer)
         {
             m_SaveDataService     = saveDataService;
             m_LocalisationService = localisationService;
@@ -62,7 +62,6 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override void RegisterCallbacks()
         {
-            m_MenuUI.OnPlayAudio                 += PlaySfx;
             m_MenuUI.OnLanguageChanged           += OnLanguageChanged;
             m_MenuUI.OnControlsPressed           += OnControlsPressed;
             m_MenuUI.OnMusicVolumeChanged        += OnMusicVolumeChanged;
@@ -79,7 +78,6 @@ namespace RPGFramework.Menu.SubMenus
             m_MenuUI.OnMusicVolumeChanged        -= OnMusicVolumeChanged;
             m_MenuUI.OnControlsPressed           -= OnControlsPressed;
             m_MenuUI.OnLanguageChanged           -= OnLanguageChanged;
-            m_MenuUI.OnPlayAudio                 -= PlaySfx;
         }
 
         protected override bool HandleControl(ControlSlot slot)
@@ -88,7 +86,7 @@ namespace RPGFramework.Menu.SubMenus
             {
                 if (!m_MenuModule.IsMenuInStack<IBeginMenu>())
                 {
-                    m_MenuModule.PlaySfx(m_AudioIdProvider.ButtonNegative);
+                    m_AudioIntentPlayer.Play(AudioIntent.Cancel, AudioContext.Menu);
                 }
 
                 m_MenuModule.PopMenu().FireAndForget();

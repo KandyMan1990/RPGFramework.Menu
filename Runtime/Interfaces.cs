@@ -21,7 +21,6 @@ namespace RPGFramework.Menu
 
     public interface IMenuUI
     {
-        event Action<int> OnPlayAudio;
         event Action      OnBackButtonPressed;
         VisualElement     GetDefaultFocusedElement();
         VisualElement     GetLastFocusedElement();

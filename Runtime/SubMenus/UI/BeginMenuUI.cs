@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using RPGFramework.Audio;
+using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
@@ -41,11 +41,8 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         public BeginMenuUI(IBeginMenuLocalisationArgs localisationArgs,
                            IMenuUIProvider            uiProvider,
-                           IGenericAudioIdProvider    audioIdProvider,
-                           ILocalisationService       localisationService) : base(localisationArgs,
-                                                                                  uiProvider,
-                                                                                  audioIdProvider,
-                                                                                  localisationService)
+                           IAudioIntentPlayer         audioIntentPlayer,
+                           ILocalisationService       localisationService) : base(localisationArgs, uiProvider, audioIntentPlayer, localisationService)
         {
         }
 
@@ -84,21 +81,24 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override void RegisterCallbacks()
         {
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_NewGameBtn,  OnNewGameBtnNavigate,  OnNewGameBtnSubmitted,  OnNewGameBtnClicked,  OnBtnFocus);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_LoadGameBtn, OnLoadGameBtnNavigate, OnLoadGameBtnSubmitted, OnLoadGameBtnClicked, OnBtnFocus);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_QuitBtn,     OnQuitBtnNavigate,     OnQuitBtnSubmitted,     OnQuitBtnClicked,     OnBtnFocus);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_NewGameBtn,  OnNewGameBtnNavigate,  OnNewGameBtnSubmitted,  OnNewGameBtnClicked);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_LoadGameBtn, OnLoadGameBtnNavigate, OnLoadGameBtnSubmitted, OnLoadGameBtnClicked);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_QuitBtn,     OnQuitBtnNavigate,     OnQuitBtnSubmitted,     OnQuitBtnClicked);
         }
 
         protected override void UnregisterCallbacks()
         {
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_QuitBtn,     OnQuitBtnNavigate,     OnQuitBtnSubmitted,     OnQuitBtnClicked,     OnBtnFocus);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_LoadGameBtn, OnLoadGameBtnNavigate, OnLoadGameBtnSubmitted, OnLoadGameBtnClicked, OnBtnFocus);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_NewGameBtn,  OnNewGameBtnNavigate,  OnNewGameBtnSubmitted,  OnNewGameBtnClicked,  OnBtnFocus);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_QuitBtn,     OnQuitBtnNavigate,     OnQuitBtnSubmitted,     OnQuitBtnClicked);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_LoadGameBtn, OnLoadGameBtnNavigate, OnLoadGameBtnSubmitted, OnLoadGameBtnClicked);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_NewGameBtn,  OnNewGameBtnNavigate,  OnNewGameBtnSubmitted,  OnNewGameBtnClicked);
         }
 
         private void OnNewGameBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_NewGameBtn, m_QuitBtn, m_LoadGameBtn);
+            if (UIToolkitInputUtility.Navigate(evt, m_NewGameBtn, m_QuitBtn, m_LoadGameBtn))
+            {
+                OnBtnNavigate();
+            }
         }
 
         private void OnNewGameBtnSubmitted(NavigationSubmitEvent evt)
@@ -113,13 +113,16 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnNewGameBtnCallback()
         {
-            RaiseOnPlayAudio(m_AudioIdProvider.ButtonPositive);
+            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
             m_OnNewGamePressed?.Invoke();
         }
 
         private void OnLoadGameBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_LoadGameBtn, m_NewGameBtn, m_QuitBtn);
+            if (UIToolkitInputUtility.Navigate(evt, m_LoadGameBtn, m_NewGameBtn, m_QuitBtn))
+            {
+                OnBtnNavigate();
+            }
         }
 
         private void OnLoadGameBtnSubmitted(NavigationSubmitEvent evt)
@@ -134,13 +137,16 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnLoadGameBtnCallback()
         {
-            RaiseOnPlayAudio(m_AudioIdProvider.ButtonPositive);
+            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
             m_OnLoadGamePressed?.Invoke();
         }
 
         private void OnQuitBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_QuitBtn, m_LoadGameBtn, m_NewGameBtn);
+            if (UIToolkitInputUtility.Navigate(evt, m_QuitBtn, m_LoadGameBtn, m_NewGameBtn))
+            {
+                OnBtnNavigate();
+            }
         }
 
         private void OnQuitBtnSubmitted(NavigationSubmitEvent evt)
@@ -155,7 +161,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnQuitBtnCallback()
         {
-            RaiseOnPlayAudio(m_AudioIdProvider.ButtonNegative);
+            m_AudioIntentPlayer.Play(AudioIntent.Cancel, AudioContext.Menu);
             m_OnQuitPressed?.Invoke();
         }
     }

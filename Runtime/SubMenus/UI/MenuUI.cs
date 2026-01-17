@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RPGFramework.Audio;
+using RPGFramework.Core.Audio;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine;
@@ -11,11 +11,6 @@ namespace RPGFramework.Menu.SubMenus.UI
 {
     public abstract class MenuUI<TMenuUI> : IMenuUI where TMenuUI : IMenuUI
     {
-        event Action<int> IMenuUI.OnPlayAudio
-        {
-            add => m_OnPlayAudio += value;
-            remove => m_OnPlayAudio -= value;
-        }
         event Action IMenuUI.OnBackButtonPressed
         {
             add => m_OnBackButtonPressed += value;
@@ -25,28 +20,27 @@ namespace RPGFramework.Menu.SubMenus.UI
         VisualElement IMenuUI.GetDefaultFocusedElement() => GetDefaultFocusedElement();
         VisualElement IMenuUI.GetLastFocusedElement()    => m_LastFocusedElement;
 
-        private event Action<int> m_OnPlayAudio;
-        private event Action      m_OnBackButtonPressed;
+        private event Action m_OnBackButtonPressed;
 
         protected abstract VisualElement GetDefaultFocusedElement();
 
-        protected readonly ILocalisationArgs       m_LocalisationArgs;
-        protected readonly IMenuUIProvider         m_UIProvider;
-        protected readonly IGenericAudioIdProvider m_AudioIdProvider;
-        protected readonly ILocalisationService    m_LocalisationService;
+        protected readonly ILocalisationArgs    m_LocalisationArgs;
+        protected readonly IMenuUIProvider      m_UIProvider;
+        protected readonly IAudioIntentPlayer   m_AudioIntentPlayer;
+        protected readonly ILocalisationService m_LocalisationService;
 
         protected VisualElement m_UIInstance;
 
         protected VisualElement m_LastFocusedElement;
 
-        protected MenuUI(ILocalisationArgs       localisationArgs,
-                         IMenuUIProvider         uiProvider,
-                         IGenericAudioIdProvider audioIdProvider,
-                         ILocalisationService    localisationService)
+        protected MenuUI(ILocalisationArgs    localisationArgs,
+                         IMenuUIProvider      uiProvider,
+                         IAudioIntentPlayer   audioIntentPlayer,
+                         ILocalisationService localisationService)
         {
             m_LocalisationArgs    = localisationArgs;
             m_UIProvider          = uiProvider;
-            m_AudioIdProvider     = audioIdProvider;
+            m_AudioIntentPlayer   = audioIntentPlayer;
             m_LocalisationService = localisationService;
         }
 
@@ -169,19 +163,14 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_UIInstance.SetEnabledAndVisible(isShow);
         }
 
-        protected void RaiseOnPlayAudio(int audio)
-        {
-            m_OnPlayAudio?.Invoke(audio);
-        }
-
         protected void RaiseOnBackButtonPressed()
         {
             m_OnBackButtonPressed?.Invoke();
         }
 
-        protected void OnBtnFocus(FocusInEvent evt)
+        protected void OnBtnNavigate()
         {
-            RaiseOnPlayAudio(m_AudioIdProvider.ButtonNavigate);
+            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
         }
 
         protected virtual async Task OnShowAnimationAsync()

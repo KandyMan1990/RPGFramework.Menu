@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using RPGFramework.Audio;
+using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Menu.SharedTypes;
 using UnityEngine.UIElements;
@@ -13,20 +13,20 @@ namespace RPGFramework.Menu.SubMenus
 
         protected abstract bool m_HidePreviousUiOnSuspend { get; }
 
-        protected readonly TMenuUI                 m_MenuUI;
-        protected readonly IInputRouter            m_InputRouter;
-        protected readonly IMenuModule             m_MenuModule;
-        protected readonly IGenericAudioIdProvider m_AudioIdProvider;
+        protected readonly TMenuUI            m_MenuUI;
+        protected readonly IInputRouter       m_InputRouter;
+        protected readonly IMenuModule        m_MenuModule;
+        protected readonly IAudioIntentPlayer m_AudioIntentPlayer;
 
-        protected Menu(TMenuUI                 menuUI,
-                       IInputRouter            inputRouter,
-                       IMenuModule             menuModule,
-                       IGenericAudioIdProvider audioIdProvider)
+        protected Menu(TMenuUI            menuUI,
+                       IInputRouter       inputRouter,
+                       IMenuModule        menuModule,
+                       IAudioIntentPlayer audioIntentPlayer)
         {
-            m_MenuUI          = menuUI;
-            m_InputRouter     = inputRouter;
-            m_MenuModule      = menuModule;
-            m_AudioIdProvider = audioIdProvider;
+            m_MenuUI            = menuUI;
+            m_InputRouter       = inputRouter;
+            m_MenuModule        = menuModule;
+            m_AudioIntentPlayer = audioIntentPlayer;
         }
 
         async Task IMenu.OnEnterAsync(VisualElement parent, Dictionary<string, object> args)
@@ -112,10 +112,5 @@ namespace RPGFramework.Menu.SubMenus
         }
 
         protected abstract bool HandleControl(ControlSlot slot);
-
-        protected void PlaySfx(int id)
-        {
-            m_MenuModule.PlaySfx(id);
-        }
     }
 }

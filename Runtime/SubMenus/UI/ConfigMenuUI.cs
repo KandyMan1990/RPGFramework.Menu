@@ -1,5 +1,5 @@
 ﻿using System;
-using RPGFramework.Audio;
+using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
@@ -72,11 +72,8 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         public ConfigMenuUI(IConfigMenuLocalisationArgs localisationArgs,
                             IMenuUIProvider             uiProvider,
-                            IGenericAudioIdProvider     audioIdProvider,
-                            ILocalisationService        localisationService) : base(localisationArgs,
-                                                                                    uiProvider,
-                                                                                    audioIdProvider,
-                                                                                    localisationService)
+                            IAudioIntentPlayer          audioIntentPlayer,
+                            ILocalisationService        localisationService) : base(localisationArgs, uiProvider, audioIntentPlayer, localisationService)
         {
         }
 
@@ -112,22 +109,22 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override void RegisterCallbacks()
         {
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_LanguageBtn,           OnLanguageBtnNavigate,           null,                   null,                 OnBtnFocus);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_ControlsBtn,           OnControlsBtnNavigate,           OnControlsBtnSubmitted, OnControlsBtnClicked, OnBtnFocus);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_MusicVolumeBtn,        OnMusicVolumeBtnNavigate,        null,                   null,                 OnBtnFocus);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_SfxVolumeBtn,          OnSfxVolumeBtnNavigate,          null,                   null,                 OnBtnFocus);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_BattleMessageSpeedBtn, OnBattleMessageSpeedBtnNavigate, null,                   null,                 OnBtnFocus);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_FieldMessageSpeedBtn,  OnFieldMessageSpeedBtnNavigate,  null,                   null,                 OnBtnFocus);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_LanguageBtn,           OnLanguageBtnNavigate);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_ControlsBtn,           OnControlsBtnNavigate, OnControlsBtnSubmitted, OnControlsBtnClicked);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_MusicVolumeBtn,        OnMusicVolumeBtnNavigate);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_SfxVolumeBtn,          OnSfxVolumeBtnNavigate);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_BattleMessageSpeedBtn, OnBattleMessageSpeedBtnNavigate);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_FieldMessageSpeedBtn,  OnFieldMessageSpeedBtnNavigate);
         }
 
         protected override void UnregisterCallbacks()
         {
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_FieldMessageSpeedBtn,  OnFieldMessageSpeedBtnNavigate,  null,                   null,                 OnBtnFocus);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_BattleMessageSpeedBtn, OnBattleMessageSpeedBtnNavigate, null,                   null,                 OnBtnFocus);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_SfxVolumeBtn,          OnSfxVolumeBtnNavigate,          null,                   null,                 OnBtnFocus);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_MusicVolumeBtn,        OnMusicVolumeBtnNavigate,        null,                   null,                 OnBtnFocus);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_ControlsBtn,           OnControlsBtnNavigate,           OnControlsBtnSubmitted, OnControlsBtnClicked, OnBtnFocus);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_LanguageBtn,           OnLanguageBtnNavigate,           null,                   null,                 OnBtnFocus);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_FieldMessageSpeedBtn,  OnFieldMessageSpeedBtnNavigate);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_BattleMessageSpeedBtn, OnBattleMessageSpeedBtnNavigate);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_SfxVolumeBtn,          OnSfxVolumeBtnNavigate);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_MusicVolumeBtn,        OnMusicVolumeBtnNavigate);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_ControlsBtn,           OnControlsBtnNavigate, OnControlsBtnSubmitted, OnControlsBtnClicked);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_LanguageBtn,           OnLanguageBtnNavigate);
         }
 
         void IConfigMenuUI.RefreshLocalisation()
@@ -157,51 +154,69 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnLanguageBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_LanguageBtn, m_FieldMessageSpeedBtn, m_ControlsBtn);
+            if (UIToolkitInputUtility.Navigate(evt, m_LanguageBtn, m_FieldMessageSpeedBtn, m_ControlsBtn))
+            {
+                OnBtnNavigate();
+            }
 
             if (evt.direction == NavigationMoveEvent.Direction.Left)
             {
-                OnBtnFocus(null);
+                OnBtnNavigate();
                 m_OnLanguageChanged?.Invoke(-1);
                 return;
             }
 
             if (evt.direction == NavigationMoveEvent.Direction.Right)
             {
-                OnBtnFocus(null);
+                OnBtnNavigate();
                 m_OnLanguageChanged?.Invoke(1);
             }
         }
 
         private void OnControlsBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_ControlsBtn, m_LanguageBtn, m_MusicVolumeBtn);
+            if (UIToolkitInputUtility.Navigate(evt, m_ControlsBtn, m_LanguageBtn, m_MusicVolumeBtn))
+            {
+                OnBtnNavigate();
+            }
         }
 
         private void OnMusicVolumeBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_MusicVolumeBtn, m_ControlsBtn, m_SfxVolumeBtn);
+            if (UIToolkitInputUtility.Navigate(evt, m_MusicVolumeBtn, m_ControlsBtn, m_SfxVolumeBtn))
+            {
+                OnBtnNavigate();
+            }
 
             OnSliderChanged(m_MusicVolumeSlider, evt, m_OnMusicVolumeChanged);
         }
 
         private void OnSfxVolumeBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_SfxVolumeBtn, m_MusicVolumeBtn, m_BattleMessageSpeedBtn);
+            if (UIToolkitInputUtility.Navigate(evt, m_SfxVolumeBtn, m_MusicVolumeBtn, m_BattleMessageSpeedBtn))
+            {
+                OnBtnNavigate();
+            }
 
             OnSliderChanged(m_SfxVolumeSlider, evt, m_OnSfxVolumeChanged);
         }
 
         private void OnBattleMessageSpeedBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_BattleMessageSpeedBtn, m_SfxVolumeBtn, m_FieldMessageSpeedBtn);
+            if (UIToolkitInputUtility.Navigate(evt, m_BattleMessageSpeedBtn, m_SfxVolumeBtn, m_FieldMessageSpeedBtn))
+            {
+                OnBtnNavigate();
+            }
 
             OnSliderChanged(m_BattleMessageSpeedSlider, evt, m_OnBattleMessageSpeedChanged);
         }
 
         private void OnFieldMessageSpeedBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_FieldMessageSpeedBtn, m_BattleMessageSpeedBtn, m_LanguageBtn);
+            if (UIToolkitInputUtility.Navigate(evt, m_FieldMessageSpeedBtn, m_BattleMessageSpeedBtn, m_LanguageBtn))
+            {
+                OnBtnNavigate();
+            }
 
             OnSliderChanged(m_FieldMessageSpeedSlider, evt, m_OnFieldMessageSpeedChanged);
         }
@@ -218,7 +233,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnControlsBtnCallback()
         {
-            RaiseOnPlayAudio(m_AudioIdProvider.ButtonNavigate);
+            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
             m_OnControlsPressed?.Invoke();
         }
 
@@ -238,7 +253,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             if (math.abs(slider.value - value) > epsilon)
             {
-                OnBtnFocus(null);
+                OnBtnNavigate();
                 slider.value = value;
                 action?.Invoke(value);
             }

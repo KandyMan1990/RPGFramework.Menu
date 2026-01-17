@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
-using RPGFramework.Audio;
 using RPGFramework.Core;
+using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
@@ -14,13 +14,13 @@ namespace RPGFramework.Menu.SubMenus
     {
         protected override bool m_HidePreviousUiOnSuspend => true;
 
-        private readonly ILocalisationService    m_LocalisationService;
+        private readonly ILocalisationService m_LocalisationService;
 
-        public LanguageMenu(ILanguageMenuUI         menuUI,
-                            IInputRouter            inputRouter,
-                            IMenuModule             menuModule,
-                            ILocalisationService    localisationService,
-                            IGenericAudioIdProvider audioIdProvider) : base(menuUI, inputRouter, menuModule, audioIdProvider)
+        public LanguageMenu(ILanguageMenuUI      languageMenuUI,
+                            IInputRouter         inputRouter,
+                            IMenuModule          menuModule,
+                            ILocalisationService localisationService,
+                            IAudioIntentPlayer   audioIntentPlayer) : base(languageMenuUI, inputRouter, menuModule, audioIntentPlayer)
         {
             m_LocalisationService = localisationService;
         }
@@ -34,21 +34,19 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override void RegisterCallbacks()
         {
-            m_MenuUI.OnPlayAudio       += PlaySfx;
             m_MenuUI.OnLanguageChanged += OnLanguageChanged;
         }
 
         protected override void UnregisterCallbacks()
         {
             m_MenuUI.OnLanguageChanged -= OnLanguageChanged;
-            m_MenuUI.OnPlayAudio       -= PlaySfx;
         }
 
         protected override bool HandleControl(ControlSlot slot)
         {
             if (slot is ControlSlot.Primary or ControlSlot.Secondary)
             {
-                m_MenuModule.PlaySfx(m_AudioIdProvider.ButtonNavigate);
+                m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
                 m_MenuModule.PopMenu().FireAndForget();
             }
 

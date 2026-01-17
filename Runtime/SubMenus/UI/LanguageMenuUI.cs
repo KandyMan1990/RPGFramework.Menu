@@ -1,5 +1,5 @@
 ﻿using System;
-using RPGFramework.Audio;
+using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
@@ -25,8 +25,8 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         public LanguageMenuUI(ILanguageMenuLocalisationArgs localisationArgs,
                               IMenuUIProvider               uiProvider,
-                              IGenericAudioIdProvider       audioIdProvider,
-                              ILocalisationService          localisationService) : base(localisationArgs, uiProvider, audioIdProvider, localisationService)
+                              IAudioIntentPlayer            audioIntentPlayer,
+                              ILocalisationService          localisationService) : base(localisationArgs, uiProvider, audioIntentPlayer, localisationService)
         {
         }
 
@@ -48,14 +48,14 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override void RegisterCallbacks()
         {
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_LanguageBtn, OnLanguageBtnNavigate, null, null, OnBtnFocus);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_LanguageBtn, OnLanguageBtnNavigate);
         }
 
         protected override void UnregisterCallbacks()
         {
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_LanguageBtn, OnLanguageBtnNavigate, null, null, OnBtnFocus);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_LanguageBtn, OnLanguageBtnNavigate);
         }
-        
+
         void ILanguageMenuUI.RefreshLocalisation()
         {
             LocaliseUI();
@@ -65,14 +65,14 @@ namespace RPGFramework.Menu.SubMenus.UI
         {
             if (evt.direction == NavigationMoveEvent.Direction.Left)
             {
-                OnBtnFocus(null);
+                OnBtnNavigate();
                 m_OnLanguageChanged?.Invoke(-1);
                 return;
             }
 
             if (evt.direction == NavigationMoveEvent.Direction.Right)
             {
-                OnBtnFocus(null);
+                OnBtnNavigate();
                 m_OnLanguageChanged?.Invoke(1);
             }
         }
