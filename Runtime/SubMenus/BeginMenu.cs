@@ -80,7 +80,7 @@ namespace RPGFramework.Menu.SubMenus
 
             m_SaveDataService.CommitSave();
 
-            IMenuModuleArgs args = new MenuModuleArgs<IConfigMenu>();
+            IMenuModuleArgs args = new GenericMenuModuleArgs<IConfigMenu>();
 
             m_MenuModule.PushMenu(args).FireAndForget();
         }
@@ -116,7 +116,7 @@ namespace RPGFramework.Menu.SubMenus
                 throw new InvalidDataException($"{nameof(IBeginMenu)}::{nameof(SetLanguageAsync)} Save file [{filename}] does not contain config data");
             }
 
-            IMenuModuleArgs args = new MenuModuleArgs<ILanguageMenu>();
+            IMenuModuleArgs args = new GenericMenuModuleArgs<ILanguageMenu>();
             return m_MenuModule.PushMenu(args);
         }
     }
