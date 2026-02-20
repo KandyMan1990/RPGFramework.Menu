@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Menu.SharedTypes;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus
@@ -74,6 +75,11 @@ namespace RPGFramework.Menu.SubMenus
         bool IInputContext.Handle(ControlSlot slot)
         {
             return HandleControl(slot);
+        }
+
+        void IInputContext.HandleMove(Vector2 move)
+        {
+            // noop
         }
 
         protected virtual Task OnEnterAsync(Dictionary<string, object> args)
