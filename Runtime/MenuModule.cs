@@ -34,7 +34,7 @@ namespace RPGFramework.Menu
 
         Task IModule.OnEnterAsync(IModuleArgs args)
         {
-            m_InputAdapter = Object.FindFirstObjectByType<InputAdapter>();
+            m_InputAdapter = Object.FindAnyObjectByType<InputAdapter>();
             m_DIResolver.InjectInto(m_InputAdapter);
             m_InputAdapter.Enable();
 
