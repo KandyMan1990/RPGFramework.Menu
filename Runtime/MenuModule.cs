@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.Input;
+using RPGFramework.Core.Rendering;
 using RPGFramework.Core.SharedTypes;
 using RPGFramework.DI;
 using RPGFramework.Menu.SharedTypes;
@@ -15,16 +16,20 @@ namespace RPGFramework.Menu
     {
         private readonly ICoreModule   m_CoreModule;
         private readonly IDIResolver   m_DIResolver;
+        private readonly IScreenFadeService m_ScreenFadeService;
         private readonly IMenuModule   m_MenuModule;
         private readonly Stack<IMenu>  m_Menus;
         private readonly VisualElement m_UIContainer;
 
         private InputAdapter m_InputAdapter;
 
-        public MenuModule(ICoreModule coreModule, IDIResolver diResolver)
+        public MenuModule(ICoreModule coreModule,
+                          IDIResolver diResolver,
+                          IScreenFadeService screenFadeService)
         {
             m_CoreModule = coreModule;
             m_DIResolver = diResolver;
+            m_ScreenFadeService = screenFadeService;
             m_MenuModule = this;
             m_Menus      = new Stack<IMenu>();
 
@@ -32,15 +37,19 @@ namespace RPGFramework.Menu
             m_UIContainer = uIDocument.rootVisualElement;
         }
 
-        Task IModule.OnEnterAsync(IModuleArgs args)
+        async Task IModule.OnEnterAsync(IModuleArgs args)
         {
+            await m_ScreenFadeService.FadeOutAsync(true);
+            
             m_InputAdapter = Object.FindAnyObjectByType<InputAdapter>();
             m_DIResolver.InjectInto(m_InputAdapter);
-            m_InputAdapter.Enable();
 
             IMenuModuleArgs menuArgs = (IMenuModuleArgs)args;
 
-            return m_MenuModule.PushMenu(menuArgs);
+            await m_MenuModule.PushMenu(menuArgs);
+            await m_ScreenFadeService.FadeInAsync();
+            
+            m_InputAdapter.Enable();
         }
 
         async Task IModule.OnExitAsync()
@@ -52,6 +61,8 @@ namespace RPGFramework.Menu
                 IMenu menu = m_Menus.Pop();
                 await menu.OnExitAsync();
             }
+            
+            await m_ScreenFadeService.FadeOutAsync();
 
             m_CoreModule.ResetModule<IMenuModule, MenuModule>();
         }
