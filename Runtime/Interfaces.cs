@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RPGFramework.Menu.SharedTypes;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu
@@ -8,6 +9,12 @@ namespace RPGFramework.Menu
     public interface IMenuUIProvider
     {
         VisualTreeAsset GetMenuUI<T>() where T : IMenuUI;
+    }
+
+    public interface IMenuTypeProvider
+    {
+        Type GetType(MenuType type);
+        Type GetType(byte     type);
     }
 
     public interface IMenu
@@ -21,13 +28,13 @@ namespace RPGFramework.Menu
 
     public interface IMenuUI
     {
-        event Action      OnBackButtonPressed;
-        VisualElement     GetDefaultFocusedElement();
-        VisualElement     GetLastFocusedElement();
-        Task              OnEnterAsync(VisualElement parent, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
-        Task              OnSuspendAsync(bool        hideUi);
-        Task              OnResumeAsync();
-        Task              OnExitAsync();
+        event Action  OnBackButtonPressed;
+        VisualElement GetDefaultFocusedElement();
+        VisualElement GetLastFocusedElement();
+        Task          OnEnterAsync(VisualElement parent, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
+        Task          OnSuspendAsync(bool        hideUi);
+        Task          OnResumeAsync();
+        Task          OnExitAsync();
     }
 
     public interface ILanguageMenu : IMenu

@@ -39,16 +39,16 @@ namespace RPGFramework.Menu.SubMenus
             return SetLanguageAsync();
         }
 
-        protected override async Task OnResumeAsync()
+        protected override Task OnResumeAsync()
         {
             if (m_SaveDataService.HasSaveLoaded())
             {
                 m_AudioIntentPlayer.Play(AudioIntent.NewGame, AudioContext.Menu);
                 m_CoreModule.ResumeModuleAsync().FireAndForget();
-                return;
+                return Task.CompletedTask;
             }
 
-            await base.OnResumeAsync();
+            return base.OnResumeAsync();
         }
 
         protected override void RegisterCallbacks()
@@ -80,9 +80,7 @@ namespace RPGFramework.Menu.SubMenus
 
             m_SaveDataService.CommitSave();
 
-            IMenuModuleArgs args = new GenericMenuModuleArgs<IConfigMenu>();
-
-            m_MenuModule.PushMenu(args).FireAndForget();
+            m_MenuModule.PushMenu(MenuType.Config).FireAndForget();
         }
 
         private void OnLoadGamePressed()
@@ -116,8 +114,7 @@ namespace RPGFramework.Menu.SubMenus
                 throw new InvalidDataException($"{nameof(IBeginMenu)}::{nameof(SetLanguageAsync)} Save file [{filename}] does not contain config data");
             }
 
-            IMenuModuleArgs args = new GenericMenuModuleArgs<ILanguageMenu>();
-            return m_MenuModule.PushMenu(args);
+            return m_MenuModule.PushMenu(MenuType.Language);
         }
     }
 }

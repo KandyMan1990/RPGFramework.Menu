@@ -7,6 +7,7 @@ using RPGFramework.Core.Rendering;
 using RPGFramework.Core.SharedTypes;
 using RPGFramework.DI;
 using RPGFramework.Menu.SharedTypes;
+using RPGFramework.Menu.SharedTypes.Providers;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -14,41 +15,47 @@ namespace RPGFramework.Menu
 {
     public class MenuModule : IMenuModule
     {
-        private readonly ICoreModule   m_CoreModule;
-        private readonly IDIResolver   m_DIResolver;
+        private readonly ICoreModule        m_CoreModule;
+        private readonly IDIResolver        m_DIResolver;
         private readonly IScreenFadeService m_ScreenFadeService;
-        private readonly IMenuModule   m_MenuModule;
-        private readonly Stack<IMenu>  m_Menus;
-        private readonly VisualElement m_UIContainer;
+        private readonly IMenuArgsProvider  m_MenuArgsProvider;
+        private readonly IMenuTypeProvider  m_MenuTypeProvider;
+        private readonly IMenuModule        m_MenuModule;
+        private readonly Stack<IMenu>       m_Menus;
+        private readonly VisualElement      m_UIContainer;
 
         private InputAdapter m_InputAdapter;
 
-        public MenuModule(ICoreModule coreModule,
-                          IDIResolver diResolver,
-                          IScreenFadeService screenFadeService)
+        public MenuModule(ICoreModule        coreModule,
+                          IDIResolver        diResolver,
+                          IScreenFadeService screenFadeService,
+                          IMenuArgsProvider  menuArgsProvider,
+                          IMenuTypeProvider  menuTypeProvider)
         {
-            m_CoreModule = coreModule;
-            m_DIResolver = diResolver;
+            m_CoreModule        = coreModule;
+            m_DIResolver        = diResolver;
             m_ScreenFadeService = screenFadeService;
-            m_MenuModule = this;
-            m_Menus      = new Stack<IMenu>();
+            m_MenuArgsProvider  = menuArgsProvider;
+            m_MenuTypeProvider  = menuTypeProvider;
+            m_MenuModule        = this;
+            m_Menus             = new Stack<IMenu>();
 
             UIDocument uIDocument = Object.FindAnyObjectByType<UIDocument>();
             m_UIContainer = uIDocument.rootVisualElement;
         }
 
-        async Task IModule.OnEnterAsync(IModuleArgs args)
+        async Task IModule.OnEnterAsync()
         {
             await m_ScreenFadeService.FadeOutAsync(true);
-            
+
             m_InputAdapter = Object.FindAnyObjectByType<InputAdapter>();
             m_DIResolver.InjectInto(m_InputAdapter);
 
-            IMenuModuleArgs menuArgs = (IMenuModuleArgs)args;
+            MenuArgs args = m_MenuArgsProvider.Get;
 
-            await m_MenuModule.PushMenu(menuArgs);
+            await m_MenuModule.PushMenu((MenuType)args.MenuId);
             await m_ScreenFadeService.FadeInAsync();
-            
+
             m_InputAdapter.Enable();
         }
 
@@ -61,15 +68,16 @@ namespace RPGFramework.Menu
                 IMenu menu = m_Menus.Pop();
                 await menu.OnExitAsync();
             }
-            
+
             await m_ScreenFadeService.FadeOutAsync();
 
             m_CoreModule.ResetModule<IMenuModule, MenuModule>();
         }
 
-        async Task IMenuModule.PushMenu(IMenuModuleArgs menuModuleArgs)
+        async Task IMenuModule.PushMenu(MenuType menuType)
         {
-            IMenu newMenu = (IMenu)m_DIResolver.Resolve(menuModuleArgs.MenuType);
+            Type  menuToPushType = m_MenuTypeProvider.GetType(menuType);
+            IMenu newMenu        = (IMenu)m_DIResolver.Resolve(menuToPushType);
 
             if (m_Menus.TryPeek(out IMenu menu))
             {

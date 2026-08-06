@@ -16,6 +16,8 @@ namespace RPGFramework.Menu
         {
             switch (type)
             {
+                case MenuType.Begin:
+                    return typeof(IBeginMenu);
                 case MenuType.Inventory:
                     return null;
                 case MenuType.Abilities:
@@ -26,6 +28,8 @@ namespace RPGFramework.Menu
                     return typeof(IConfigMenu);
                 case MenuType.Save:
                     return null;
+                case MenuType.Language:
+                    return typeof(ILanguageMenu);
                 default:
                     throw new ArgumentOutOfRangeException($"{nameof(IMenuTypeProvider)}::{nameof(IMenuTypeProvider.GetType)} [{type}] not implemented");
             }
