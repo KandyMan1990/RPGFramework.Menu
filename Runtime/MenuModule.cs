@@ -5,6 +5,7 @@ using RPGFramework.Core;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.Rendering;
 using RPGFramework.Core.SharedTypes;
+using RPGFramework.Core.Store;
 using RPGFramework.DI;
 using RPGFramework.Menu.SharedTypes;
 using RPGFramework.Menu.SharedTypes.Providers;
@@ -20,6 +21,8 @@ namespace RPGFramework.Menu
         private readonly IScreenFadeService m_ScreenFadeService;
         private readonly IMenuArgsProvider  m_MenuArgsProvider;
         private readonly IMenuTypeProvider  m_MenuTypeProvider;
+        private readonly IChangeModuleStore m_ChangeModuleStore;
+        private readonly IResumeModuleStore m_ResumeModuleStore;
         private readonly IMenuModule        m_MenuModule;
         private readonly Stack<IMenu>       m_Menus;
         private readonly VisualElement      m_UIContainer;
@@ -30,13 +33,17 @@ namespace RPGFramework.Menu
                           IDIResolver        diResolver,
                           IScreenFadeService screenFadeService,
                           IMenuArgsProvider  menuArgsProvider,
-                          IMenuTypeProvider  menuTypeProvider)
+                          IMenuTypeProvider  menuTypeProvider,
+                          IChangeModuleStore changeModuleStore,
+                          IResumeModuleStore resumeModuleStore)
         {
             m_CoreModule        = coreModule;
             m_DIResolver        = diResolver;
             m_ScreenFadeService = screenFadeService;
             m_MenuArgsProvider  = menuArgsProvider;
             m_MenuTypeProvider  = menuTypeProvider;
+            m_ChangeModuleStore = changeModuleStore;
+            m_ResumeModuleStore = resumeModuleStore;
             m_MenuModule        = this;
             m_Menus             = new Stack<IMenu>();
 
@@ -100,7 +107,10 @@ namespace RPGFramework.Menu
             }
             else
             {
-                m_CoreModule.ResumeModuleAsync().FireAndForget();
+                byte moduleId = m_ResumeModuleStore.GetModuleId;
+                m_ChangeModuleStore.SetModuleId(moduleId);
+
+                m_CoreModule.RequestModuleChangeAsync().FireAndForget();
             }
         }
 
