@@ -5,6 +5,7 @@ using RPGFramework.Core.Audio;
 using RPGFramework.Core.Data;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveData;
+using RPGFramework.Core.Store;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
 
@@ -14,24 +15,30 @@ namespace RPGFramework.Menu.SubMenus
     {
         protected override bool m_HidePreviousUiOnSuspend => true;
 
+        private readonly ICoreModule          m_CoreModule;
         private readonly ILocalisationService m_LocalisationService;
+        private readonly IChangeModuleStore   m_ChangeModuleStore;
+        private readonly IResumeModuleStore   m_ResumeModuleStore;
         private readonly ISaveDataService     m_SaveDataService;
         private readonly ISaveFactory         m_SaveFactory;
-        private readonly ICoreModule          m_CoreModule;
 
-        public BeginMenu(IMenuModule          menuModule,
-                         IBeginMenuUI         beginMenuUI,
-                         IInputRouter         inputRouter,
+        public BeginMenu(ICoreModule          coreModule,
                          ILocalisationService localisationService,
+                         IChangeModuleStore   changeModuleStore,
+                         IResumeModuleStore   resumeModuleStore,
                          ISaveDataService     saveDataService,
                          ISaveFactory         saveFactory,
-                         IAudioIntentPlayer   audioIntentPlayer,
-                         ICoreModule          coreModule) : base(beginMenuUI, inputRouter, menuModule, audioIntentPlayer)
+                         IBeginMenuUI         beginMenuUI,
+                         IInputRouter         inputRouter,
+                         IMenuModule          menuModule,
+                         IAudioIntentPlayer   audioIntentPlayer) : base(beginMenuUI, inputRouter, menuModule, audioIntentPlayer)
         {
+            m_CoreModule          = coreModule;
             m_LocalisationService = localisationService;
+            m_ChangeModuleStore   = changeModuleStore;
+            m_ResumeModuleStore   = resumeModuleStore;
             m_SaveDataService     = saveDataService;
             m_SaveFactory         = saveFactory;
-            m_CoreModule          = coreModule;
         }
 
         protected override Task OnEnterComplete()
@@ -44,7 +51,11 @@ namespace RPGFramework.Menu.SubMenus
             if (m_SaveDataService.HasSaveLoaded())
             {
                 m_AudioIntentPlayer.Play(AudioIntent.NewGame, AudioContext.Menu);
-                m_CoreModule.ResumeModuleAsync().FireAndForget();
+
+                byte moduleId = m_ResumeModuleStore.GetModuleId;
+                m_ChangeModuleStore.SetModuleId(moduleId);
+
+                m_CoreModule.RequestModuleChangeAsync();
                 return Task.CompletedTask;
             }
 
