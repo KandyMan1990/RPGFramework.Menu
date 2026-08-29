@@ -82,6 +82,8 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             ShowUI(!hideUi);
 
+            m_LocalisationService.UnloadLocalisationData(m_LocalisationArgs.DataSheetsToLoad);
+
             await OnSuspendAsync(hideUi);
         }
 

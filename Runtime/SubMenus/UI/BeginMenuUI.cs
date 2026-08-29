@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
@@ -44,18 +43,6 @@ namespace RPGFramework.Menu.SubMenus.UI
                            IAudioIntentPlayer         audioIntentPlayer,
                            ILocalisationService       localisationService) : base(localisationArgs, uiProvider, audioIntentPlayer, localisationService)
         {
-        }
-
-        protected override Task OnSuspendAsync(bool hideUi)
-        {
-            m_LocalisationService.UnloadLocalisationData(m_LocalisationArgs.DataSheetsToLoad);
-            return base.OnSuspendAsync(hideUi);
-        }
-
-        protected override async Task OnResumeAsync()
-        {
-            await m_LocalisationService.LoadNewLocalisationDataAsync(m_LocalisationArgs.DataSheetsToLoad);
-            await base.OnResumeAsync();
         }
 
         protected override void HookupUI()
