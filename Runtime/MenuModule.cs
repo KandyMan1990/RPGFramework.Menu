@@ -27,6 +27,7 @@ namespace RPGFramework.Menu
         private readonly Stack<IMenu>       m_Menus;
         private readonly VisualElement      m_UIContainer;
 
+        private bool         m_ModuleChangeRequested;
         private InputAdapter m_InputAdapter;
 
         public MenuModule(ICoreModule        coreModule,
@@ -104,6 +105,13 @@ namespace RPGFramework.Menu
             if (m_Menus.TryPeek(out IMenu newMenu))
             {
                 await newMenu.OnResumeAsync();
+
+                if (m_ModuleChangeRequested)
+                {
+                    m_ModuleChangeRequested = false;
+
+                    m_CoreModule.RequestModuleChangeAsync().FireAndForget();
+                }
             }
             else
             {
@@ -112,6 +120,11 @@ namespace RPGFramework.Menu
 
                 m_CoreModule.RequestModuleChangeAsync().FireAndForget();
             }
+        }
+
+        void IMenuModule.RequestModuleChange()
+        {
+            m_ModuleChangeRequested = true;
         }
 
         bool IMenuModule.IsMenuInStack<T>()

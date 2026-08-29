@@ -14,13 +14,11 @@ namespace RPGFramework.Menu.SubMenus
     {
         protected override bool m_HidePreviousUiOnSuspend => true;
 
-        private readonly ICoreModule          m_CoreModule;
         private readonly ILocalisationService m_LocalisationService;
         private readonly ISaveDataService     m_SaveDataService;
         private readonly ISaveFactory         m_SaveFactory;
 
-        public BeginMenu(ICoreModule          coreModule,
-                         ILocalisationService localisationService,
+        public BeginMenu(ILocalisationService localisationService,
                          ISaveDataService     saveDataService,
                          ISaveFactory         saveFactory,
                          IBeginMenuUI         beginMenuUI,
@@ -28,7 +26,6 @@ namespace RPGFramework.Menu.SubMenus
                          IMenuModule          menuModule,
                          IAudioIntentPlayer   audioIntentPlayer) : base(beginMenuUI, inputRouter, menuModule, audioIntentPlayer)
         {
-            m_CoreModule          = coreModule;
             m_LocalisationService = localisationService;
             m_SaveDataService     = saveDataService;
             m_SaveFactory         = saveFactory;
@@ -45,7 +42,7 @@ namespace RPGFramework.Menu.SubMenus
             {
                 m_AudioIntentPlayer.Play(AudioIntent.NewGame, AudioContext.Menu);
 
-                m_CoreModule.RequestModuleChangeAsync();
+                m_MenuModule.RequestModuleChange();
                 return Task.CompletedTask;
             }
 
