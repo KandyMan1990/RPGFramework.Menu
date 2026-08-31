@@ -78,8 +78,6 @@ namespace RPGFramework.Menu
             }
 
             await m_ScreenFadeService.FadeOutAsync();
-
-            m_CoreModule.ResetModule<IMenuModule, MenuModule>();
         }
 
         async Task IMenuModule.PushMenu(MenuType menuType)
