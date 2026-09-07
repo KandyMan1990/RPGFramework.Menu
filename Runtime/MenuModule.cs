@@ -113,8 +113,13 @@ namespace RPGFramework.Menu
             }
             else
             {
-                byte moduleId = m_ResumeModuleStore.GetModuleId;
-                m_ChangeModuleStore.SetModuleId(moduleId);
+                if (!m_ModuleChangeRequested)
+                {
+                    byte moduleId = m_ResumeModuleStore.GetModuleId;
+                    m_ChangeModuleStore.SetModuleId(moduleId);
+                }
+
+                m_ModuleChangeRequested = false;
 
                 m_CoreModule.RequestModuleChangeAsync().FireAndForget();
             }

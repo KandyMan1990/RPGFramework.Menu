@@ -83,6 +83,22 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnLoadGamePressed()
         {
+            // TODO: Temporary.
+            // Loads the most recently written save. A save-slot picker belongs in the Save menu, which is
+            // one of the MenuType values that is not implemented yet.
+            if (!m_SaveDataService.TryGetLastWrittenSaveFileName(out string filename))
+            {
+                m_AudioIntentPlayer.Play(AudioIntent.Error, AudioContext.Menu);
+                return;
+            }
+
+            m_SaveDataService.BeginSave(filename);
+            m_SaveFactory.OnSaveLoaded(m_SaveDataService);
+
+            m_AudioIntentPlayer.Play(AudioIntent.LoadGame, AudioContext.Menu);
+
+            m_MenuModule.RequestModuleChange();
+            m_MenuModule.PopMenu().FireAndForget();
         }
 
         private void OnQuitPressed()
