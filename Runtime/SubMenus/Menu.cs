@@ -77,10 +77,7 @@ namespace RPGFramework.Menu.SubMenus
             return HandleControl(slot);
         }
 
-        void IInputContext.HandleMove(Vector2 move)
-        {
-            // noop
-        }
+        bool IInputContext.HandleMove(Vector2 move) => true;
 
         protected virtual Task OnEnterAsync(Dictionary<string, object> args)
         {
