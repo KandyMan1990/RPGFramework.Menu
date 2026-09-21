@@ -5,6 +5,7 @@ using RPGFramework.Core.Audio;
 using RPGFramework.Core.Data;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveData;
+using RPGFramework.Core.Store;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
 
@@ -17,10 +18,14 @@ namespace RPGFramework.Menu.SubMenus
         private readonly ILocalisationService m_LocalisationService;
         private readonly ISaveDataService     m_SaveDataService;
         private readonly ISaveFactory         m_SaveFactory;
+        private readonly ICurrentModuleStore  m_CurrentModuleStore;
+        private readonly IChangeModuleStore   m_ChangeModuleStore;
 
         public BeginMenu(ILocalisationService localisationService,
                          ISaveDataService     saveDataService,
                          ISaveFactory         saveFactory,
+                         ICurrentModuleStore  currentModuleStore,
+                         IChangeModuleStore   changeModuleStore,
                          IBeginMenuUI         beginMenuUI,
                          IInputRouter         inputRouter,
                          IMenuModule          menuModule,
@@ -29,6 +34,8 @@ namespace RPGFramework.Menu.SubMenus
             m_LocalisationService = localisationService;
             m_SaveDataService     = saveDataService;
             m_SaveFactory         = saveFactory;
+            m_CurrentModuleStore  = currentModuleStore;
+            m_ChangeModuleStore   = changeModuleStore;
         }
 
         protected override Task OnEnterComplete()
@@ -76,6 +83,8 @@ namespace RPGFramework.Menu.SubMenus
 
             m_SaveFactory.CreateDefaultSave(m_SaveDataService);
 
+            m_ChangeModuleStore.SetModuleId(m_CurrentModuleStore.GetModuleId);
+
             m_SaveDataService.CommitSave();
 
             m_MenuModule.PushMenu(MenuType.Config).FireAndForget();
@@ -94,6 +103,8 @@ namespace RPGFramework.Menu.SubMenus
 
             m_SaveDataService.BeginSave(filename);
             m_SaveFactory.OnSaveLoaded(m_SaveDataService);
+
+            m_ChangeModuleStore.SetModuleId(m_CurrentModuleStore.GetModuleId);
 
             m_AudioIntentPlayer.Play(AudioIntent.LoadGame, AudioContext.Menu);
 
