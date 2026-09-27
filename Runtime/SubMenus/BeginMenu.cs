@@ -85,8 +85,6 @@ namespace RPGFramework.Menu.SubMenus
 
             m_ChangeModuleStore.SetModuleId(m_CurrentModuleStore.GetModuleId);
 
-            m_SaveDataService.CommitSave();
-
             m_MenuModule.PushMenu(MenuType.Config).FireAndForget();
         }
 
