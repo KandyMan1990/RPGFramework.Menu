@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Data;
@@ -18,6 +19,8 @@ namespace RPGFramework.Menu.SubMenus
         private readonly ILocalisationService m_LocalisationService;
         private readonly ISaveDataService     m_SaveDataService;
         private readonly ISettingsService     m_SettingsService;
+        private readonly IMusicPlayer         m_MusicPlayer;
+        private readonly ISfxPlayer           m_SfxPlayer;
         private readonly ISaveFactory         m_SaveFactory;
         private readonly ICurrentModuleStore  m_CurrentModuleStore;
         private readonly IChangeModuleStore   m_ChangeModuleStore;
@@ -25,6 +28,8 @@ namespace RPGFramework.Menu.SubMenus
         public BeginMenu(ILocalisationService localisationService,
                          ISaveDataService     saveDataService,
                          ISettingsService     settingsService,
+                         IMusicPlayer         musicPlayer,
+                         ISfxPlayer           sfxPlayer,
                          ISaveFactory         saveFactory,
                          ICurrentModuleStore  currentModuleStore,
                          IChangeModuleStore   changeModuleStore,
@@ -36,6 +41,8 @@ namespace RPGFramework.Menu.SubMenus
             m_LocalisationService = localisationService;
             m_SaveDataService     = saveDataService;
             m_SettingsService     = settingsService;
+            m_MusicPlayer         = musicPlayer;
+            m_SfxPlayer           = sfxPlayer;
             m_SaveFactory         = saveFactory;
             m_CurrentModuleStore  = currentModuleStore;
             m_ChangeModuleStore   = changeModuleStore;
@@ -43,7 +50,7 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override Task OnEnterComplete()
         {
-            return SetLanguageAsync();
+            return ApplySettingsAsync();
         }
 
         protected override Task OnResumeAsync()
@@ -122,17 +129,21 @@ namespace RPGFramework.Menu.SubMenus
 #endif
         }
 
-        private Task SetLanguageAsync()
+        private Task ApplySettingsAsync()
         {
+            m_SettingsService.TryGetSection(FrameworkSettingsSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData);
+
+            ConfigData_V1 data = configData.Data;
+
+            m_MusicPlayer.SetVolume(data.MusicVolume);
+            m_SfxPlayer.SetVolume(data.SfxVolume);
+
             if (!m_SettingsService.IsSaved)
             {
                 return m_MenuModule.PushMenu(MenuType.Language);
             }
 
-            m_SettingsService.TryGetSection(FrameworkSettingsSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData);
-
-            ConfigData_V1 data     = configData.Data;
-            string        language = data.GetLanguage();
+            string language = data.GetLanguage();
 
             return m_LocalisationService.SetCurrentLanguage(language);
         }

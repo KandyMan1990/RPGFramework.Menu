@@ -115,10 +115,20 @@ namespace RPGFramework.Menu.SubMenus.UI
             UIToolkitInputUtility.RegisterButtonCallbacks(m_SfxVolumeBtn,          OnSfxVolumeBtnNavigate);
             UIToolkitInputUtility.RegisterButtonCallbacks(m_BattleMessageSpeedBtn, OnBattleMessageSpeedBtnNavigate);
             UIToolkitInputUtility.RegisterButtonCallbacks(m_FieldMessageSpeedBtn,  OnFieldMessageSpeedBtnNavigate);
+
+            m_MusicVolumeSlider.RegisterValueChangedCallback(OnMusicVolumeSliderChanged);
+            m_SfxVolumeSlider.RegisterValueChangedCallback(OnSfxVolumeSliderChanged);
+            m_BattleMessageSpeedSlider.RegisterValueChangedCallback(OnBattleMessageSpeedSliderChanged);
+            m_FieldMessageSpeedSlider.RegisterValueChangedCallback(OnFieldMessageSpeedSliderChanged);
         }
 
         protected override void UnregisterCallbacks()
         {
+            m_FieldMessageSpeedSlider.UnregisterValueChangedCallback(OnFieldMessageSpeedSliderChanged);
+            m_BattleMessageSpeedSlider.UnregisterValueChangedCallback(OnBattleMessageSpeedSliderChanged);
+            m_SfxVolumeSlider.UnregisterValueChangedCallback(OnSfxVolumeSliderChanged);
+            m_MusicVolumeSlider.UnregisterValueChangedCallback(OnMusicVolumeSliderChanged);
+
             UIToolkitInputUtility.UnregisterButtonCallbacks(m_FieldMessageSpeedBtn,  OnFieldMessageSpeedBtnNavigate);
             UIToolkitInputUtility.UnregisterButtonCallbacks(m_BattleMessageSpeedBtn, OnBattleMessageSpeedBtnNavigate);
             UIToolkitInputUtility.UnregisterButtonCallbacks(m_SfxVolumeBtn,          OnSfxVolumeBtnNavigate);
@@ -134,22 +144,22 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         void IConfigMenuUI.SetMusicVolume(float volume)
         {
-            m_MusicVolumeSlider.value = volume;
+            m_MusicVolumeSlider.SetValueWithoutNotify(volume);
         }
 
         void IConfigMenuUI.SetSfxVolume(float volume)
         {
-            m_SfxVolumeSlider.value = volume;
+            m_SfxVolumeSlider.SetValueWithoutNotify(volume);
         }
 
         void IConfigMenuUI.SetBattleMessageSpeed(float speed)
         {
-            m_BattleMessageSpeedSlider.value = speed;
+            m_BattleMessageSpeedSlider.SetValueWithoutNotify(speed);
         }
 
         void IConfigMenuUI.SetFieldMessageSpeed(float speed)
         {
-            m_FieldMessageSpeedSlider.value = speed;
+            m_FieldMessageSpeedSlider.SetValueWithoutNotify(speed);
         }
 
         private void OnLanguageBtnNavigate(NavigationMoveEvent evt)
@@ -188,7 +198,7 @@ namespace RPGFramework.Menu.SubMenus.UI
                 OnBtnNavigate();
             }
 
-            OnSliderChanged(m_MusicVolumeSlider, evt, m_OnMusicVolumeChanged);
+            OnSliderNavigate(m_MusicVolumeSlider, evt);
         }
 
         private void OnSfxVolumeBtnNavigate(NavigationMoveEvent evt)
@@ -198,7 +208,7 @@ namespace RPGFramework.Menu.SubMenus.UI
                 OnBtnNavigate();
             }
 
-            OnSliderChanged(m_SfxVolumeSlider, evt, m_OnSfxVolumeChanged);
+            OnSliderNavigate(m_SfxVolumeSlider, evt);
         }
 
         private void OnBattleMessageSpeedBtnNavigate(NavigationMoveEvent evt)
@@ -208,7 +218,7 @@ namespace RPGFramework.Menu.SubMenus.UI
                 OnBtnNavigate();
             }
 
-            OnSliderChanged(m_BattleMessageSpeedSlider, evt, m_OnBattleMessageSpeedChanged);
+            OnSliderNavigate(m_BattleMessageSpeedSlider, evt);
         }
 
         private void OnFieldMessageSpeedBtnNavigate(NavigationMoveEvent evt)
@@ -218,7 +228,7 @@ namespace RPGFramework.Menu.SubMenus.UI
                 OnBtnNavigate();
             }
 
-            OnSliderChanged(m_FieldMessageSpeedSlider, evt, m_OnFieldMessageSpeedChanged);
+            OnSliderNavigate(m_FieldMessageSpeedSlider, evt);
         }
 
         private void OnControlsBtnSubmitted(NavigationSubmitEvent evt)
@@ -237,7 +247,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_OnControlsPressed?.Invoke();
         }
 
-        private void OnSliderChanged(Slider slider, NavigationMoveEvent evt, Action<float> action)
+        private void OnSliderNavigate(Slider slider, NavigationMoveEvent evt)
         {
             const float epsilon = 0.001f;
             float       value   = slider.value;
@@ -255,8 +265,27 @@ namespace RPGFramework.Menu.SubMenus.UI
             {
                 OnBtnNavigate();
                 slider.value = value;
-                action?.Invoke(value);
             }
+        }
+
+        private void OnMusicVolumeSliderChanged(ChangeEvent<float> evt)
+        {
+            m_OnMusicVolumeChanged?.Invoke(evt.newValue);
+        }
+
+        private void OnSfxVolumeSliderChanged(ChangeEvent<float> evt)
+        {
+            m_OnSfxVolumeChanged?.Invoke(evt.newValue);
+        }
+
+        private void OnBattleMessageSpeedSliderChanged(ChangeEvent<float> evt)
+        {
+            m_OnBattleMessageSpeedChanged?.Invoke(evt.newValue);
+        }
+
+        private void OnFieldMessageSpeedSliderChanged(ChangeEvent<float> evt)
+        {
+            m_OnFieldMessageSpeedChanged?.Invoke(evt.newValue);
         }
     }
 }

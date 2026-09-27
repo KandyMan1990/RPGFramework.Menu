@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Data;
@@ -19,6 +20,8 @@ namespace RPGFramework.Menu.SubMenus
 
         private readonly ISettingsService     m_SettingsService;
         private readonly ILocalisationService m_LocalisationService;
+        private readonly IMusicPlayer         m_MusicPlayer;
+        private readonly ISfxPlayer           m_SfxPlayer;
 
         private ConfigData_V1 m_ConfigData;
 
@@ -27,10 +30,14 @@ namespace RPGFramework.Menu.SubMenus
                           IInputRouter         inputRouter,
                           ISettingsService     settingsService,
                           ILocalisationService localisationService,
+                          IMusicPlayer         musicPlayer,
+                          ISfxPlayer           sfxPlayer,
                           IAudioIntentPlayer   audioIntentPlayer) : base(configMenuUI, inputRouter, menuModule, audioIntentPlayer)
         {
             m_SettingsService     = settingsService;
             m_LocalisationService = localisationService;
+            m_MusicPlayer         = musicPlayer;
+            m_SfxPlayer           = sfxPlayer;
         }
 
         protected override Task OnEnterAsync(Dictionary<string, object> args)
@@ -128,11 +135,15 @@ namespace RPGFramework.Menu.SubMenus
         private void OnMusicVolumeChanged(float value)
         {
             m_ConfigData.MusicVolume = value;
+
+            m_MusicPlayer.SetVolume(value);
         }
 
         private void OnSfxVolumeChanged(float value)
         {
             m_ConfigData.SfxVolume = value;
+
+            m_SfxPlayer.SetVolume(value);
         }
 
         private void OnBattleMessageSpeedChanged(float value)
