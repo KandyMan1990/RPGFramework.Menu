@@ -7,6 +7,7 @@ using RPGFramework.Core.Audio;
 using RPGFramework.Core.Data;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveData;
+using RPGFramework.Core.Settings;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
 
@@ -16,7 +17,7 @@ namespace RPGFramework.Menu.SubMenus
     {
         protected override bool m_HidePreviousUiOnSuspend => true;
 
-        private readonly ISaveDataService     m_SaveDataService;
+        private readonly ISettingsService     m_SettingsService;
         private readonly ILocalisationService m_LocalisationService;
 
         private ConfigData_V1 m_ConfigData;
@@ -24,19 +25,19 @@ namespace RPGFramework.Menu.SubMenus
         public ConfigMenu(IMenuModule          menuModule,
                           IConfigMenuUI        configMenuUI,
                           IInputRouter         inputRouter,
-                          ISaveDataService     saveDataService,
+                          ISettingsService     settingsService,
                           ILocalisationService localisationService,
                           IAudioIntentPlayer   audioIntentPlayer) : base(configMenuUI, inputRouter, menuModule, audioIntentPlayer)
         {
-            m_SaveDataService     = saveDataService;
+            m_SettingsService     = settingsService;
             m_LocalisationService = localisationService;
         }
 
         protected override Task OnEnterAsync(Dictionary<string, object> args)
         {
-            if (!m_SaveDataService.TryGetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData))
+            if (!m_SettingsService.TryGetSection(FrameworkSettingsSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData))
             {
-                throw new InvalidDataException($"{nameof(IConfigMenu)}::{nameof(OnEnterAsync)} Config data not found in save data");
+                throw new InvalidDataException($"{nameof(IConfigMenu)}::{nameof(OnEnterAsync)} Config data not found in the settings. The game's {nameof(ISettingsFactory)} must create it");
             }
 
             m_ConfigData = configData.Data;
@@ -55,7 +56,8 @@ namespace RPGFramework.Menu.SubMenus
         {
             SaveSection<ConfigData_V1> data = new SaveSection<ConfigData_V1>(Versions.GLOBAL_CONFIG, m_ConfigData);
 
-            m_SaveDataService.SetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, data);
+            m_SettingsService.SetSection(FrameworkSettingsSectionDatabase.CONFIG_DATA, data);
+            m_SettingsService.Commit();
 
             return base.OnExitAsync();
         }

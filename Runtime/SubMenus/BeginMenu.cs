@@ -1,10 +1,10 @@
-﻿using System.IO;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Data;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveData;
+using RPGFramework.Core.Settings;
 using RPGFramework.Core.Store;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
@@ -17,12 +17,14 @@ namespace RPGFramework.Menu.SubMenus
 
         private readonly ILocalisationService m_LocalisationService;
         private readonly ISaveDataService     m_SaveDataService;
+        private readonly ISettingsService     m_SettingsService;
         private readonly ISaveFactory         m_SaveFactory;
         private readonly ICurrentModuleStore  m_CurrentModuleStore;
         private readonly IChangeModuleStore   m_ChangeModuleStore;
 
         public BeginMenu(ILocalisationService localisationService,
                          ISaveDataService     saveDataService,
+                         ISettingsService     settingsService,
                          ISaveFactory         saveFactory,
                          ICurrentModuleStore  currentModuleStore,
                          IChangeModuleStore   changeModuleStore,
@@ -33,6 +35,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             m_LocalisationService = localisationService;
             m_SaveDataService     = saveDataService;
+            m_SettingsService     = settingsService;
             m_SaveFactory         = saveFactory;
             m_CurrentModuleStore  = currentModuleStore;
             m_ChangeModuleStore   = changeModuleStore;
@@ -121,23 +124,17 @@ namespace RPGFramework.Menu.SubMenus
 
         private Task SetLanguageAsync()
         {
-            if (m_SaveDataService.TryGetLastWrittenSaveFileName(out string filename))
+            if (!m_SettingsService.IsSaved)
             {
-                m_SaveDataService.BeginSave(filename);
-
-                if (m_SaveDataService.TryGetSection(FrameworkSaveSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData))
-                {
-                    ConfigData_V1 data = configData.Data;
-                    m_SaveDataService.ClearSaveDataFromMemory();
-
-                    string language = data.GetLanguage();
-                    return m_LocalisationService.SetCurrentLanguage(language);
-                }
-
-                throw new InvalidDataException($"{nameof(IBeginMenu)}::{nameof(SetLanguageAsync)} Save file [{filename}] does not contain config data");
+                return m_MenuModule.PushMenu(MenuType.Language);
             }
 
-            return m_MenuModule.PushMenu(MenuType.Language);
+            m_SettingsService.TryGetSection(FrameworkSettingsSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData);
+
+            ConfigData_V1 data     = configData.Data;
+            string        language = data.GetLanguage();
+
+            return m_LocalisationService.SetCurrentLanguage(language);
         }
     }
 }

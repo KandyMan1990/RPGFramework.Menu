@@ -4,7 +4,10 @@ using System.Globalization;
 using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
+using RPGFramework.Core.Data;
 using RPGFramework.Core.Input;
+using RPGFramework.Core.SaveData;
+using RPGFramework.Core.Settings;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
 
@@ -15,14 +18,17 @@ namespace RPGFramework.Menu.SubMenus
         protected override bool m_HidePreviousUiOnSuspend => true;
 
         private readonly ILocalisationService m_LocalisationService;
+        private readonly ISettingsService     m_SettingsService;
 
         public LanguageMenu(ILanguageMenuUI      languageMenuUI,
                             IInputRouter         inputRouter,
                             IMenuModule          menuModule,
                             ILocalisationService localisationService,
+                            ISettingsService     settingsService,
                             IAudioIntentPlayer   audioIntentPlayer) : base(languageMenuUI, inputRouter, menuModule, audioIntentPlayer)
         {
             m_LocalisationService = localisationService;
+            m_SettingsService     = settingsService;
         }
 
         protected override async Task OnEnterAsync(Dictionary<string, object> args)
@@ -30,6 +36,19 @@ namespace RPGFramework.Menu.SubMenus
             await base.OnEnterAsync(args);
 
             await InitLanguageAsync();
+        }
+
+        protected override Task OnExitAsync()
+        {
+            m_SettingsService.TryGetSection(FrameworkSettingsSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData);
+
+            ConfigData_V1 data = configData.Data;
+            data.SetLanguage(m_LocalisationService.CurrentLanguage);
+
+            m_SettingsService.SetSection(FrameworkSettingsSectionDatabase.CONFIG_DATA, new SaveSection<ConfigData_V1>(Versions.GLOBAL_CONFIG, data));
+            m_SettingsService.Commit();
+
+            return base.OnExitAsync();
         }
 
         protected override void RegisterCallbacks()
