@@ -21,18 +21,20 @@ namespace RPGFramework.Menu.SubMenus
         private readonly ISettingsService     m_SettingsService;
         private readonly IMusicPlayer         m_MusicPlayer;
         private readonly ISfxPlayer           m_SfxPlayer;
-        private readonly ISaveFactory         m_SaveFactory;
         private readonly ICurrentModuleStore  m_CurrentModuleStore;
         private readonly IChangeModuleStore   m_ChangeModuleStore;
+        private readonly IPlayTimeStore       m_PlayTimeStore;
+
+        private bool m_StartingNewGame;
 
         public BeginMenu(ILocalisationService localisationService,
                          ISaveDataService     saveDataService,
                          ISettingsService     settingsService,
                          IMusicPlayer         musicPlayer,
                          ISfxPlayer           sfxPlayer,
-                         ISaveFactory         saveFactory,
                          ICurrentModuleStore  currentModuleStore,
                          IChangeModuleStore   changeModuleStore,
+                         IPlayTimeStore       playTimeStore,
                          IBeginMenuUI         beginMenuUI,
                          IInputRouter         inputRouter,
                          IMenuModule          menuModule,
@@ -43,9 +45,9 @@ namespace RPGFramework.Menu.SubMenus
             m_SettingsService     = settingsService;
             m_MusicPlayer         = musicPlayer;
             m_SfxPlayer           = sfxPlayer;
-            m_SaveFactory         = saveFactory;
             m_CurrentModuleStore  = currentModuleStore;
             m_ChangeModuleStore   = changeModuleStore;
+            m_PlayTimeStore       = playTimeStore;
         }
 
         protected override Task OnEnterComplete()
@@ -55,9 +57,11 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override Task OnResumeAsync()
         {
-            if (m_SaveDataService.HasSaveLoaded())
+            if (m_StartingNewGame)
             {
                 m_AudioIntentPlayer.Play(AudioIntent.NewGame, AudioContext.Menu);
+
+                m_PlayTimeStore.StartCounting();
 
                 m_MenuModule.RequestModuleChange();
                 return Task.CompletedTask;
@@ -91,33 +95,22 @@ namespace RPGFramework.Menu.SubMenus
 
             m_SaveDataService.BeginSave(filename);
 
-            m_SaveFactory.CreateDefaultSave(m_SaveDataService);
-
             m_ChangeModuleStore.SetModuleId(m_CurrentModuleStore.GetModuleId);
+
+            m_StartingNewGame = true;
 
             m_MenuModule.PushMenu(MenuType.Config).FireAndForget();
         }
 
         private void OnLoadGamePressed()
         {
-            // TODO: Temporary.
-            // Loads the most recently written save. A save-slot picker belongs in the Save menu, which is
-            // one of the MenuType values that is not implemented yet.
-            if (!m_SaveDataService.TryGetLastWrittenSaveFileName(out string filename))
+            if (m_SaveDataService.GetListOfSaveFiles().Length == 0)
             {
                 m_AudioIntentPlayer.Play(AudioIntent.Error, AudioContext.Menu);
                 return;
             }
 
-            m_SaveDataService.BeginSave(filename);
-            m_SaveFactory.OnSaveLoaded(m_SaveDataService);
-
-            m_ChangeModuleStore.SetModuleId(m_CurrentModuleStore.GetModuleId);
-
-            m_AudioIntentPlayer.Play(AudioIntent.LoadGame, AudioContext.Menu);
-
-            m_MenuModule.RequestModuleChange();
-            m_MenuModule.PopMenu().FireAndForget();
+            m_MenuModule.PushMenu(MenuType.Load).FireAndForget();
         }
 
         private void OnQuitPressed()

@@ -49,6 +49,18 @@ namespace RPGFramework.Menu
     {
     }
 
+    public interface IPartyMenu : IMenu
+    {
+    }
+
+    public interface ISaveMenu : IMenu
+    {
+    }
+
+    public interface ILoadMenu : IMenu
+    {
+    }
+
     public interface ILanguageMenuUI : IMenuUI
     {
         event Action<int> OnLanguageChanged;
@@ -75,5 +87,25 @@ namespace RPGFramework.Menu
         void                SetSfxVolume(float          volume);
         void                SetBattleMessageSpeed(float speed);
         void                SetFieldMessageSpeed(float  speed);
+    }
+
+    public interface IPartyMenuUI : IMenuUI
+    {
+        event Action OnConfigPressed;
+        event Action OnSavePressed;
+        void         SetSaveEnabled(bool   enabled);
+        void         SetLocationName(ulong keyHash);
+        void         SetPlayTime(uint      seconds);
+    }
+
+    public interface ISaveSlotMenuUI : IMenuUI
+    {
+        event Action<int>  OnSlotChosen;
+        event Action       OnNewSaveChosen;
+        event Action<bool> OnOverwriteAnswered;
+        void               SetSaving(bool                        saving);
+        void               SetSlots(IReadOnlyList<SaveSlotInfo> slots, int focusIndex);
+        void               AskToOverwrite();
+        void               CloseOverwriteQuestion();
     }
 }

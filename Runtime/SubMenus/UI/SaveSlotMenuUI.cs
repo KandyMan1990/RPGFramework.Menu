@@ -1,0 +1,239 @@
+using System;
+using System.Collections.Generic;
+using RPGFramework.Core.Audio;
+using RPGFramework.Core.Input;
+using RPGFramework.Core.UI;
+using RPGFramework.Localisation;
+using UnityEngine.UIElements;
+
+namespace RPGFramework.Menu.SubMenus.UI
+{
+    public class SaveSlotMenuUI : MenuUI<ISaveSlotMenuUI>, ISaveSlotMenuUI
+    {
+        event Action<int> ISaveSlotMenuUI.OnSlotChosen
+        {
+            add => m_OnSlotChosen += value;
+            remove => m_OnSlotChosen -= value;
+        }
+
+        event Action ISaveSlotMenuUI.OnNewSaveChosen
+        {
+            add => m_OnNewSaveChosen += value;
+            remove => m_OnNewSaveChosen -= value;
+        }
+
+        event Action<bool> ISaveSlotMenuUI.OnOverwriteAnswered
+        {
+            add => m_OnOverwriteAnswered += value;
+            remove => m_OnOverwriteAnswered -= value;
+        }
+
+        private event Action<int>  m_OnSlotChosen;
+        private event Action       m_OnNewSaveChosen;
+        private event Action<bool> m_OnOverwriteAnswered;
+
+        private readonly List<RPGUIButton> m_Rows = new List<RPGUIButton>();
+
+        private Label         m_TitleLabel;
+        private ScrollView    m_SlotsScrollView;
+        private VisualElement m_OverwritePanel;
+        private Label         m_OverwriteLabel;
+        private RPGUIButton   m_YesBtn;
+        private RPGUIButton   m_NoBtn;
+
+        private bool                        m_Saving;
+        private IReadOnlyList<SaveSlotInfo> m_Slots = Array.Empty<SaveSlotInfo>();
+        private VisualElement               m_RowAskedAbout;
+
+        protected override VisualElement GetDefaultFocusedElement() => m_Rows.Count > 0 ? m_Rows[0] : null;
+
+        public SaveSlotMenuUI(ISaveMenuLocalisationArgs localisationArgs,
+                              IMenuUIProvider           uiProvider,
+                              IAudioIntentPlayer        audioIntentPlayer,
+                              ILocalisationService      localisationService) : base(localisationArgs, uiProvider, audioIntentPlayer, localisationService)
+        {
+        }
+
+        protected override void HookupUI()
+        {
+            m_TitleLabel      = m_UIInstance.Q<Label>("TitleLabel");
+            m_SlotsScrollView = m_UIInstance.Q<ScrollView>("SlotsScrollView");
+            m_OverwritePanel  = m_UIInstance.Q<VisualElement>("OverwritePanel");
+            m_OverwriteLabel  = m_UIInstance.Q<Label>("OverwriteLabel");
+            m_YesBtn          = m_UIInstance.Q<RPGUIButton>("YesBtn");
+            m_NoBtn           = m_UIInstance.Q<RPGUIButton>("NoBtn");
+
+            m_OverwritePanel.style.display = DisplayStyle.None;
+        }
+
+        protected override void LocaliseUI()
+        {
+            ISaveMenuLocalisationArgs args = (ISaveMenuLocalisationArgs)m_LocalisationArgs;
+
+            m_TitleLabel.text     = m_LocalisationService.Get(m_Saving ? args.SaveTitle : args.LoadTitle);
+            m_OverwriteLabel.text = m_LocalisationService.Get(args.OverwriteQuestion);
+            m_YesBtn.text         = m_LocalisationService.Get(args.Yes);
+            m_NoBtn.text          = m_LocalisationService.Get(args.No);
+
+            int first = m_Saving ? 1 : 0;
+
+            if (m_Saving && m_Rows.Count > 0)
+            {
+                m_Rows[0].text = m_LocalisationService.Get(args.NewSave);
+            }
+
+            for (int i = 0; i < m_Slots.Count && first + i < m_Rows.Count; i++)
+            {
+                m_Rows[first + i].text = Describe(m_Slots[i]);
+            }
+        }
+
+        protected override void RegisterCallbacks()
+        {
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_YesBtn, OnYesBtnNavigate, OnYesBtnSubmitted, OnYesBtnClicked);
+            UIToolkitInputUtility.RegisterButtonCallbacks(m_NoBtn,  OnNoBtnNavigate,  OnNoBtnSubmitted,  OnNoBtnClicked);
+        }
+
+        protected override void UnregisterCallbacks()
+        {
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_NoBtn,  OnNoBtnNavigate,  OnNoBtnSubmitted,  OnNoBtnClicked);
+            UIToolkitInputUtility.UnregisterButtonCallbacks(m_YesBtn, OnYesBtnNavigate, OnYesBtnSubmitted, OnYesBtnClicked);
+        }
+
+        void ISaveSlotMenuUI.SetSaving(bool saving)
+        {
+            m_Saving = saving;
+        }
+
+        void ISaveSlotMenuUI.SetSlots(IReadOnlyList<SaveSlotInfo> slots, int focusIndex)
+        {
+            m_Slots = slots;
+
+            m_SlotsScrollView.Clear();
+            m_Rows.Clear();
+
+            if (m_Saving)
+            {
+                AddRow(() => m_OnNewSaveChosen?.Invoke());
+            }
+
+            for (int i = 0; i < slots.Count; i++)
+            {
+                int index = i;
+
+                AddRow(() => m_OnSlotChosen?.Invoke(index));
+            }
+
+            LocaliseUI();
+
+            int first = m_Saving ? 1 : 0;
+
+            if (m_Rows.Count > 0)
+            {
+                m_Rows[focusIndex >= 0 ? first + focusIndex : 0].Focus();
+            }
+        }
+
+        void ISaveSlotMenuUI.AskToOverwrite()
+        {
+            m_RowAskedAbout = (VisualElement)m_UIInstance.focusController.focusedElement;
+
+            m_OverwritePanel.style.display = DisplayStyle.Flex;
+
+            m_NoBtn.Focus();
+        }
+
+        void ISaveSlotMenuUI.CloseOverwriteQuestion()
+        {
+            CloseOverwriteQuestion();
+        }
+
+        private void CloseOverwriteQuestion()
+        {
+            m_OverwritePanel.style.display = DisplayStyle.None;
+
+            m_RowAskedAbout?.Focus();
+            m_RowAskedAbout = null;
+        }
+
+        private void AddRow(Action choose)
+        {
+            RPGUIButton row = new RPGUIButton { focusable = true };
+
+            row.RegisterCallback<ClickEvent>(_ => choose());
+            row.RegisterCallback<NavigationSubmitEvent>(_ => choose());
+            row.RegisterCallback<NavigationMoveEvent>(OnRowNavigate);
+            row.RegisterCallback<FocusInEvent>(_ => m_SlotsScrollView.ScrollTo(row));
+
+            m_Rows.Add(row);
+            m_SlotsScrollView.Add(row);
+        }
+
+        private void OnRowNavigate(NavigationMoveEvent evt)
+        {
+            RPGUIButton row   = (RPGUIButton)evt.currentTarget;
+            int         index = m_Rows.IndexOf(row);
+
+            RPGUIButton up   = index > 0 ? m_Rows[index                - 1] : null;
+            RPGUIButton down = index < m_Rows.Count - 1 ? m_Rows[index + 1] : null;
+
+            if (UIToolkitInputUtility.Navigate(evt, row, up, down))
+            {
+                OnBtnNavigate();
+            }
+        }
+
+        private string Describe(SaveSlotInfo slot)
+        {
+            string location = m_LocalisationService.TryGet(slot.LocationName, out string name) ? name : string.Empty;
+            string time     = $"{slot.PlayTime / 3600}:{slot.PlayTime / 60 % 60:00}";
+
+            string description = $"{location}    {time}    {slot.LastWritten:g}";
+
+            return description;
+        }
+
+        private void OnYesBtnNavigate(NavigationMoveEvent evt)
+        {
+            if (UIToolkitInputUtility.Navigate(evt, m_YesBtn, left: m_NoBtn, right: m_NoBtn))
+            {
+                OnBtnNavigate();
+            }
+        }
+
+        private void OnYesBtnSubmitted(NavigationSubmitEvent evt)
+        {
+            Answer(true);
+        }
+
+        private void OnYesBtnClicked(ClickEvent evt)
+        {
+            Answer(true);
+        }
+
+        private void OnNoBtnNavigate(NavigationMoveEvent evt)
+        {
+            if (UIToolkitInputUtility.Navigate(evt, m_NoBtn, left: m_YesBtn, right: m_YesBtn))
+            {
+                OnBtnNavigate();
+            }
+        }
+
+        private void OnNoBtnSubmitted(NavigationSubmitEvent evt)
+        {
+            Answer(false);
+        }
+
+        private void OnNoBtnClicked(ClickEvent evt)
+        {
+            Answer(false);
+        }
+
+        private void Answer(bool overwrite)
+        {
+            CloseOverwriteQuestion();
+
+            m_OnOverwriteAnswered?.Invoke(overwrite);
+        }
+    }
+}

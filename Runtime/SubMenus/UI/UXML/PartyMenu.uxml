@@ -1,0 +1,18 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Packages/com.rpgframework.core/Runtime/UI%20Toolkit/UIShared.uss?fileID=7433441132597879392&amp;guid=94d472c2b9a84d747912b7c0d4c5d053&amp;type=3#UIShared"/>
+    <ui:VisualElement name="PartyMenu" style="flex-grow: 1; background-color: rgb(54, 8, 68); margin-top: 2%; margin-right: 5%; margin-bottom: 2%; margin-left: 5%; border-left-color: rgba(209, 209, 209, 0.87); border-right-color: rgba(209, 209, 209, 0.87); border-top-color: rgba(209, 209, 209, 0.87); border-bottom-color: rgba(209, 209, 209, 0.87); border-top-width: 4px; border-right-width: 4px; border-bottom-width: 4px; border-left-width: 4px; border-top-left-radius: 100px; border-top-right-radius: 100px; border-bottom-right-radius: 100px; border-bottom-left-radius: 100px;">
+        <ui:VisualElement name="ContentContainer" style="flex-direction: column; font-size: 48px; flex-grow: 1; align-items: center;">
+            <ui:VisualElement name="ButtonsContainer" style="flex-grow: 1; justify-content: space-evenly; margin-top: 10%; margin-bottom: 10%;">
+                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="ConfigBtn" text="Config"/>
+                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="SaveBtn" text="Save"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="FooterContainer" style="height: 12%; flex-direction: row; justify-content: space-between; align-items: center; margin-left: 8%; margin-right: 8%; font-size: 36px;">
+            <ui:Label text="Location" name="LocationLabel" class="rpg-ui-label"/>
+            <ui:VisualElement name="PlayTime" style="flex-direction: row;">
+                <ui:Label text="Time" name="TimeLabel" class="rpg-ui-label" style="margin-right: 24px;"/>
+                <ui:Label text="0:00" name="PlayTimeLabel" class="rpg-ui-label"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

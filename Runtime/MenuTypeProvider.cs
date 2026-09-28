@@ -27,9 +27,13 @@ namespace RPGFramework.Menu
                 case MenuType.Config:
                     return typeof(IConfigMenu);
                 case MenuType.Save:
-                    return null;
+                    return typeof(ISaveMenu);
                 case MenuType.Language:
                     return typeof(ILanguageMenu);
+                case MenuType.Party:
+                    return typeof(IPartyMenu);
+                case MenuType.Load:
+                    return typeof(ILoadMenu);
                 default:
                     throw new ArgumentOutOfRangeException($"{nameof(IMenuTypeProvider)}::{nameof(IMenuTypeProvider.GetType)} [{type}] not implemented");
             }

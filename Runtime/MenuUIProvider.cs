@@ -13,6 +13,10 @@ namespace RPGFramework.Menu
         private VisualTreeAsset m_ConfigMenu;
         [SerializeField]
         private VisualTreeAsset m_LanguageMenu;
+        [SerializeField]
+        private VisualTreeAsset m_PartyMenu;
+        [SerializeField]
+        private VisualTreeAsset m_SaveMenu;
 
         VisualTreeAsset IMenuUIProvider.GetMenuUI<T>()
         {
@@ -21,6 +25,8 @@ namespace RPGFramework.Menu
             if (type == typeof(IBeginMenuUI)) return m_BeginMenu;
             if (type == typeof(IConfigMenuUI)) return m_ConfigMenu;
             if (type == typeof(ILanguageMenuUI)) return m_LanguageMenu;
+            if (type == typeof(IPartyMenuUI)) return m_PartyMenu;
+            if (type == typeof(ISaveSlotMenuUI)) return m_SaveMenu;
 
             throw new NotImplementedException($"The type {type} is not implemented");
         }

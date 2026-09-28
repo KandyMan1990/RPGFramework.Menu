@@ -34,14 +34,14 @@ namespace RPGFramework.Menu
 
     public interface ILanguageMenuLocalisationArgs : ILocalisationArgs
     {
-        public string ScreenTitle   { get; }
-        public string Language { get; }
+        public string ScreenTitle { get; }
+        public string Language    { get; }
     }
 
     public class LanguageMenuLocalisationArgs : ILanguageMenuLocalisationArgs
     {
         public string   ScreenTitle      { get; }
-        public string   Language    { get; }
+        public string   Language         { get; }
         public string[] DataSheetsToLoad { get; }
 
         public LanguageMenuLocalisationArgs(string   screenTitle,
@@ -49,7 +49,7 @@ namespace RPGFramework.Menu
                                             string[] dataSheetsToLoad)
         {
             ScreenTitle      = screenTitle;
-            Language    = language;
+            Language         = language;
             DataSheetsToLoad = dataSheetsToLoad;
         }
     }
@@ -97,6 +97,70 @@ namespace RPGFramework.Menu
             BattleMessageSpeed = battleMessageSpeed;
             FieldMessageSpeed  = fieldMessageSpeed;
             DataSheetsToLoad   = dataSheetsToLoad;
+        }
+    }
+
+    public interface IPartyMenuLocalisationArgs : ILocalisationArgs
+    {
+        string Config { get; }
+        string Save   { get; }
+        string Time   { get; }
+    }
+
+    public class PartyMenuLocalisationArgs : IPartyMenuLocalisationArgs
+    {
+        public string   Config           { get; }
+        public string   Save             { get; }
+        public string   Time             { get; }
+        public string[] DataSheetsToLoad { get; }
+
+        public PartyMenuLocalisationArgs(string   config,
+                                         string   save,
+                                         string   time,
+                                         string[] dataSheetsToLoad)
+        {
+            Config           = config;
+            Save             = save;
+            Time             = time;
+            DataSheetsToLoad = dataSheetsToLoad;
+        }
+    }
+
+    public interface ISaveMenuLocalisationArgs : ILocalisationArgs
+    {
+        string SaveTitle         { get; }
+        string LoadTitle         { get; }
+        string NewSave           { get; }
+        string OverwriteQuestion { get; }
+        string Yes               { get; }
+        string No                { get; }
+    }
+
+    public class SaveMenuLocalisationArgs : ISaveMenuLocalisationArgs
+    {
+        public string   SaveTitle         { get; }
+        public string   LoadTitle         { get; }
+        public string   NewSave           { get; }
+        public string   OverwriteQuestion { get; }
+        public string   Yes               { get; }
+        public string   No                { get; }
+        public string[] DataSheetsToLoad  { get; }
+
+        public SaveMenuLocalisationArgs(string   saveTitle,
+                                        string   loadTitle,
+                                        string   newSave,
+                                        string   overwriteQuestion,
+                                        string   yes,
+                                        string   no,
+                                        string[] dataSheetsToLoad)
+        {
+            SaveTitle         = saveTitle;
+            LoadTitle         = loadTitle;
+            NewSave           = newSave;
+            OverwriteQuestion = overwriteQuestion;
+            Yes               = yes;
+            No                = no;
+            DataSheetsToLoad  = dataSheetsToLoad;
         }
     }
 }

@@ -17,6 +17,11 @@ namespace RPGFramework.Menu
             container.BindTransient<IBeginMenuUI, BeginMenuUI>();
             container.BindTransient<IConfigMenu, ConfigMenu>();
             container.BindTransient<IConfigMenuUI, ConfigMenuUI>();
+            container.BindTransient<IPartyMenu, PartyMenu>();
+            container.BindTransient<IPartyMenuUI, PartyMenuUI>();
+            container.BindTransient<ISaveMenu, SaveMenu>();
+            container.BindTransient<ILoadMenu, LoadMenu>();
+            container.BindTransient<ISaveSlotMenuUI, SaveSlotMenuUI>();
         }
     }
 }

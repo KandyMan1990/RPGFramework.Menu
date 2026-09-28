@@ -1,0 +1,16 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Packages/com.rpgframework.core/Runtime/UI%20Toolkit/UIShared.uss?fileID=7433441132597879392&amp;guid=94d472c2b9a84d747912b7c0d4c5d053&amp;type=3#UIShared"/>
+    <ui:VisualElement name="SaveMenu" style="flex-grow: 1; background-color: rgb(54, 8, 68); margin-top: 2%; margin-right: 5%; margin-bottom: 2%; margin-left: 5%; border-left-color: rgba(209, 209, 209, 0.87); border-right-color: rgba(209, 209, 209, 0.87); border-top-color: rgba(209, 209, 209, 0.87); border-bottom-color: rgba(209, 209, 209, 0.87); border-top-width: 4px; border-right-width: 4px; border-bottom-width: 4px; border-left-width: 4px; border-top-left-radius: 100px; border-top-right-radius: 100px; border-bottom-right-radius: 100px; border-bottom-left-radius: 100px;">
+        <ui:VisualElement name="TitleContainer" style="height: 20%;">
+            <ui:Label text="Save" name="TitleLabel" class="rpg-ui-label" style="width: 100%; height: 100%; -unity-text-align: middle-center; font-size: 100px;"/>
+        </ui:VisualElement>
+        <ui:ScrollView name="SlotsScrollView" style="flex-grow: 1; margin-left: 10%; margin-right: 10%; margin-bottom: 5%; font-size: 36px;"/>
+        <ui:VisualElement name="OverwritePanel" style="position: absolute; left: 25%; right: 25%; top: 35%; bottom: 35%; background-color: rgb(54, 8, 68); border-left-color: rgba(209, 209, 209, 0.87); border-right-color: rgba(209, 209, 209, 0.87); border-top-color: rgba(209, 209, 209, 0.87); border-bottom-color: rgba(209, 209, 209, 0.87); border-top-width: 4px; border-right-width: 4px; border-bottom-width: 4px; border-left-width: 4px; border-top-left-radius: 40px; border-top-right-radius: 40px; border-bottom-right-radius: 40px; border-bottom-left-radius: 40px; align-items: center; justify-content: space-evenly; font-size: 48px;">
+            <ui:Label text="Overwrite this save?" name="OverwriteLabel" class="rpg-ui-label"/>
+            <ui:VisualElement name="OverwriteButtons" style="flex-direction: row; justify-content: space-evenly; width: 100%;">
+                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="YesBtn" text="Yes"/>
+                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="NoBtn" text="No"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
