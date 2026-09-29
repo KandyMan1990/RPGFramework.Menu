@@ -9,8 +9,6 @@ namespace RPGFramework.Menu.SubMenus
     {
         protected override bool IsSaving => true;
 
-        private string m_PendingOverwrite;
-
         public SaveMenu(ISaveSlotMenuUI    saveSlotMenuUI,
                         IInputRouter       inputRouter,
                         IMenuModule        menuModule,
@@ -26,38 +24,12 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override void OnSlotChosen(int index)
         {
-            m_PendingOverwrite = m_Files[index];
-
-            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
-            m_MenuUI.AskToOverwrite();
+            AskToOverwrite(index);
         }
 
-        protected override void OnOverwriteAnswered(bool overwrite)
+        protected override void OnOverwriteConfirmed(string file)
         {
-            string file = m_PendingOverwrite;
-            m_PendingOverwrite = null;
-
-            if (overwrite)
-            {
-                Save(file);
-                return;
-            }
-
-            m_AudioIntentPlayer.Play(AudioIntent.Cancel, AudioContext.Menu);
-        }
-
-        protected override void OnBack()
-        {
-            if (m_PendingOverwrite == null)
-            {
-                base.OnBack();
-                return;
-            }
-
-            m_PendingOverwrite = null;
-
-            m_AudioIntentPlayer.Play(AudioIntent.Cancel, AudioContext.Menu);
-            m_MenuUI.CloseOverwriteQuestion();
+            Save(file);
         }
 
         private void Save(string file)

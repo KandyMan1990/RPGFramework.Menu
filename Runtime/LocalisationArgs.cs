@@ -132,6 +132,7 @@ namespace RPGFramework.Menu
         string LoadTitle         { get; }
         string NewSave           { get; }
         string OverwriteQuestion { get; }
+        string DeleteQuestion    { get; }
         string Yes               { get; }
         string No                { get; }
     }
@@ -142,6 +143,7 @@ namespace RPGFramework.Menu
         public string   LoadTitle         { get; }
         public string   NewSave           { get; }
         public string   OverwriteQuestion { get; }
+        public string   DeleteQuestion    { get; }
         public string   Yes               { get; }
         public string   No                { get; }
         public string[] DataSheetsToLoad  { get; }
@@ -150,6 +152,7 @@ namespace RPGFramework.Menu
                                         string   loadTitle,
                                         string   newSave,
                                         string   overwriteQuestion,
+                                        string   deleteQuestion,
                                         string   yes,
                                         string   no,
                                         string[] dataSheetsToLoad)
@@ -158,6 +161,7 @@ namespace RPGFramework.Menu
             LoadTitle         = loadTitle;
             NewSave           = newSave;
             OverwriteQuestion = overwriteQuestion;
+            DeleteQuestion    = deleteQuestion;
             Yes               = yes;
             No                = no;
             DataSheetsToLoad  = dataSheetsToLoad;

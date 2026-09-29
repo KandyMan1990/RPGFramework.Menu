@@ -102,10 +102,12 @@ namespace RPGFramework.Menu
     {
         event Action<int>  OnSlotChosen;
         event Action       OnNewSaveChosen;
-        event Action<bool> OnOverwriteAnswered;
+        event Action<bool> OnQuestionAnswered;
         void               SetSaving(bool                        saving);
         void               SetSlots(IReadOnlyList<SaveSlotInfo> slots, int focusIndex);
+        int                GetFocusedSlot();
         void               AskToOverwrite();
-        void               CloseOverwriteQuestion();
+        void               AskToDelete();
+        void               CloseQuestion();
     }
 }

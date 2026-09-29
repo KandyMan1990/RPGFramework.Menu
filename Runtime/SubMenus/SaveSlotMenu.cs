@@ -11,10 +11,20 @@ namespace RPGFramework.Menu.SubMenus
 {
     public abstract class SaveSlotMenu : Menu<ISaveSlotMenuUI>
     {
+        private enum Question
+        {
+            None,
+            Overwrite,
+            Delete
+        }
+
         protected override bool m_HidePreviousUiOnSuspend => true;
 
         protected readonly ISaveDataService m_SaveDataService;
         protected readonly List<string>     m_Files = new List<string>();
+
+        private Question m_Question;
+        private string   m_QuestionFile;
 
         protected abstract bool IsSaving { get; }
 
@@ -43,32 +53,31 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override void RegisterCallbacks()
         {
-            m_MenuUI.OnSlotChosen        += OnSlotChosen;
-            m_MenuUI.OnNewSaveChosen     += OnNewSaveChosen;
-            m_MenuUI.OnOverwriteAnswered += OnOverwriteAnswered;
+            m_MenuUI.OnSlotChosen       += OnSlotChosen;
+            m_MenuUI.OnNewSaveChosen    += OnNewSaveChosen;
+            m_MenuUI.OnQuestionAnswered += OnQuestionAnswered;
         }
 
         protected override void UnregisterCallbacks()
         {
-            m_MenuUI.OnOverwriteAnswered -= OnOverwriteAnswered;
-            m_MenuUI.OnNewSaveChosen     -= OnNewSaveChosen;
-            m_MenuUI.OnSlotChosen        -= OnSlotChosen;
+            m_MenuUI.OnQuestionAnswered -= OnQuestionAnswered;
+            m_MenuUI.OnNewSaveChosen    -= OnNewSaveChosen;
+            m_MenuUI.OnSlotChosen       -= OnSlotChosen;
         }
 
         protected override bool HandleControl(ControlSlot slot)
         {
-            if (slot == ControlSlot.Secondary)
+            switch (slot)
             {
-                OnBack();
+                case ControlSlot.Secondary:
+                    OnBack();
+                    break;
+                case ControlSlot.Tertiary:
+                    OnDeletePressed();
+                    break;
             }
 
             return true;
-        }
-
-        protected virtual void OnBack()
-        {
-            m_AudioIntentPlayer.Play(AudioIntent.Cancel, AudioContext.Menu);
-            m_MenuModule.PopMenu().FireAndForget();
         }
 
         protected abstract void OnSlotChosen(int index);
@@ -77,8 +86,17 @@ namespace RPGFramework.Menu.SubMenus
         {
         }
 
-        protected virtual void OnOverwriteAnswered(bool overwrite)
+        protected virtual void OnOverwriteConfirmed(string file)
         {
+        }
+
+        protected void AskToOverwrite(int index)
+        {
+            m_Question     = Question.Overwrite;
+            m_QuestionFile = m_Files[index];
+
+            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
+            m_MenuUI.AskToOverwrite();
         }
 
         protected void ShowSlots(string focusFile)
@@ -109,6 +127,82 @@ namespace RPGFramework.Menu.SubMenus
             }
 
             m_MenuUI.SetSlots(slots, focusIndex);
+        }
+
+        private void OnBack()
+        {
+            m_AudioIntentPlayer.Play(AudioIntent.Cancel, AudioContext.Menu);
+
+            if (m_Question == Question.None)
+            {
+                m_MenuModule.PopMenu().FireAndForget();
+                return;
+            }
+
+            m_Question     = Question.None;
+            m_QuestionFile = null;
+
+            m_MenuUI.CloseQuestion();
+        }
+
+        private void OnDeletePressed()
+        {
+            if (m_Question != Question.None)
+            {
+                return;
+            }
+
+            int index = m_MenuUI.GetFocusedSlot();
+
+            if (index < 0)
+            {
+                m_AudioIntentPlayer.Play(AudioIntent.Error, AudioContext.Menu);
+                return;
+            }
+
+            m_Question     = Question.Delete;
+            m_QuestionFile = m_Files[index];
+
+            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
+            m_MenuUI.AskToDelete();
+        }
+
+        private void OnQuestionAnswered(bool yes)
+        {
+            Question question = m_Question;
+            string   file     = m_QuestionFile;
+
+            m_Question     = Question.None;
+            m_QuestionFile = null;
+
+            if (!yes)
+            {
+                m_AudioIntentPlayer.Play(AudioIntent.Cancel, AudioContext.Menu);
+                return;
+            }
+
+            if (question == Question.Delete)
+            {
+                Delete(file);
+                return;
+            }
+
+            OnOverwriteConfirmed(file);
+        }
+
+        private void Delete(string file)
+        {
+            int index = m_Files.IndexOf(file);
+
+            string focusFile = index + 1 < m_Files.Count ? m_Files[index + 1]
+                             : index > 0                 ? m_Files[index - 1]
+                                                         : null;
+
+            m_SaveDataService.DeleteSave(file);
+
+            m_AudioIntentPlayer.Play(AudioIntent.Confirm, AudioContext.Menu);
+
+            ShowSlots(focusFile);
         }
     }
 }
