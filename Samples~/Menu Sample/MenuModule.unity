@@ -267,6 +267,7 @@ GameObject:
   - component: {fileID: 1883422319}
   - component: {fileID: 1883422320}
   - component: {fileID: 1883422318}
+  - component: {fileID: 1883422321}
   m_Layer: 5
   m_Name: MenuModule
   m_TagString: Untagged
@@ -325,6 +326,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: RPGFramework.Core::RPGFramework.Core.DI.SceneInstallerMonoBehaviour
   m_SceneInstaller: {fileID: 11400000, guid: 0d1add8a3ec1c5a41b08683a2a1550bb, type: 2}
+--- !u!114 &1883422321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883422317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21dc0e2425a1418cae022ad447c36590, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: RPGFramework.Core::RPGFramework.Core.Input.InputAdapter
+  m_Movement: {fileID: 0}
+  m_Primary: {fileID: 0}
+  m_Secondary: {fileID: 0}
+  m_Tertiary: {fileID: 0}
+  m_Quaternary: {fileID: 0}
+  m_ShoulderLeft: {fileID: 0}
+  m_ShoulderRight: {fileID: 0}
+  m_TriggerLeft: {fileID: 0}
+  m_TriggerRight: {fileID: 0}
+  m_Start: {fileID: 0}
+  m_Select: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

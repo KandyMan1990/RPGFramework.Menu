@@ -15,3 +15,5 @@ MonoBehaviour:
   m_BeginMenu: {fileID: 9197481963319205126, guid: b0b672f0244440b4ca822e71e0600d07, type: 3}
   m_ConfigMenu: {fileID: 9197481963319205126, guid: 367a5d1485eeda54989228d820502700, type: 3}
   m_LanguageMenu: {fileID: 9197481963319205126, guid: 38499b0b3225300469ad67a8721139d2, type: 3}
+  m_PartyMenu: {fileID: 9197481963319205126, guid: 7f2b6311773f54a3b9c630aadb4269bd, type: 3}
+  m_SaveMenu: {fileID: 9197481963319205126, guid: f121a2550404042269bbc584ab344ce1, type: 3}

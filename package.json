@@ -13,6 +13,13 @@
     "com.unity.mathematics": "1.4.0"
   },
   "unity": "6000.0",
+  "samples": [
+    {
+      "displayName": "Menu Sample",
+      "description": "A menu module scene with its installer and UI provider. Assign the Input Adapter's actions and ship the Generic, BeginMenu, ConfigMenu, PartyMenu, SaveMenu and Locations sheets the installer names.",
+      "path": "Samples~/Menu Sample"
+    }
+  ],
   "keywords": [
     "RPG Framework",
     "Menu"

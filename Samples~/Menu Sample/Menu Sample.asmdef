@@ -1,0 +1,21 @@
+{
+    "name": "MenuSample",
+    "rootNamespace": "RPGFramework.Menu.Menu_Sample",
+    "references": [
+        "RPGFramework.Menu",
+        "RPGFramework.Menu.SharedTypes",
+        "RPGFramework.Core",
+        "RPGFramework.Core.SharedTypes",
+        "RPGFramework.Localisation",
+        "RPGFramework.DI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
