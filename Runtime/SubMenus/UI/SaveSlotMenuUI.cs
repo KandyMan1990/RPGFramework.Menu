@@ -127,7 +127,7 @@ namespace RPGFramework.Menu.SubMenus.UI
                 RPGUIButton row = AddRow(() => m_OnSlotChosen?.Invoke(index));
 
                 // Still focusable when it cannot be loaded, so choosing it can say no.
-                if (!m_Saving && slots[i].FromNewerVersion)
+                if (!m_Saving && (slots[i].FromNewerVersion || slots[i].Damaged))
                 {
                     row.style.opacity = UNAVAILABLE_OPACITY;
                 }
@@ -213,6 +213,13 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private string Describe(SaveSlotInfo slot, ISaveMenuLocalisationArgs args)
         {
+            if (slot.Damaged)
+            {
+                string damaged = $"{m_LocalisationService.Get(args.Damaged)}    {slot.LastWritten:g}";
+
+                return damaged;
+            }
+
             string location = m_LocalisationService.TryGet(slot.LocationName, out string name) ? name : string.Empty;
             string time     = $"{slot.PlayTime / 3600}:{slot.PlayTime / 60 % 60:00}";
 

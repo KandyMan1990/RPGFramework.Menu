@@ -31,7 +31,7 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override void OnSlotChosen(int index)
         {
-            if (IsFromNewerVersion(index))
+            if (!CanLoad(index))
             {
                 m_AudioIntentPlayer.Play(AudioIntent.Error, AudioContext.Menu);
                 return;

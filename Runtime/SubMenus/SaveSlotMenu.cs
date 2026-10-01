@@ -23,7 +23,7 @@ namespace RPGFramework.Menu.SubMenus
         protected readonly ISaveDataService m_SaveDataService;
         protected readonly List<string>     m_Files = new List<string>();
 
-        private readonly List<bool> m_FromNewerVersion = new List<bool>();
+        private readonly List<bool> m_CanLoad = new List<bool>();
 
         private Question m_Question;
         private string   m_QuestionFile;
@@ -102,14 +102,14 @@ namespace RPGFramework.Menu.SubMenus
         }
 
         /// <summary>
-        /// A save written by a newer version of the game holds variables this one does not know, so it cannot be loaded
-        /// without losing them.
+        /// A save written by a newer version of the game holds variables this one does not know, and a damaged one cannot
+        /// be read, so neither can be loaded.
         /// </summary>
-        protected bool IsFromNewerVersion(int index)
+        protected bool CanLoad(int index)
         {
-            bool fromNewerVersion = m_FromNewerVersion[index];
+            bool canLoad = m_CanLoad[index];
 
-            return fromNewerVersion;
+            return canLoad;
         }
 
         protected void ShowSlots(string focusFile)
@@ -127,7 +127,7 @@ namespace RPGFramework.Menu.SubMenus
             int                focusIndex = -1;
 
             m_Files.Clear();
-            m_FromNewerVersion.Clear();
+            m_CanLoad.Clear();
 
             foreach (SavePreview preview in previews)
             {
@@ -137,8 +137,8 @@ namespace RPGFramework.Menu.SubMenus
                 }
 
                 m_Files.Add(preview.FileName);
-                m_FromNewerVersion.Add(preview.IsFromNewerVersion);
-                slots.Add(new SaveSlotInfo(preview.Read<ulong>(CoreVariables.LOCATION_NAME), preview.Read<uint>(CoreVariables.PLAY_TIME), preview.LastWritten, preview.IsFromNewerVersion));
+                m_CanLoad.Add(preview.CanLoad);
+                slots.Add(new SaveSlotInfo(preview.Read<ulong>(CoreVariables.LOCATION_NAME), preview.Read<uint>(CoreVariables.PLAY_TIME), preview.LastWritten, preview.IsFromNewerVersion, preview.IsDamaged));
             }
 
             m_MenuUI.SetSlots(slots, focusIndex);

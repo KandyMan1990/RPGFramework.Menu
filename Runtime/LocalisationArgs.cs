@@ -134,6 +134,7 @@ namespace RPGFramework.Menu
         string OverwriteQuestion { get; }
         string DeleteQuestion    { get; }
         string NewerVersion      { get; }
+        string Damaged           { get; }
         string Yes               { get; }
         string No                { get; }
     }
@@ -146,6 +147,7 @@ namespace RPGFramework.Menu
         public string   OverwriteQuestion { get; }
         public string   DeleteQuestion    { get; }
         public string   NewerVersion      { get; }
+        public string   Damaged           { get; }
         public string   Yes               { get; }
         public string   No                { get; }
         public string[] DataSheetsToLoad  { get; }
@@ -156,6 +158,7 @@ namespace RPGFramework.Menu
                                         string   overwriteQuestion,
                                         string   deleteQuestion,
                                         string   newerVersion,
+                                        string   damaged,
                                         string   yes,
                                         string   no,
                                         string[] dataSheetsToLoad)
@@ -166,6 +169,7 @@ namespace RPGFramework.Menu
             OverwriteQuestion = overwriteQuestion;
             DeleteQuestion    = deleteQuestion;
             NewerVersion      = newerVersion;
+            Damaged           = damaged;
             Yes               = yes;
             No                = no;
             DataSheetsToLoad  = dataSheetsToLoad;
