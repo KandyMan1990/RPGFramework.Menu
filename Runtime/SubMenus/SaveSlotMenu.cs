@@ -23,6 +23,8 @@ namespace RPGFramework.Menu.SubMenus
         protected readonly ISaveDataService m_SaveDataService;
         protected readonly List<string>     m_Files = new List<string>();
 
+        private readonly List<bool> m_FromNewerVersion = new List<bool>();
+
         private Question m_Question;
         private string   m_QuestionFile;
 
@@ -99,6 +101,17 @@ namespace RPGFramework.Menu.SubMenus
             m_MenuUI.AskToOverwrite();
         }
 
+        /// <summary>
+        /// A save written by a newer version of the game holds variables this one does not know, so it cannot be loaded
+        /// without losing them.
+        /// </summary>
+        protected bool IsFromNewerVersion(int index)
+        {
+            bool fromNewerVersion = m_FromNewerVersion[index];
+
+            return fromNewerVersion;
+        }
+
         protected void ShowSlots(string focusFile)
         {
             List<SavePreview> previews = new List<SavePreview>();
@@ -114,6 +127,7 @@ namespace RPGFramework.Menu.SubMenus
             int                focusIndex = -1;
 
             m_Files.Clear();
+            m_FromNewerVersion.Clear();
 
             foreach (SavePreview preview in previews)
             {
@@ -123,7 +137,8 @@ namespace RPGFramework.Menu.SubMenus
                 }
 
                 m_Files.Add(preview.FileName);
-                slots.Add(new SaveSlotInfo(preview.Read<ulong>(CoreVariables.LOCATION_NAME), preview.Read<uint>(CoreVariables.PLAY_TIME), preview.LastWritten));
+                m_FromNewerVersion.Add(preview.IsFromNewerVersion);
+                slots.Add(new SaveSlotInfo(preview.Read<ulong>(CoreVariables.LOCATION_NAME), preview.Read<uint>(CoreVariables.PLAY_TIME), preview.LastWritten, preview.IsFromNewerVersion));
             }
 
             m_MenuUI.SetSlots(slots, focusIndex);

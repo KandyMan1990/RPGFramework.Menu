@@ -10,6 +10,8 @@ namespace RPGFramework.Menu.SubMenus.UI
 {
     public class SaveSlotMenuUI : MenuUI<ISaveSlotMenuUI>, ISaveSlotMenuUI
     {
+        private const float UNAVAILABLE_OPACITY = 0.5f;
+
         event Action<int> ISaveSlotMenuUI.OnSlotChosen
         {
             add => m_OnSlotChosen += value;
@@ -85,7 +87,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             for (int i = 0; i < m_Slots.Count && first + i < m_Rows.Count; i++)
             {
-                m_Rows[first + i].text = Describe(m_Slots[i]);
+                m_Rows[first + i].text = Describe(m_Slots[i], args);
             }
         }
 
@@ -122,7 +124,13 @@ namespace RPGFramework.Menu.SubMenus.UI
             {
                 int index = i;
 
-                AddRow(() => m_OnSlotChosen?.Invoke(index));
+                RPGUIButton row = AddRow(() => m_OnSlotChosen?.Invoke(index));
+
+                // Still focusable when it cannot be loaded, so choosing it can say no.
+                if (!m_Saving && slots[i].FromNewerVersion)
+                {
+                    row.style.opacity = UNAVAILABLE_OPACITY;
+                }
             }
 
             LocaliseUI();
@@ -174,7 +182,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_RowAskedAbout = null;
         }
 
-        private void AddRow(Action choose)
+        private RPGUIButton AddRow(Action choose)
         {
             RPGUIButton row = new RPGUIButton { focusable = true };
 
@@ -185,6 +193,8 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             m_Rows.Add(row);
             m_SlotsScrollView.Add(row);
+
+            return row;
         }
 
         private void OnRowNavigate(NavigationMoveEvent evt)
@@ -201,12 +211,14 @@ namespace RPGFramework.Menu.SubMenus.UI
             }
         }
 
-        private string Describe(SaveSlotInfo slot)
+        private string Describe(SaveSlotInfo slot, ISaveMenuLocalisationArgs args)
         {
             string location = m_LocalisationService.TryGet(slot.LocationName, out string name) ? name : string.Empty;
             string time     = $"{slot.PlayTime / 3600}:{slot.PlayTime / 60 % 60:00}";
 
-            string description = $"{location}    {time}    {slot.LastWritten:g}";
+            string description = slot.FromNewerVersion
+                                     ? $"{location}    {time}    {slot.LastWritten:g}    {m_LocalisationService.Get(args.NewerVersion)}"
+                                     : $"{location}    {time}    {slot.LastWritten:g}";
 
             return description;
         }

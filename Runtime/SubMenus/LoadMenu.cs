@@ -31,6 +31,12 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override void OnSlotChosen(int index)
         {
+            if (IsFromNewerVersion(index))
+            {
+                m_AudioIntentPlayer.Play(AudioIntent.Error, AudioContext.Menu);
+                return;
+            }
+
             m_SaveDataService.BeginSave(m_Files[index]);
 
             m_ChangeModuleStore.SetModuleId(m_CurrentModuleStore.GetModuleId);
