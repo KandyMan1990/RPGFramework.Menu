@@ -21,7 +21,9 @@ Then make it your own:
 1. **Assign the Input Adapter's actions.** Deleting a save uses the Tertiary control, so give it an action.
 2. **Pass your own localisation keys to the installer.** The sample writes keys from an example spreadsheet as literals;
    your game passes its own, or its generated keys constants.
-3. **Add the scene to your game's module and scene databases**, under `MenuConstants.MODULE_ID`.
+3. **In your global installer, bind `IMenuArgsStore` to `MenuArgsStore`**, so whatever opens the menus and the menu
+   module share it.
+4. **Add the scene to your game's module and scene databases**, under `MenuConstants.MODULE_ID`.
 
 ---
 
