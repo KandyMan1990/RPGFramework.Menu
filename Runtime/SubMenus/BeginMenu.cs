@@ -14,7 +14,7 @@ namespace RPGFramework.Menu.SubMenus
 {
     public class BeginMenu : Menu<IBeginMenuUI>, IBeginMenu
     {
-        protected override bool m_HidePreviousUiOnSuspend => true;
+        protected override bool m_HidePreviousUIOnSuspend => true;
 
         private readonly ILocalisationService m_LocalisationService;
         private readonly ISaveDataService     m_SaveDataService;
@@ -95,7 +95,7 @@ namespace RPGFramework.Menu.SubMenus
 
             m_SaveDataService.BeginSave(filename);
 
-            m_ChangeModuleStore.SetModuleId(m_CurrentModuleStore.GetModuleId);
+            m_ChangeModuleStore.SetModuleId(m_CurrentModuleStore.ModuleId);
 
             m_StartingNewGame = true;
 
@@ -124,7 +124,7 @@ namespace RPGFramework.Menu.SubMenus
 
         private Task ApplySettingsAsync()
         {
-            m_SettingsService.TryGetSection(FrameworkSettingsSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData);
+            m_SettingsService.TryGetSection(FrameworkSettingsSections.CONFIG_DATA, out SaveSection<ConfigData_V1> configData);
 
             ConfigData_V1 data = configData.Data;
 

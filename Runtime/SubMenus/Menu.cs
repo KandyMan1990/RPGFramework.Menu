@@ -10,9 +10,9 @@ namespace RPGFramework.Menu.SubMenus
 {
     public abstract class Menu<TMenuUI> : IInputContext, IMenu where TMenuUI : IMenuUI
     {
-        bool IMenu.HidePreviousUiOnSuspend => m_HidePreviousUiOnSuspend;
+        bool IMenu.HidePreviousUIOnSuspend => m_HidePreviousUIOnSuspend;
 
-        protected abstract bool m_HidePreviousUiOnSuspend { get; }
+        protected abstract bool m_HidePreviousUIOnSuspend { get; }
 
         protected readonly TMenuUI            m_MenuUI;
         protected readonly IInputRouter       m_InputRouter;
@@ -43,13 +43,13 @@ namespace RPGFramework.Menu.SubMenus
             await OnEnterComplete();
         }
 
-        async Task IMenu.OnSuspendAsync(bool hideUi)
+        async Task IMenu.OnSuspendAsync(bool hideUI)
         {
             UnregisterCallbacks();
 
-            await m_MenuUI.OnSuspendAsync(hideUi);
+            await m_MenuUI.OnSuspendAsync(hideUI);
 
-            await OnSuspendAsync(hideUi);
+            await OnSuspendAsync(hideUI);
         }
 
         async Task IMenu.OnResumeAsync()
@@ -89,7 +89,7 @@ namespace RPGFramework.Menu.SubMenus
             return Task.CompletedTask;
         }
 
-        protected virtual Task OnSuspendAsync(bool hideUi)
+        protected virtual Task OnSuspendAsync(bool hideUI)
         {
             return Task.CompletedTask;
         }

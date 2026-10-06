@@ -16,7 +16,7 @@ namespace RPGFramework.Menu.SubMenus
 {
     public class ConfigMenu : Menu<IConfigMenuUI>, IConfigMenu
     {
-        protected override bool m_HidePreviousUiOnSuspend => true;
+        protected override bool m_HidePreviousUIOnSuspend => true;
 
         private readonly ISettingsService     m_SettingsService;
         private readonly ILocalisationService m_LocalisationService;
@@ -42,9 +42,9 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override Task OnEnterAsync(Dictionary<string, object> args)
         {
-            if (!m_SettingsService.TryGetSection(FrameworkSettingsSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData))
+            if (!m_SettingsService.TryGetSection(FrameworkSettingsSections.CONFIG_DATA, out SaveSection<ConfigData_V1> configData))
             {
-                throw new InvalidDataException($"{nameof(IConfigMenu)}::{nameof(OnEnterAsync)} Config data not found in the settings. The game's {nameof(ISettingsFactory)} must create it");
+                throw new InvalidDataException($"{nameof(IConfigMenu)}::{nameof(OnEnterAsync)} Config data not found in the settings. The game's {nameof(IDefaultSettings)} must provide it");
             }
 
             m_ConfigData = configData.Data;
@@ -63,7 +63,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             SaveSection<ConfigData_V1> data = new SaveSection<ConfigData_V1>(Versions.GLOBAL_CONFIG, m_ConfigData);
 
-            m_SettingsService.SetSection(FrameworkSettingsSectionDatabase.CONFIG_DATA, data);
+            m_SettingsService.SetSection(FrameworkSettingsSections.CONFIG_DATA, data);
             m_SettingsService.Commit();
 
             return base.OnExitAsync();

@@ -19,9 +19,9 @@ namespace RPGFramework.Menu
 
     public interface IMenu
     {
-        bool HidePreviousUiOnSuspend { get; }
+        bool HidePreviousUIOnSuspend { get; }
         Task OnEnterAsync(VisualElement parent, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
-        Task OnSuspendAsync(bool        hideUi);
+        Task OnSuspendAsync(bool        hideUI);
         Task OnResumeAsync();
         Task OnExitAsync();
     }
@@ -32,7 +32,7 @@ namespace RPGFramework.Menu
         VisualElement GetDefaultFocusedElement();
         VisualElement GetLastFocusedElement();
         Task          OnEnterAsync(VisualElement parent, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
-        Task          OnSuspendAsync(bool        hideUi);
+        Task          OnSuspendAsync(bool        hideUI);
         Task          OnResumeAsync();
         Task          OnExitAsync();
     }

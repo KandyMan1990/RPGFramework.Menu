@@ -8,7 +8,7 @@ using RPGFramework.Core.SharedTypes;
 using RPGFramework.Core.Store;
 using RPGFramework.DI;
 using RPGFramework.Menu.SharedTypes;
-using RPGFramework.Menu.SharedTypes.Providers;
+using RPGFramework.Menu.SharedTypes.Stores;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -19,7 +19,7 @@ namespace RPGFramework.Menu
         private readonly ICoreModule        m_CoreModule;
         private readonly IDIResolver        m_DIResolver;
         private readonly IScreenFadeService m_ScreenFadeService;
-        private readonly IMenuArgsProvider  m_MenuArgsProvider;
+        private readonly IMenuArgsStore     m_MenuArgsStore;
         private readonly IMenuTypeProvider  m_MenuTypeProvider;
         private readonly IChangeModuleStore m_ChangeModuleStore;
         private readonly IResumeModuleStore m_ResumeModuleStore;
@@ -33,7 +33,7 @@ namespace RPGFramework.Menu
         public MenuModule(ICoreModule        coreModule,
                           IDIResolver        diResolver,
                           IScreenFadeService screenFadeService,
-                          IMenuArgsProvider  menuArgsProvider,
+                          IMenuArgsStore     menuArgsStore,
                           IMenuTypeProvider  menuTypeProvider,
                           IChangeModuleStore changeModuleStore,
                           IResumeModuleStore resumeModuleStore)
@@ -41,7 +41,7 @@ namespace RPGFramework.Menu
             m_CoreModule        = coreModule;
             m_DIResolver        = diResolver;
             m_ScreenFadeService = screenFadeService;
-            m_MenuArgsProvider  = menuArgsProvider;
+            m_MenuArgsStore     = menuArgsStore;
             m_MenuTypeProvider  = menuTypeProvider;
             m_ChangeModuleStore = changeModuleStore;
             m_ResumeModuleStore = resumeModuleStore;
@@ -59,7 +59,7 @@ namespace RPGFramework.Menu
             m_InputAdapter = Object.FindAnyObjectByType<InputAdapter>();
             m_DIResolver.InjectInto(m_InputAdapter);
 
-            MenuArgs args = m_MenuArgsProvider.Get;
+            MenuArgs args = m_MenuArgsStore.Args;
 
             await m_MenuModule.PushMenu((MenuType)args.MenuId);
             await m_ScreenFadeService.FadeInAsync();
@@ -87,7 +87,7 @@ namespace RPGFramework.Menu
 
             if (m_Menus.TryPeek(out IMenu menu))
             {
-                await menu.OnSuspendAsync(newMenu.HidePreviousUiOnSuspend);
+                await menu.OnSuspendAsync(newMenu.HidePreviousUIOnSuspend);
             }
 
             m_Menus.Push(newMenu);
@@ -115,7 +115,7 @@ namespace RPGFramework.Menu
             {
                 if (!m_ModuleChangeRequested)
                 {
-                    byte moduleId = m_ResumeModuleStore.GetModuleId;
+                    byte moduleId = m_ResumeModuleStore.ModuleId;
                     m_ChangeModuleStore.SetModuleId(moduleId);
                 }
 

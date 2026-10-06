@@ -15,7 +15,7 @@ namespace RPGFramework.Menu.SubMenus
 {
     public class LanguageMenu : Menu<ILanguageMenuUI>, ILanguageMenu
     {
-        protected override bool m_HidePreviousUiOnSuspend => true;
+        protected override bool m_HidePreviousUIOnSuspend => true;
 
         private readonly ILocalisationService m_LocalisationService;
         private readonly ISettingsService     m_SettingsService;
@@ -40,12 +40,12 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override Task OnExitAsync()
         {
-            m_SettingsService.TryGetSection(FrameworkSettingsSectionDatabase.CONFIG_DATA, out SaveSection<ConfigData_V1> configData);
+            m_SettingsService.TryGetSection(FrameworkSettingsSections.CONFIG_DATA, out SaveSection<ConfigData_V1> configData);
 
             ConfigData_V1 data = configData.Data;
             data.SetLanguage(m_LocalisationService.CurrentLanguage);
 
-            m_SettingsService.SetSection(FrameworkSettingsSectionDatabase.CONFIG_DATA, new SaveSection<ConfigData_V1>(Versions.GLOBAL_CONFIG, data));
+            m_SettingsService.SetSection(FrameworkSettingsSections.CONFIG_DATA, new SaveSection<ConfigData_V1>(Versions.GLOBAL_CONFIG, data));
             m_SettingsService.Commit();
 
             return base.OnExitAsync();

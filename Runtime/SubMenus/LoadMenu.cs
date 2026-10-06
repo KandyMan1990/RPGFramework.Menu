@@ -39,7 +39,7 @@ namespace RPGFramework.Menu.SubMenus
 
             m_SaveDataService.BeginSave(m_Files[index]);
 
-            m_ChangeModuleStore.SetModuleId(m_CurrentModuleStore.GetModuleId);
+            m_ChangeModuleStore.SetModuleId(m_CurrentModuleStore.ModuleId);
 
             m_AudioIntentPlayer.Play(AudioIntent.LoadGame, AudioContext.Menu);
 

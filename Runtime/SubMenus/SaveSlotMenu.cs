@@ -18,7 +18,7 @@ namespace RPGFramework.Menu.SubMenus
             Delete
         }
 
-        protected override bool m_HidePreviousUiOnSuspend => true;
+        protected override bool m_HidePreviousUIOnSuspend => true;
 
         protected readonly ISaveDataService m_SaveDataService;
         protected readonly List<string>     m_Files = new List<string>();

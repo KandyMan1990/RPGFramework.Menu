@@ -10,7 +10,7 @@ namespace RPGFramework.Menu.SubMenus
 {
     public class PartyMenu : Menu<IPartyMenuUI>, IPartyMenu
     {
-        protected override bool m_HidePreviousUiOnSuspend => true;
+        protected override bool m_HidePreviousUIOnSuspend => true;
 
         private readonly ISaveEnabledStore  m_SaveEnabledStore;
         private readonly ILocationNameStore m_LocationNameStore;
@@ -33,7 +33,7 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override Task OnEnterAsync(Dictionary<string, object> args)
         {
-            m_SaveEnabled = m_SaveEnabledStore.GetSaveEnabled;
+            m_SaveEnabled = m_SaveEnabledStore.IsSaveEnabled;
 
             return base.OnEnterAsync(args);
         }
@@ -41,15 +41,15 @@ namespace RPGFramework.Menu.SubMenus
         protected override Task OnEnterComplete()
         {
             m_MenuUI.SetSaveEnabled(m_SaveEnabled);
-            m_MenuUI.SetLocationName(m_LocationNameStore.GetLocationName);
-            m_MenuUI.SetPlayTime(m_PlayTimeStore.GetPlayTime);
+            m_MenuUI.SetLocationName(m_LocationNameStore.LocationName);
+            m_MenuUI.SetPlayTime(m_PlayTimeStore.PlayTime);
 
             return base.OnEnterComplete();
         }
 
         protected override Task OnResumeAsync()
         {
-            m_MenuUI.SetPlayTime(m_PlayTimeStore.GetPlayTime);
+            m_MenuUI.SetPlayTime(m_PlayTimeStore.PlayTime);
 
             return base.OnResumeAsync();
         }

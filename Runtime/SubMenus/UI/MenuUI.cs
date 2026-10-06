@@ -72,7 +72,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             await OnShowAnimationAsync();
         }
 
-        async Task IMenuUI.OnSuspendAsync(bool hideUi)
+        async Task IMenuUI.OnSuspendAsync(bool hideUI)
         {
             m_LastFocusedElement = (VisualElement)m_UIInstance.focusController.focusedElement;
 
@@ -80,11 +80,11 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             await OnHideAnimationAsync();
 
-            ShowUI(!hideUi);
+            ShowUI(!hideUI);
 
             m_LocalisationService.UnloadLocalisationData(m_LocalisationArgs.DataSheetsToLoad);
 
-            await OnSuspendAsync(hideUi);
+            await OnSuspendAsync(hideUI);
         }
 
         async Task IMenuUI.OnResumeAsync()
@@ -127,7 +127,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         }
 
-        protected virtual Task OnSuspendAsync(bool hideUi)
+        protected virtual Task OnSuspendAsync(bool hideUI)
         {
             return Task.CompletedTask;
         }
