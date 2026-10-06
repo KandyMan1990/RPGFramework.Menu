@@ -116,8 +116,12 @@ namespace RPGFramework.Menu.SubMenus
         {
             List<SavePreview> previews = new List<SavePreview>();
 
-            foreach (string file in m_SaveDataService.GetListOfSaveFiles())
+            string[] files = m_SaveDataService.GetListOfSaveFiles();
+
+            for (int i = 0; i < files.Length; i++)
             {
+                string file = files[i];
+
                 previews.Add(m_SaveDataService.ReadPreview(file));
             }
 
@@ -129,8 +133,10 @@ namespace RPGFramework.Menu.SubMenus
             m_Files.Clear();
             m_CanLoad.Clear();
 
-            foreach (SavePreview preview in previews)
+            for (int i = 0; i < previews.Count; i++)
             {
+                SavePreview preview = previews[i];
+
                 if (preview.FileName == focusFile)
                 {
                     focusIndex = m_Files.Count;
