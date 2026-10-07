@@ -12,11 +12,17 @@ namespace RPGFramework.Menu
 
     public class BeginMenuLocalisationArgs : IBeginMenuLocalisationArgs
     {
-        public string   GameTitle        { get; }
-        public string   NewGame          { get; }
-        public string   LoadGame         { get; }
-        public string   QuitGame         { get; }
-        public string[] DataSheetsToLoad { get; }
+        private readonly string   m_GameTitle;
+        private readonly string   m_NewGame;
+        private readonly string   m_LoadGame;
+        private readonly string   m_QuitGame;
+        private readonly string[] m_DataSheetsToLoad;
+
+        string IBeginMenuLocalisationArgs.GameTitle        => m_GameTitle;
+        string IBeginMenuLocalisationArgs.NewGame          => m_NewGame;
+        string IBeginMenuLocalisationArgs.LoadGame         => m_LoadGame;
+        string IBeginMenuLocalisationArgs.QuitGame         => m_QuitGame;
+        string[] ILocalisationArgs.       DataSheetsToLoad => m_DataSheetsToLoad;
 
         public BeginMenuLocalisationArgs(string   gameTitle,
                                          string   newGame,
@@ -24,11 +30,11 @@ namespace RPGFramework.Menu
                                          string   quitGame,
                                          string[] dataSheetsToLoad)
         {
-            GameTitle        = gameTitle;
-            NewGame          = newGame;
-            LoadGame         = loadGame;
-            QuitGame         = quitGame;
-            DataSheetsToLoad = dataSheetsToLoad;
+            m_GameTitle        = gameTitle;
+            m_NewGame          = newGame;
+            m_LoadGame         = loadGame;
+            m_QuitGame         = quitGame;
+            m_DataSheetsToLoad = dataSheetsToLoad;
         }
     }
 
@@ -40,17 +46,21 @@ namespace RPGFramework.Menu
 
     public class LanguageMenuLocalisationArgs : ILanguageMenuLocalisationArgs
     {
-        public string   ScreenTitle      { get; }
-        public string   Language         { get; }
-        public string[] DataSheetsToLoad { get; }
+        private readonly string   m_ScreenTitle;
+        private readonly string   m_Language;
+        private readonly string[] m_DataSheetsToLoad;
+
+        string ILanguageMenuLocalisationArgs.ScreenTitle      => m_ScreenTitle;
+        string ILanguageMenuLocalisationArgs.Language         => m_Language;
+        string[] ILocalisationArgs.          DataSheetsToLoad => m_DataSheetsToLoad;
 
         public LanguageMenuLocalisationArgs(string   screenTitle,
                                             string   language,
                                             string[] dataSheetsToLoad)
         {
-            ScreenTitle      = screenTitle;
-            Language         = language;
-            DataSheetsToLoad = dataSheetsToLoad;
+            m_ScreenTitle      = screenTitle;
+            m_Language         = language;
+            m_DataSheetsToLoad = dataSheetsToLoad;
         }
     }
 
@@ -68,15 +78,25 @@ namespace RPGFramework.Menu
 
     public class ConfigMenuLocalisationArgs : IConfigMenuLocalisationArgs
     {
-        public string   ScreenTitle        { get; }
-        public string   LanguageTitle      { get; }
-        public string   Language           { get; }
-        public string   Controls           { get; }
-        public string   MusicVolume        { get; }
-        public string   SfxVolume          { get; }
-        public string   BattleMessageSpeed { get; }
-        public string   FieldMessageSpeed  { get; }
-        public string[] DataSheetsToLoad   { get; }
+        private readonly string   m_ScreenTitle;
+        private readonly string   m_LanguageTitle;
+        private readonly string   m_Language;
+        private readonly string   m_Controls;
+        private readonly string   m_MusicVolume;
+        private readonly string   m_SfxVolume;
+        private readonly string   m_BattleMessageSpeed;
+        private readonly string   m_FieldMessageSpeed;
+        private readonly string[] m_DataSheetsToLoad;
+
+        string IConfigMenuLocalisationArgs.ScreenTitle        => m_ScreenTitle;
+        string IConfigMenuLocalisationArgs.LanguageTitle      => m_LanguageTitle;
+        string IConfigMenuLocalisationArgs.Language           => m_Language;
+        string IConfigMenuLocalisationArgs.Controls           => m_Controls;
+        string IConfigMenuLocalisationArgs.MusicVolume        => m_MusicVolume;
+        string IConfigMenuLocalisationArgs.SfxVolume          => m_SfxVolume;
+        string IConfigMenuLocalisationArgs.BattleMessageSpeed => m_BattleMessageSpeed;
+        string IConfigMenuLocalisationArgs.FieldMessageSpeed  => m_FieldMessageSpeed;
+        string[] ILocalisationArgs.        DataSheetsToLoad   => m_DataSheetsToLoad;
 
         public ConfigMenuLocalisationArgs(string   screenTitle,
                                           string   languageTitle,
@@ -88,15 +108,15 @@ namespace RPGFramework.Menu
                                           string   fieldMessageSpeed,
                                           string[] dataSheetsToLoad)
         {
-            ScreenTitle        = screenTitle;
-            LanguageTitle      = languageTitle;
-            Language           = language;
-            Controls           = controls;
-            MusicVolume        = musicVolume;
-            SfxVolume          = sfxVolume;
-            BattleMessageSpeed = battleMessageSpeed;
-            FieldMessageSpeed  = fieldMessageSpeed;
-            DataSheetsToLoad   = dataSheetsToLoad;
+            m_ScreenTitle        = screenTitle;
+            m_LanguageTitle      = languageTitle;
+            m_Language           = language;
+            m_Controls           = controls;
+            m_MusicVolume        = musicVolume;
+            m_SfxVolume          = sfxVolume;
+            m_BattleMessageSpeed = battleMessageSpeed;
+            m_FieldMessageSpeed  = fieldMessageSpeed;
+            m_DataSheetsToLoad   = dataSheetsToLoad;
         }
     }
 
@@ -109,20 +129,25 @@ namespace RPGFramework.Menu
 
     public class PartyMenuLocalisationArgs : IPartyMenuLocalisationArgs
     {
-        public string   Config           { get; }
-        public string   Save             { get; }
-        public string   Time             { get; }
-        public string[] DataSheetsToLoad { get; }
+        private readonly string   m_Config;
+        private readonly string   m_Save;
+        private readonly string   m_Time;
+        private readonly string[] m_DataSheetsToLoad;
+
+        string IPartyMenuLocalisationArgs.Config           => m_Config;
+        string IPartyMenuLocalisationArgs.Save             => m_Save;
+        string IPartyMenuLocalisationArgs.Time             => m_Time;
+        string[] ILocalisationArgs.       DataSheetsToLoad => m_DataSheetsToLoad;
 
         public PartyMenuLocalisationArgs(string   config,
                                          string   save,
                                          string   time,
                                          string[] dataSheetsToLoad)
         {
-            Config           = config;
-            Save             = save;
-            Time             = time;
-            DataSheetsToLoad = dataSheetsToLoad;
+            m_Config           = config;
+            m_Save             = save;
+            m_Time             = time;
+            m_DataSheetsToLoad = dataSheetsToLoad;
         }
     }
 
@@ -141,16 +166,27 @@ namespace RPGFramework.Menu
 
     public class SaveMenuLocalisationArgs : ISaveMenuLocalisationArgs
     {
-        public string   SaveTitle         { get; }
-        public string   LoadTitle         { get; }
-        public string   NewSave           { get; }
-        public string   OverwriteQuestion { get; }
-        public string   DeleteQuestion    { get; }
-        public string   NewerVersion      { get; }
-        public string   Damaged           { get; }
-        public string   Yes               { get; }
-        public string   No                { get; }
-        public string[] DataSheetsToLoad  { get; }
+        private readonly string   m_SaveTitle;
+        private readonly string   m_LoadTitle;
+        private readonly string   m_NewSave;
+        private readonly string   m_OverwriteQuestion;
+        private readonly string   m_DeleteQuestion;
+        private readonly string   m_NewerVersion;
+        private readonly string   m_Damaged;
+        private readonly string   m_Yes;
+        private readonly string   m_No;
+        private readonly string[] m_DataSheetsToLoad;
+
+        string ISaveMenuLocalisationArgs.SaveTitle         => m_SaveTitle;
+        string ISaveMenuLocalisationArgs.LoadTitle         => m_LoadTitle;
+        string ISaveMenuLocalisationArgs.NewSave           => m_NewSave;
+        string ISaveMenuLocalisationArgs.OverwriteQuestion => m_OverwriteQuestion;
+        string ISaveMenuLocalisationArgs.DeleteQuestion    => m_DeleteQuestion;
+        string ISaveMenuLocalisationArgs.NewerVersion      => m_NewerVersion;
+        string ISaveMenuLocalisationArgs.Damaged           => m_Damaged;
+        string ISaveMenuLocalisationArgs.Yes               => m_Yes;
+        string ISaveMenuLocalisationArgs.No                => m_No;
+        string[] ILocalisationArgs.      DataSheetsToLoad  => m_DataSheetsToLoad;
 
         public SaveMenuLocalisationArgs(string   saveTitle,
                                         string   loadTitle,
@@ -163,16 +199,16 @@ namespace RPGFramework.Menu
                                         string   no,
                                         string[] dataSheetsToLoad)
         {
-            SaveTitle         = saveTitle;
-            LoadTitle         = loadTitle;
-            NewSave           = newSave;
-            OverwriteQuestion = overwriteQuestion;
-            DeleteQuestion    = deleteQuestion;
-            NewerVersion      = newerVersion;
-            Damaged           = damaged;
-            Yes               = yes;
-            No                = no;
-            DataSheetsToLoad  = dataSheetsToLoad;
+            m_SaveTitle         = saveTitle;
+            m_LoadTitle         = loadTitle;
+            m_NewSave           = newSave;
+            m_OverwriteQuestion = overwriteQuestion;
+            m_DeleteQuestion    = deleteQuestion;
+            m_NewerVersion      = newerVersion;
+            m_Damaged           = damaged;
+            m_Yes               = yes;
+            m_No                = no;
+            m_DataSheetsToLoad  = dataSheetsToLoad;
         }
     }
 }
