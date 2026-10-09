@@ -34,7 +34,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         private event Action       m_OnNewSaveChosen;
         private event Action<bool> m_OnQuestionAnswered;
 
-        private readonly List<RPGUIButton> m_Rows = new List<RPGUIButton>();
+        private RPGUIButton[] m_Rows = Array.Empty<RPGUIButton>();
 
         private Label         m_TitleLabel;
         private ScrollView    m_SlotsScrollView;
@@ -49,7 +49,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private int FirstSlotRow => m_Saving ? 1 : 0;
 
-        protected override VisualElement GetDefaultFocusedElement() => m_Rows.Count > 0 ? m_Rows[0] : null;
+        protected override VisualElement GetDefaultFocusedElement() => m_Rows.Length > 0 ? m_Rows[0] : null;
 
         public SaveSlotMenuUI(ISaveMenuLocalisationArgs localisationArgs,
                               IMenuUIProvider           uiProvider,
@@ -80,12 +80,12 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             int first = FirstSlotRow;
 
-            if (m_Saving && m_Rows.Count > 0)
+            if (m_Saving && m_Rows.Length > 0)
             {
                 m_Rows[0].text = m_LocalisationService.Get(args.NewSave);
             }
 
-            for (int i = 0; i < m_Slots.Count && first + i < m_Rows.Count; i++)
+            for (int i = 0; i < m_Slots.Count && first + i < m_Rows.Length; i++)
             {
                 m_Rows[first + i].text = Describe(m_Slots[i], args);
             }
@@ -113,18 +113,18 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_Slots = slots;
 
             m_SlotsScrollView.Clear();
-            m_Rows.Clear();
+            m_Rows = new RPGUIButton[FirstSlotRow + slots.Count];
 
             if (m_Saving)
             {
-                AddRow(() => m_OnNewSaveChosen?.Invoke());
+                AddRow(0, () => m_OnNewSaveChosen?.Invoke());
             }
 
             for (int i = 0; i < slots.Count; i++)
             {
                 int index = i;
 
-                RPGUIButton row = AddRow(() => m_OnSlotChosen?.Invoke(index));
+                RPGUIButton row = AddRow(FirstSlotRow + i, () => m_OnSlotChosen?.Invoke(index));
 
                 // Still focusable when it cannot be loaded, so choosing it can say no.
                 if (!m_Saving && (slots[i].FromNewerVersion || slots[i].Damaged))
@@ -135,7 +135,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             LocaliseUI();
 
-            if (m_Rows.Count > 0)
+            if (m_Rows.Length > 0)
             {
                 m_Rows[focusIndex >= 0 ? FirstSlotRow + focusIndex : 0].Focus();
             }
@@ -143,7 +143,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         int ISaveSlotMenuUI.GetFocusedSlot()
         {
-            int row  = m_Rows.IndexOf(m_UIInstance.focusController.focusedElement as RPGUIButton);
+            int row  = Array.IndexOf(m_Rows, m_UIInstance.focusController.focusedElement as RPGUIButton);
             int slot = row >= FirstSlotRow ? row - FirstSlotRow : -1;
 
             return slot;
@@ -182,7 +182,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_RowAskedAbout = null;
         }
 
-        private RPGUIButton AddRow(Action choose)
+        private RPGUIButton AddRow(int index, Action choose)
         {
             RPGUIButton row = new RPGUIButton { focusable = true };
 
@@ -191,7 +191,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             row.RegisterCallback<NavigationMoveEvent>(OnRowNavigate);
             row.RegisterCallback<FocusInEvent>(_ => m_SlotsScrollView.ScrollTo(row));
 
-            m_Rows.Add(row);
+            m_Rows[index] = row;
             m_SlotsScrollView.Add(row);
 
             return row;
@@ -200,10 +200,10 @@ namespace RPGFramework.Menu.SubMenus.UI
         private void OnRowNavigate(NavigationMoveEvent evt)
         {
             RPGUIButton row   = (RPGUIButton)evt.currentTarget;
-            int         index = m_Rows.IndexOf(row);
+            int         index = Array.IndexOf(m_Rows, row);
 
             RPGUIButton up   = index > 0 ? m_Rows[index                - 1] : null;
-            RPGUIButton down = index < m_Rows.Count - 1 ? m_Rows[index + 1] : null;
+            RPGUIButton down = index < m_Rows.Length - 1 ? m_Rows[index + 1] : null;
 
             if (UIToolkitInputUtility.Navigate(evt, row, up, down))
             {

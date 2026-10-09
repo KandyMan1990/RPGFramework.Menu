@@ -4,6 +4,7 @@ using RPGFramework.Core.Input;
 using RPGFramework.Core.Memory;
 using RPGFramework.Core.SaveData;
 using RPGFramework.Menu.SharedTypes;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -21,10 +22,10 @@ namespace RPGFramework.Menu.SubMenus
         protected override bool m_HidePreviousUIOnSuspend => true;
 
         protected readonly ISaveDataService m_SaveDataService;
-        protected readonly List<string>     m_Files = new List<string>();
 
-        private readonly List<bool> m_CanLoad = new List<bool>();
+        protected string[] m_Files = Array.Empty<string>();
 
+        private bool[]   m_CanLoad = Array.Empty<bool>();
         private Question m_Question;
         private string   m_QuestionFile;
 
@@ -114,37 +115,36 @@ namespace RPGFramework.Menu.SubMenus
 
         protected void ShowSlots(string focusFile)
         {
-            List<SavePreview> previews = new List<SavePreview>();
-
-            string[] files = m_SaveDataService.GetListOfSaveFiles();
+            string[]      files    = m_SaveDataService.GetListOfSaveFiles();
+            SavePreview[] previews = new SavePreview[files.Length];
 
             for (int i = 0; i < files.Length; i++)
             {
                 string file = files[i];
 
-                previews.Add(m_SaveDataService.ReadPreview(file));
+                previews[i] = m_SaveDataService.ReadPreview(file);
             }
 
-            previews.Sort((a, b) => b.LastWritten.CompareTo(a.LastWritten));
+            Array.Sort(previews, (a, b) => b.LastWritten.CompareTo(a.LastWritten));
 
-            List<SaveSlotInfo> slots      = new List<SaveSlotInfo>(previews.Count);
-            int                focusIndex = -1;
+            SaveSlotInfo[] slots      = new SaveSlotInfo[previews.Length];
+            int            focusIndex = -1;
 
-            m_Files.Clear();
-            m_CanLoad.Clear();
+            m_Files   = new string[previews.Length];
+            m_CanLoad = new bool[previews.Length];
 
-            for (int i = 0; i < previews.Count; i++)
+            for (int i = 0; i < previews.Length; i++)
             {
                 SavePreview preview = previews[i];
 
                 if (preview.FileName == focusFile)
                 {
-                    focusIndex = m_Files.Count;
+                    focusIndex = i;
                 }
 
-                m_Files.Add(preview.FileName);
-                m_CanLoad.Add(preview.CanLoad);
-                slots.Add(new SaveSlotInfo(preview.Read<ulong>(CoreVariables.LOCATION_NAME), preview.Read<uint>(CoreVariables.PLAY_TIME), preview.LastWritten, preview.IsFromNewerVersion, preview.IsDamaged));
+                m_Files[i]   = preview.FileName;
+                m_CanLoad[i] = preview.CanLoad;
+                slots[i]     = new SaveSlotInfo(preview.Read<ulong>(CoreVariables.LOCATION_NAME), preview.Read<uint>(CoreVariables.PLAY_TIME), preview.LastWritten, preview.IsFromNewerVersion, preview.IsDamaged);
             }
 
             m_MenuUI.SetSlots(slots, focusIndex);
@@ -213,11 +213,11 @@ namespace RPGFramework.Menu.SubMenus
 
         private void Delete(string file)
         {
-            int index = m_Files.IndexOf(file);
+            int index = Array.IndexOf(m_Files, file);
 
-            string focusFile = index + 1 < m_Files.Count ? m_Files[index + 1]
-                             : index > 0                 ? m_Files[index - 1]
-                                                         : null;
+            string focusFile = index + 1 < m_Files.Length ? m_Files[index + 1]
+                               : index   > 0              ? m_Files[index - 1]
+                                                            : null;
 
             m_SaveDataService.DeleteSave(file);
 
