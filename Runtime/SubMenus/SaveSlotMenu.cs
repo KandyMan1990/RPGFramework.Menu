@@ -23,9 +23,9 @@ namespace RPGFramework.Menu.SubMenus
 
         protected readonly ISaveDataService m_SaveDataService;
 
-        protected string[] m_Files = Array.Empty<string>();
+        protected string[] m_Files;
 
-        private bool[]   m_CanLoad = Array.Empty<bool>();
+        private bool[]   m_CanLoad;
         private Question m_Question;
         private string   m_QuestionFile;
 
@@ -38,6 +38,8 @@ namespace RPGFramework.Menu.SubMenus
                                ISaveDataService   saveDataService) : base(saveSlotMenuUI, inputRouter, menuModule, audioIntentPlayer)
         {
             m_SaveDataService = saveDataService;
+            m_Files           = Array.Empty<string>();
+            m_CanLoad         = Array.Empty<bool>();
         }
 
         protected override Task OnEnterAsync(Dictionary<string, object> args)

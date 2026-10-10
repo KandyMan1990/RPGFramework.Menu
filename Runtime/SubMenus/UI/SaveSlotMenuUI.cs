@@ -34,7 +34,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         private event Action       m_OnNewSaveChosen;
         private event Action<bool> m_OnQuestionAnswered;
 
-        private RPGUIButton[] m_Rows = Array.Empty<RPGUIButton>();
+        private RPGUIButton[] m_Rows;
 
         private Label         m_TitleLabel;
         private ScrollView    m_SlotsScrollView;
@@ -44,7 +44,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         private RPGUIButton   m_NoBtn;
 
         private bool                        m_Saving;
-        private IReadOnlyList<SaveSlotInfo> m_Slots = Array.Empty<SaveSlotInfo>();
+        private IReadOnlyList<SaveSlotInfo> m_Slots;
         private VisualElement               m_RowAskedAbout;
 
         private int FirstSlotRow => m_Saving ? 1 : 0;
@@ -56,6 +56,8 @@ namespace RPGFramework.Menu.SubMenus.UI
                               IAudioIntentPlayer        audioIntentPlayer,
                               ILocalisationService      localisationService) : base(localisationArgs, uiProvider, audioIntentPlayer, localisationService)
         {
+            m_Rows  = Array.Empty<RPGUIButton>();
+            m_Slots = Array.Empty<SaveSlotInfo>();
         }
 
         protected override void HookupUI()
