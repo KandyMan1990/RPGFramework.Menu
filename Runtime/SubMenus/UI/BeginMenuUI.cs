@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
@@ -15,20 +17,22 @@ namespace RPGFramework.Menu.SubMenus.UI
             add => m_OnNewGamePressed += value;
             remove => m_OnNewGamePressed -= value;
         }
+
         event Action IBeginMenuUI.OnLoadGamePressed
         {
             add => m_OnLoadGamePressed += value;
             remove => m_OnLoadGamePressed -= value;
         }
-        event Action IBeginMenuUI.OnQuitPressed
+
+        event Action<Task> IBeginMenuUI.OnQuitPressed
         {
             add => m_OnQuitPressed += value;
             remove => m_OnQuitPressed -= value;
         }
 
-        private event Action m_OnNewGamePressed;
-        private event Action m_OnLoadGamePressed;
-        private event Action m_OnQuitPressed;
+        private event Action       m_OnNewGamePressed;
+        private event Action       m_OnLoadGamePressed;
+        private event Action<Task> m_OnQuitPressed;
 
         private Label       m_TitleLabel;
         private RPGUIButton m_NewGameBtn;
@@ -100,7 +104,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnNewGameBtnCallback()
         {
-            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_OnNewGamePressed?.Invoke();
         }
 
@@ -124,7 +128,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnLoadGameBtnCallback()
         {
-            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_OnLoadGamePressed?.Invoke();
         }
 
@@ -148,8 +152,9 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnQuitBtnCallback()
         {
-            m_AudioIntentPlayer.Play(AudioIntent.Cancel, AudioContext.Menu);
-            m_OnQuitPressed?.Invoke();
+            Task cancelSound = m_AudioIntentPlayer.PlayAsync(AudioIntent.Cancel, AudioContext.Menu);
+
+            m_OnQuitPressed?.Invoke(cancelSound);
         }
     }
 }

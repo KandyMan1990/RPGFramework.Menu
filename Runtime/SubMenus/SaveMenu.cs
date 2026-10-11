@@ -1,3 +1,4 @@
+using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveData;
@@ -36,7 +37,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             m_SaveDataService.CommitSave(file);
 
-            m_AudioIntentPlayer.Play(AudioIntent.SaveGame, AudioContext.Menu);
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.SaveGame, AudioContext.Menu).FireAndForget();
 
             ShowSlots(file);
         }

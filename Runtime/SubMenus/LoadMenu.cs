@@ -28,13 +28,13 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (!CanLoad(index))
             {
-                m_AudioIntentPlayer.Play(AudioIntent.Error, AudioContext.Menu);
+                m_AudioIntentPlayer.PlayAsync(AudioIntent.Error, AudioContext.Menu).FireAndForget();
                 return;
             }
 
             m_SaveDataService.BeginSave(m_Files[index]);
 
-            m_AudioIntentPlayer.Play(AudioIntent.LoadGame, AudioContext.Menu);
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.LoadGame, AudioContext.Menu).FireAndForget();
 
             m_PlayTimeStore.StartCounting();
 

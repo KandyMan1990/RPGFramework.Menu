@@ -1,4 +1,5 @@
 ﻿using System;
+using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
@@ -243,7 +244,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnControlsBtnCallback()
         {
-            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_OnControlsPressed?.Invoke();
         }
 

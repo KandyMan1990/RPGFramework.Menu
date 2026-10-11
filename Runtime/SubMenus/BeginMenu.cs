@@ -97,20 +97,37 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (m_SaveDataService.GetListOfSaveFiles().Length == 0)
             {
-                m_AudioIntentPlayer.Play(AudioIntent.Error, AudioContext.Menu);
+                m_AudioIntentPlayer.PlayAsync(AudioIntent.Error, AudioContext.Menu).FireAndForget();
                 return;
             }
 
             m_MenuModule.PushMenu(MenuType.Load).FireAndForget();
         }
 
-        private void OnQuitPressed()
+        private void OnQuitPressed(Task cancelSound)
         {
+            QuitAsync(cancelSound).FireAndForget();
+        }
+
+        // The cancel sound plays out before the game closes: quitting at once also cut its bundle's load short, which
+        // in the editor left the bundle loaded into the next play session. It quits even if the sound failed, which is
+        // logged as it passes on.
+        private async Task QuitAsync(Task cancelSound)
+        {
+            UnregisterCallbacks();
+
+            try
+            {
+                await cancelSound;
+            }
+            finally
+            {
 #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
+                UnityEditor.EditorApplication.isPlaying = false;
 #else
-            UnityEngine.Application.Quit();
+                UnityEngine.Application.Quit();
 #endif
+            }
         }
 
         private Task ApplySettingsAsync()

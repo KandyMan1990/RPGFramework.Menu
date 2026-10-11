@@ -65,7 +65,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (slot is ControlSlot.Primary or ControlSlot.Secondary)
             {
-                m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
+                m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
                 m_MenuModule.PopMenu().FireAndForget();
             }
 

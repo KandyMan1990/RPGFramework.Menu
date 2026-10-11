@@ -97,7 +97,7 @@ namespace RPGFramework.Menu.SubMenus
                 // as the screen starts to fade, not once it has.
                 AudioIntent closing = m_MenuModule.IsMenuInStack<IBeginMenu>() ? AudioIntent.NewGame : AudioIntent.Cancel;
 
-                m_AudioIntentPlayer.Play(closing, AudioContext.Menu);
+                m_AudioIntentPlayer.PlayAsync(closing, AudioContext.Menu).FireAndForget();
                 m_MenuModule.PopMenu().FireAndForget();
             }
 

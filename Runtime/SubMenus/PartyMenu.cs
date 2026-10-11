@@ -70,7 +70,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (slot == ControlSlot.Secondary)
             {
-                m_AudioIntentPlayer.Play(AudioIntent.Cancel, AudioContext.Menu);
+                m_AudioIntentPlayer.PlayAsync(AudioIntent.Cancel, AudioContext.Menu).FireAndForget();
                 m_MenuModule.PopMenu().FireAndForget();
             }
 
@@ -79,7 +79,7 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnConfigPressed()
         {
-            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_MenuModule.PushMenu(MenuType.Config).FireAndForget();
         }
 
@@ -87,11 +87,11 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (!m_SaveEnabled)
             {
-                m_AudioIntentPlayer.Play(AudioIntent.Error, AudioContext.Menu);
+                m_AudioIntentPlayer.PlayAsync(AudioIntent.Error, AudioContext.Menu).FireAndForget();
                 return;
             }
 
-            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_MenuModule.PushMenu(MenuType.Save).FireAndForget();
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
@@ -172,7 +173,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected void OnBtnNavigate()
         {
-            m_AudioIntentPlayer.Play(AudioIntent.Navigate, AudioContext.Menu);
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
         }
 
         protected virtual async Task OnShowAnimationAsync()
