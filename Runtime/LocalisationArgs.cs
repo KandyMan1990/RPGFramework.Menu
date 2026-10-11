@@ -2,12 +2,20 @@
 
 namespace RPGFramework.Menu
 {
+    /// <summary>The localisation keys the title menu shows, and the sheets they are in.</summary>
     public interface IBeginMenuLocalisationArgs : ILocalisationArgs
     {
+        /// <summary>The key of the game's title.</summary>
         string GameTitle { get; }
-        string NewGame   { get; }
-        string LoadGame  { get; }
-        string QuitGame  { get; }
+
+        /// <summary>The key of the New Game button.</summary>
+        string NewGame { get; }
+
+        /// <summary>The key of the Load Game button.</summary>
+        string LoadGame { get; }
+
+        /// <summary>The key of the Quit button.</summary>
+        string QuitGame { get; }
     }
 
     public class BeginMenuLocalisationArgs : IBeginMenuLocalisationArgs
@@ -38,10 +46,14 @@ namespace RPGFramework.Menu
         }
     }
 
+    /// <summary>The localisation keys the Language menu shows, and the sheets they are in.</summary>
     public interface ILanguageMenuLocalisationArgs : ILocalisationArgs
     {
-        public string ScreenTitle { get; }
-        public string Language    { get; }
+        /// <summary>The key of the screen's title.</summary>
+        string ScreenTitle { get; }
+
+        /// <summary>The key of the language's own name, shown in the language it names.</summary>
+        string Language { get; }
     }
 
     public class LanguageMenuLocalisationArgs : ILanguageMenuLocalisationArgs
@@ -64,16 +76,32 @@ namespace RPGFramework.Menu
         }
     }
 
+    /// <summary>The localisation keys the Config menu shows, and the sheets they are in.</summary>
     public interface IConfigMenuLocalisationArgs : ILocalisationArgs
     {
-        string ScreenTitle        { get; }
-        string LanguageTitle      { get; }
-        string Language           { get; }
-        string Controls           { get; }
-        string MusicVolume        { get; }
-        string SfxVolume          { get; }
+        /// <summary>The key of the screen's title.</summary>
+        string ScreenTitle { get; }
+
+        /// <summary>The key of the language setting's label.</summary>
+        string LanguageTitle { get; }
+
+        /// <summary>The key of the language's own name, shown in the language it names.</summary>
+        string Language { get; }
+
+        /// <summary>The key of the Controls button.</summary>
+        string Controls { get; }
+
+        /// <summary>The key of the music volume slider's label.</summary>
+        string MusicVolume { get; }
+
+        /// <summary>The key of the sound effects' volume slider's label.</summary>
+        string SfxVolume { get; }
+
+        /// <summary>The key of the battle message speed slider's label.</summary>
         string BattleMessageSpeed { get; }
-        string FieldMessageSpeed  { get; }
+
+        /// <summary>The key of the field message speed slider's label.</summary>
+        string FieldMessageSpeed { get; }
     }
 
     public class ConfigMenuLocalisationArgs : IConfigMenuLocalisationArgs
@@ -120,11 +148,17 @@ namespace RPGFramework.Menu
         }
     }
 
+    /// <summary>The localisation keys the party menu shows, and the sheets they are in.</summary>
     public interface IPartyMenuLocalisationArgs : ILocalisationArgs
     {
+        /// <summary>The key of the Config button.</summary>
         string Config { get; }
-        string Save   { get; }
-        string Time   { get; }
+
+        /// <summary>The key of the Save button.</summary>
+        string Save { get; }
+
+        /// <summary>The key of the play time's label.</summary>
+        string Time { get; }
     }
 
     public class PartyMenuLocalisationArgs : IPartyMenuLocalisationArgs
@@ -151,17 +185,35 @@ namespace RPGFramework.Menu
         }
     }
 
+    /// <summary>The localisation keys the Save and Load menus show, and the sheets they are in.</summary>
     public interface ISaveMenuLocalisationArgs : ILocalisationArgs
     {
-        string SaveTitle         { get; }
-        string LoadTitle         { get; }
-        string NewSave           { get; }
+        /// <summary>The key of the Save menu's title.</summary>
+        string SaveTitle { get; }
+
+        /// <summary>The key of the Load menu's title.</summary>
+        string LoadTitle { get; }
+
+        /// <summary>The key of the new save row.</summary>
+        string NewSave { get; }
+
+        /// <summary>The key of the question asked before writing over a save.</summary>
         string OverwriteQuestion { get; }
-        string DeleteQuestion    { get; }
-        string NewerVersion      { get; }
-        string Damaged           { get; }
-        string Yes               { get; }
-        string No                { get; }
+
+        /// <summary>The key of the question asked before deleting a save.</summary>
+        string DeleteQuestion { get; }
+
+        /// <summary>The key shown on a save written by a newer build of the game, which cannot be loaded.</summary>
+        string NewerVersion { get; }
+
+        /// <summary>The key shown on a save that is damaged, which cannot be loaded.</summary>
+        string Damaged { get; }
+
+        /// <summary>The key of a question's yes answer.</summary>
+        string Yes { get; }
+
+        /// <summary>The key of a question's no answer.</summary>
+        string No { get; }
     }
 
     public class SaveMenuLocalisationArgs : ISaveMenuLocalisationArgs
