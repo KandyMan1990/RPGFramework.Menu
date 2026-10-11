@@ -9,6 +9,7 @@ using RPGFramework.Core.Settings;
 using RPGFramework.Core.Store;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
+using RPGFramework.Menu.SharedTypes.Constants;
 
 namespace RPGFramework.Menu.SubMenus
 {
@@ -21,8 +22,6 @@ namespace RPGFramework.Menu.SubMenus
         private readonly ISettingsService     m_SettingsService;
         private readonly IMusicPlayer         m_MusicPlayer;
         private readonly ISfxPlayer           m_SfxPlayer;
-        private readonly ICurrentModuleStore  m_CurrentModuleStore;
-        private readonly IChangeModuleStore   m_ChangeModuleStore;
         private readonly IPlayTimeStore       m_PlayTimeStore;
 
         private bool m_StartingNewGame;
@@ -32,8 +31,6 @@ namespace RPGFramework.Menu.SubMenus
                          ISettingsService     settingsService,
                          IMusicPlayer         musicPlayer,
                          ISfxPlayer           sfxPlayer,
-                         ICurrentModuleStore  currentModuleStore,
-                         IChangeModuleStore   changeModuleStore,
                          IPlayTimeStore       playTimeStore,
                          IBeginMenuUI         beginMenuUI,
                          IInputRouter         inputRouter,
@@ -45,8 +42,6 @@ namespace RPGFramework.Menu.SubMenus
             m_SettingsService     = settingsService;
             m_MusicPlayer         = musicPlayer;
             m_SfxPlayer           = sfxPlayer;
-            m_CurrentModuleStore  = currentModuleStore;
-            m_ChangeModuleStore   = changeModuleStore;
             m_PlayTimeStore       = playTimeStore;
         }
 
@@ -59,11 +54,9 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (m_StartingNewGame)
             {
-                m_AudioIntentPlayer.Play(AudioIntent.NewGame, AudioContext.Menu);
-
                 m_PlayTimeStore.StartCounting();
 
-                m_MenuModule.RequestModuleChange();
+                m_MenuModule.RequestModuleChange(MenuOutcomes.PLAYTHROUGH);
                 return Task.CompletedTask;
             }
 
@@ -94,8 +87,6 @@ namespace RPGFramework.Menu.SubMenus
             string filename = m_SaveDataService.GetUnusedSaveFileName();
 
             m_SaveDataService.BeginSave(filename);
-
-            m_ChangeModuleStore.SetModuleId(m_CurrentModuleStore.ModuleId);
 
             m_StartingNewGame = true;
 

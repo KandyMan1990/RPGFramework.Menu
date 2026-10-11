@@ -5,12 +5,11 @@ using RPGFramework.Core;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.Rendering;
 using RPGFramework.Core.SharedTypes;
-using RPGFramework.Core.Store;
 using RPGFramework.DI;
 using RPGFramework.Menu.SharedTypes;
+using RPGFramework.Menu.SharedTypes.Constants;
 using RPGFramework.Menu.SharedTypes.Stores;
 using UnityEngine.UIElements;
-using Object = UnityEngine.Object;
 
 namespace RPGFramework.Menu
 {
@@ -21,13 +20,12 @@ namespace RPGFramework.Menu
         private readonly IScreenFadeService m_ScreenFadeService;
         private readonly IMenuArgsStore     m_MenuArgsStore;
         private readonly IMenuTypeProvider  m_MenuTypeProvider;
-        private readonly IChangeModuleStore m_ChangeModuleStore;
-        private readonly IResumeModuleStore m_ResumeModuleStore;
+        private readonly IModuleScene       m_ModuleScene;
         private readonly IMenuModule        m_MenuModule;
         private readonly Stack<IMenu>       m_Menus;
         private readonly VisualElement      m_UIContainer;
 
-        private bool         m_ModuleChangeRequested;
+        private byte         m_RequestedOutcome;
         private InputAdapter m_InputAdapter;
 
         public MenuModule(ICoreModule        coreModule,
@@ -35,53 +33,67 @@ namespace RPGFramework.Menu
                           IScreenFadeService screenFadeService,
                           IMenuArgsStore     menuArgsStore,
                           IMenuTypeProvider  menuTypeProvider,
-                          IChangeModuleStore changeModuleStore,
-                          IResumeModuleStore resumeModuleStore)
+                          IModuleScene       moduleScene)
         {
             m_CoreModule        = coreModule;
             m_DIResolver        = diResolver;
             m_ScreenFadeService = screenFadeService;
             m_MenuArgsStore     = menuArgsStore;
             m_MenuTypeProvider  = menuTypeProvider;
-            m_ChangeModuleStore = changeModuleStore;
-            m_ResumeModuleStore = resumeModuleStore;
+            m_ModuleScene       = moduleScene;
             m_MenuModule        = this;
             m_Menus             = new Stack<IMenu>();
 
-            UIDocument uIDocument = Object.FindAnyObjectByType<UIDocument>();
+            UIDocument uIDocument = m_ModuleScene.Find<UIDocument>();
             m_UIContainer = uIDocument.rootVisualElement;
         }
 
-        async Task IModule.OnEnterAsync()
+        async Task IModule.OnEnterAsync(byte entry)
         {
             await m_ScreenFadeService.FadeOutAsync(true);
 
-            m_InputAdapter = Object.FindAnyObjectByType<InputAdapter>();
+            m_InputAdapter = m_ModuleScene.Find<InputAdapter>();
             m_DIResolver.InjectInto(m_InputAdapter);
 
             MenuArgs args = m_MenuArgsStore.Args;
 
             await m_MenuModule.PushMenu((MenuType)args.MenuId);
-            await m_ScreenFadeService.FadeInAsync();
-
-            m_InputAdapter.Enable();
         }
 
         async Task IModule.OnExitAsync()
         {
             m_InputAdapter.Disable();
 
+            await m_ScreenFadeService.FadeOutAsync();
+
             while (m_Menus.Count > 0)
             {
                 IMenu menu = m_Menus.Pop();
                 await menu.OnExitAsync();
             }
-
-            await m_ScreenFadeService.FadeOutAsync();
         }
 
+        Task IModule.OnSuspendAsync()
+        {
+            m_InputAdapter.Disable();
+
+            return Task.CompletedTask;
+        }
+
+        Task IModule.OnResumeAsync()
+        {
+            m_InputAdapter.Enable();
+
+            return Task.CompletedTask;
+        }
+
+        // Every menu change fades the screen out, swaps the menus and fades back in, with no input while it does.
         async Task IMenuModule.PushMenu(MenuType menuType)
         {
+            m_InputAdapter.Disable();
+
+            await m_ScreenFadeService.FadeOutAsync();
+
             Type  menuToPushType = m_MenuTypeProvider.GetType(menuType);
             IMenu newMenu        = (IMenu)m_DIResolver.Resolve(menuToPushType);
 
@@ -93,41 +105,50 @@ namespace RPGFramework.Menu
             m_Menus.Push(newMenu);
 
             await newMenu.OnEnterAsync(m_UIContainer);
+            await m_ScreenFadeService.FadeInAsync();
+
+            m_InputAdapter.Enable();
         }
 
         async Task IMenuModule.PopMenu()
         {
+            m_InputAdapter.Disable();
+
+            await m_ScreenFadeService.FadeOutAsync();
+
             IMenu menu = m_Menus.Pop();
             await menu.OnExitAsync();
 
-            if (m_Menus.TryPeek(out IMenu newMenu))
+            if (!m_Menus.TryPeek(out IMenu newMenu))
             {
-                await newMenu.OnResumeAsync();
-
-                if (m_ModuleChangeRequested)
-                {
-                    m_ModuleChangeRequested = false;
-
-                    m_CoreModule.RequestModuleChangeAsync().FireAndForget();
-                }
+                LeaveModule(m_RequestedOutcome != 0 ? m_RequestedOutcome : MenuOutcomes.CLOSED);
+                return;
             }
-            else
+
+            await newMenu.OnResumeAsync();
+
+            // A menu leaving the module, as a new game or a load does, leaves with the screen already out.
+            if (m_RequestedOutcome != 0)
             {
-                if (!m_ModuleChangeRequested)
-                {
-                    byte moduleId = m_ResumeModuleStore.ModuleId;
-                    m_ChangeModuleStore.SetModuleId(moduleId);
-                }
-
-                m_ModuleChangeRequested = false;
-
-                m_CoreModule.RequestModuleChangeAsync().FireAndForget();
+                LeaveModule(m_RequestedOutcome);
+                return;
             }
+
+            await m_ScreenFadeService.FadeInAsync();
+
+            m_InputAdapter.Enable();
         }
 
-        void IMenuModule.RequestModuleChange()
+        void IMenuModule.RequestModuleChange(byte outcome)
         {
-            m_ModuleChangeRequested = true;
+            m_RequestedOutcome = outcome;
+        }
+
+        private void LeaveModule(byte outcome)
+        {
+            m_RequestedOutcome = 0;
+
+            m_CoreModule.RequestModuleChangeAsync(outcome).FireAndForget();
         }
 
         bool IMenuModule.IsMenuInStack<T>()

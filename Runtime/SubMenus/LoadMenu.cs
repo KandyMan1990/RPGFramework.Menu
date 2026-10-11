@@ -4,6 +4,7 @@ using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveData;
 using RPGFramework.Core.Store;
 using RPGFramework.Menu.SharedTypes;
+using RPGFramework.Menu.SharedTypes.Constants;
 
 namespace RPGFramework.Menu.SubMenus
 {
@@ -11,22 +12,16 @@ namespace RPGFramework.Menu.SubMenus
     {
         protected override bool IsSaving => false;
 
-        private readonly ICurrentModuleStore m_CurrentModuleStore;
-        private readonly IChangeModuleStore  m_ChangeModuleStore;
-        private readonly IPlayTimeStore      m_PlayTimeStore;
+        private readonly IPlayTimeStore m_PlayTimeStore;
 
         public LoadMenu(ISaveSlotMenuUI     saveSlotMenuUI,
                         IInputRouter        inputRouter,
                         IMenuModule         menuModule,
                         IAudioIntentPlayer  audioIntentPlayer,
                         ISaveDataService    saveDataService,
-                        ICurrentModuleStore currentModuleStore,
-                        IChangeModuleStore  changeModuleStore,
                         IPlayTimeStore      playTimeStore) : base(saveSlotMenuUI, inputRouter, menuModule, audioIntentPlayer, saveDataService)
         {
-            m_CurrentModuleStore = currentModuleStore;
-            m_ChangeModuleStore  = changeModuleStore;
-            m_PlayTimeStore      = playTimeStore;
+            m_PlayTimeStore = playTimeStore;
         }
 
         protected override void OnSlotChosen(int index)
@@ -39,13 +34,11 @@ namespace RPGFramework.Menu.SubMenus
 
             m_SaveDataService.BeginSave(m_Files[index]);
 
-            m_ChangeModuleStore.SetModuleId(m_CurrentModuleStore.ModuleId);
-
             m_AudioIntentPlayer.Play(AudioIntent.LoadGame, AudioContext.Menu);
 
             m_PlayTimeStore.StartCounting();
 
-            m_MenuModule.RequestModuleChange();
+            m_MenuModule.RequestModuleChange(MenuOutcomes.PLAYTHROUGH);
             m_MenuModule.PopMenu().FireAndForget();
         }
     }

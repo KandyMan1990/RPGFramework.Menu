@@ -93,11 +93,11 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (slot == ControlSlot.Secondary)
             {
-                if (!m_MenuModule.IsMenuInStack<IBeginMenu>())
-                {
-                    m_AudioIntentPlayer.Play(AudioIntent.Cancel, AudioContext.Menu);
-                }
+                // Over the title menu these are New Game's settings, and closing them starts the game: its sound plays
+                // as the screen starts to fade, not once it has.
+                AudioIntent closing = m_MenuModule.IsMenuInStack<IBeginMenu>() ? AudioIntent.NewGame : AudioIntent.Cancel;
 
+                m_AudioIntentPlayer.Play(closing, AudioContext.Menu);
                 m_MenuModule.PopMenu().FireAndForget();
             }
 
