@@ -52,8 +52,9 @@ Then make it your own:
 - **Config**: music and sound effect volumes and the message speeds, each volume heard live as its slider moves, and
   written when the menu closes.
 - **Language**: every language the game ships, written when the menu closes.
-- **Party**: the menu opened from the field, showing Config and Save, with the location name and play time. Save is
-  offered only when the field allows saving, and is greyed out otherwise.
+- **Party**: the menu opened from the field, showing Config, Save and Load, with the location name and play time. Save
+  is offered only when the field allows saving, and is greyed out otherwise. Loading from here leaves the field under
+  the menu behind and enters the save's.
 - **Save** and **Load**: one list of save slots, each previewed without loading it, newest first, with the location,
   play time and when it was saved. Save also offers a new slot. Overwriting or deleting a save asks first, with No
   selected. A save made by a newer version of the game, or a damaged one, is listed and marked, and can't be loaded.

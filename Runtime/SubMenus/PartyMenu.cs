@@ -58,10 +58,12 @@ namespace RPGFramework.Menu.SubMenus
         {
             m_MenuUI.OnConfigPressed += OnConfigPressed;
             m_MenuUI.OnSavePressed   += OnSavePressed;
+            m_MenuUI.OnLoadPressed   += OnLoadPressed;
         }
 
         protected override void UnregisterCallbacks()
         {
+            m_MenuUI.OnLoadPressed   -= OnLoadPressed;
             m_MenuUI.OnSavePressed   -= OnSavePressed;
             m_MenuUI.OnConfigPressed -= OnConfigPressed;
         }
@@ -93,6 +95,12 @@ namespace RPGFramework.Menu.SubMenus
 
             m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_MenuModule.PushMenu(MenuType.Save).FireAndForget();
+        }
+
+        private void OnLoadPressed()
+        {
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            m_MenuModule.PushMenu(MenuType.Load).FireAndForget();
         }
     }
 }

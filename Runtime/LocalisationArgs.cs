@@ -157,6 +157,9 @@ namespace RPGFramework.Menu
         /// <summary>The key of the Save button.</summary>
         string Save { get; }
 
+        /// <summary>The key of the Load button.</summary>
+        string Load { get; }
+
         /// <summary>The key of the play time's label.</summary>
         string Time { get; }
     }
@@ -165,21 +168,25 @@ namespace RPGFramework.Menu
     {
         private readonly string   m_Config;
         private readonly string   m_Save;
+        private readonly string   m_Load;
         private readonly string   m_Time;
         private readonly string[] m_DataSheetsToLoad;
 
         string IPartyMenuLocalisationArgs.Config           => m_Config;
         string IPartyMenuLocalisationArgs.Save             => m_Save;
+        string IPartyMenuLocalisationArgs.Load             => m_Load;
         string IPartyMenuLocalisationArgs.Time             => m_Time;
         string[] ILocalisationArgs.       DataSheetsToLoad => m_DataSheetsToLoad;
 
         public PartyMenuLocalisationArgs(string   config,
                                          string   save,
+                                         string   load,
                                          string   time,
                                          string[] dataSheetsToLoad)
         {
             m_Config           = config;
             m_Save             = save;
+            m_Load             = load;
             m_Time             = time;
             m_DataSheetsToLoad = dataSheetsToLoad;
         }

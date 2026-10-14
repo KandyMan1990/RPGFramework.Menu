@@ -47,6 +47,8 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override Task OnEnterComplete()
         {
+            m_PlayTimeStore.StopCounting();
+
             return ApplySettingsAsync();
         }
 

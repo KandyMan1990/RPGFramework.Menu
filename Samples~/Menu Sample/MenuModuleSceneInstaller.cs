@@ -67,6 +67,7 @@ namespace RPGFramework.Menu.Menu_Sample
 
             IPartyMenuLocalisationArgs partyMenuLocalisationArgs = new PartyMenuLocalisationArgs("Generic/Settings",
                                                                                                  "PartyMenu/Save",
+                                                                                                 "PartyMenu/Load",
                                                                                                  "PartyMenu/Time",
                                                                                                  new[] { GENERIC_SHEET, PARTY_MENU_SHEET, LOCATIONS_SHEET });
 

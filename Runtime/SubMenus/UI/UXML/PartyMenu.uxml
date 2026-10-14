@@ -5,6 +5,7 @@
             <ui:VisualElement name="ButtonsContainer" style="flex-grow: 1; justify-content: space-evenly; margin-top: 10%; margin-bottom: 10%;">
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" name="ConfigBtn" text="Config"/>
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" name="SaveBtn" text="Save"/>
+                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="LoadBtn" text="Load"/>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="FooterContainer" style="height: 12%; flex-direction: row; justify-content: space-between; align-items: center; margin-left: 8%; margin-right: 8%; font-size: 36px;">

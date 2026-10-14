@@ -182,6 +182,9 @@ namespace RPGFramework.Menu
         /// <summary>Raised when the player chooses Save, allowed or not.</summary>
         event Action OnSavePressed;
 
+        /// <summary>Raised when the player chooses Load.</summary>
+        event Action OnLoadPressed;
+
         /// <summary>
         /// Greys Save out when saving is not allowed here; it stays focusable, so choosing it can say no.
         /// </summary>
