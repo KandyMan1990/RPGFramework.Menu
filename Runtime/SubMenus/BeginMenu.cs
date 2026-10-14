@@ -116,7 +116,7 @@ namespace RPGFramework.Menu.SubMenus
         // logged as it passes on.
         private async Task QuitAsync(Task cancelSound)
         {
-            UnregisterCallbacks();
+            SetInputEnabled(false);
 
             try
             {

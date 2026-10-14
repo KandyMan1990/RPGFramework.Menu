@@ -34,6 +34,8 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected VisualElement m_LastFocusedElement;
 
+        private bool m_InputEnabled;
+
         protected MenuUI(ILocalisationArgs    localisationArgs,
                          IMenuUIProvider      uiProvider,
                          IAudioIntentPlayer   audioIntentPlayer,
@@ -43,6 +45,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_UIProvider          = uiProvider;
             m_AudioIntentPlayer   = audioIntentPlayer;
             m_LocalisationService = localisationService;
+            m_InputEnabled        = false;
         }
 
         async Task IMenuUI.OnEnterAsync(VisualElement parent, Dictionary<string, object> args)
@@ -51,6 +54,8 @@ namespace RPGFramework.Menu.SubMenus.UI
             uiAsset.CloneTree(parent);
 
             m_UIInstance = parent[parent.childCount - 1];
+
+            RegisterRootCallbacks();
 
             ShowUI(false);
 
@@ -61,8 +66,6 @@ namespace RPGFramework.Menu.SubMenus.UI
             HookupUI();
 
             LocaliseUI();
-
-            RegisterCallbacks();
 
             ShowUI(true);
 
@@ -76,8 +79,6 @@ namespace RPGFramework.Menu.SubMenus.UI
         async Task IMenuUI.OnSuspendAsync(bool hideUI)
         {
             m_LastFocusedElement = (VisualElement)m_UIInstance.focusController.focusedElement;
-
-            UnregisterCallbacks();
 
             await OnHideAnimationAsync();
 
@@ -94,8 +95,6 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             LocaliseUI();
 
-            RegisterCallbacks();
-
             ShowUI(true);
 
             await OnResumeAsync();
@@ -108,7 +107,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         async Task IMenuUI.OnExitAsync()
         {
-            UnregisterCallbacks();
+            SetInputEnabled(false);
 
             await OnHideAnimationAsync();
 
@@ -116,6 +115,65 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             m_UIInstance.RemoveFromHierarchy();
             m_UIInstance = null;
+        }
+
+        void IMenuUI.SetInputEnabled(bool enabled)
+        {
+            SetInputEnabled(enabled);
+        }
+
+        private void SetInputEnabled(bool enabled)
+        {
+            if (enabled == m_InputEnabled)
+            {
+                return;
+            }
+
+            m_InputEnabled = enabled;
+
+            if (enabled)
+            {
+                RegisterCallbacks();
+            }
+            else
+            {
+                UnregisterCallbacks();
+            }
+        }
+
+        // UI Toolkit moves focus by itself, to the next element on a navigation key and to a button the pointer enters
+        // or presses, so while the menu takes no input its events stop at its root, before they reach one. The cursor
+        // sound follows focus however it moved; the menu's own focusing, as it enters or resumes, comes while its input
+        // is off and plays nothing.
+        private void RegisterRootCallbacks()
+        {
+            m_UIInstance.RegisterCallback<NavigationMoveEvent>(StopIfInputDisabled, TrickleDown.TrickleDown);
+            m_UIInstance.RegisterCallback<NavigationSubmitEvent>(StopIfInputDisabled, TrickleDown.TrickleDown);
+            m_UIInstance.RegisterCallback<NavigationCancelEvent>(StopIfInputDisabled, TrickleDown.TrickleDown);
+            m_UIInstance.RegisterCallback<PointerEnterEvent>(StopIfInputDisabled, TrickleDown.TrickleDown);
+            m_UIInstance.RegisterCallback<PointerDownEvent>(StopIfInputDisabled, TrickleDown.TrickleDown);
+            m_UIInstance.RegisterCallback<ClickEvent>(StopIfInputDisabled, TrickleDown.TrickleDown);
+            m_UIInstance.RegisterCallback<WheelEvent>(StopIfInputDisabled, TrickleDown.TrickleDown);
+            m_UIInstance.RegisterCallback<FocusInEvent>(OnFocusIn, TrickleDown.TrickleDown);
+        }
+
+        private void StopIfInputDisabled(EventBase evt)
+        {
+            if (m_InputEnabled)
+            {
+                return;
+            }
+
+            evt.StopImmediatePropagation();
+            m_UIInstance.focusController.IgnoreEvent(evt);
+        }
+
+        private void OnFocusIn(FocusInEvent evt)
+        {
+            if (m_InputEnabled)
+            {
+                OnBtnNavigate();
+            }
         }
 
         protected virtual Task OnEnterAsync(Dictionary<string, object> args)

@@ -107,10 +107,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnConfigBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_ConfigBtn, m_LoadBtn, m_SaveBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_ConfigBtn, m_LoadBtn, m_SaveBtn);
         }
 
         private void OnConfigBtnSubmitted(NavigationSubmitEvent evt)
@@ -125,10 +122,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnSaveBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_SaveBtn, m_ConfigBtn, m_LoadBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_SaveBtn, m_ConfigBtn, m_LoadBtn);
         }
 
         private void OnSaveBtnSubmitted(NavigationSubmitEvent evt)
@@ -143,10 +137,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnLoadBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_LoadBtn, m_SaveBtn, m_ConfigBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_LoadBtn, m_SaveBtn, m_ConfigBtn);
         }
 
         private void OnLoadBtnSubmitted(NavigationSubmitEvent evt)

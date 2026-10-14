@@ -34,17 +34,23 @@ namespace RPGFramework.Menu
         /// </summary>
         bool HidePreviousUIOnSuspend { get; }
 
-        /// <summary>Builds the menu's UI in <paramref name="parent" /> and starts taking input.</summary>
+        /// <summary>Builds the menu's UI in <paramref name="parent" />, without taking input yet.</summary>
         Task OnEnterAsync(VisualElement parent, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
 
-        /// <summary>Another menu opens over this one: it stops taking input, and hides its UI when asked to.</summary>
+        /// <summary>Another menu opens over this one: it hides its UI when asked to.</summary>
         Task OnSuspendAsync(bool hideUI);
 
-        /// <summary>The menu over this one has closed: its UI shows again and it takes input.</summary>
+        /// <summary>The menu over this one has closed: its UI shows again.</summary>
         Task OnResumeAsync();
 
         /// <summary>The menu closes for good, its UI removed.</summary>
         Task OnExitAsync();
+
+        /// <summary>
+        /// Starts or stops the menu and its UI reacting to the player. The menu module turns it on once a change has
+        /// faded in and off as the next begins, so nothing pressed while the screen fades does anything.
+        /// </summary>
+        void SetInputEnabled(bool enabled);
     }
 
     /// <summary>
@@ -67,9 +73,7 @@ namespace RPGFramework.Menu
         /// </summary>
         Task OnEnterAsync(VisualElement parent, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
 
-        /// <summary>
-        /// Remembers the focused element and stops reacting, hiding the UI when <paramref name="hideUI" />.
-        /// </summary>
+        /// <summary>Remembers the focused element, hiding the UI when <paramref name="hideUI" />.</summary>
         Task OnSuspendAsync(bool hideUI);
 
         /// <summary>Shows the UI again, with focus back where it was.</summary>
@@ -77,6 +81,9 @@ namespace RPGFramework.Menu
 
         /// <summary>Removes the UI.</summary>
         Task OnExitAsync();
+
+        /// <summary>Starts or stops the UI reacting to presses, as its menu says.</summary>
+        void SetInputEnabled(bool enabled);
     }
 
     /// <summary>

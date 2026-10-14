@@ -207,10 +207,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             RPGUIButton up   = index > 0 ? m_Rows[index                - 1] : null;
             RPGUIButton down = index < m_Rows.Length - 1 ? m_Rows[index + 1] : null;
 
-            if (UIToolkitInputUtility.Navigate(evt, row, up, down))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, row, up, down);
         }
 
         private string Describe(SaveSlotInfo slot, ISaveMenuLocalisationArgs args)
@@ -234,10 +231,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnYesBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_YesBtn, left: m_NoBtn, right: m_NoBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_YesBtn, left: m_NoBtn, right: m_NoBtn);
         }
 
         private void OnYesBtnSubmitted(NavigationSubmitEvent evt)
@@ -252,10 +246,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnNoBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_NoBtn, left: m_YesBtn, right: m_YesBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_NoBtn, left: m_YesBtn, right: m_YesBtn);
         }
 
         private void OnNoBtnSubmitted(NavigationSubmitEvent evt)

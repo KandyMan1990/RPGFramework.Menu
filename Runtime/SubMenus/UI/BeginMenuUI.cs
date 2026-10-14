@@ -86,10 +86,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnNewGameBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_NewGameBtn, m_QuitBtn, m_LoadGameBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_NewGameBtn, m_QuitBtn, m_LoadGameBtn);
         }
 
         private void OnNewGameBtnSubmitted(NavigationSubmitEvent evt)
@@ -110,10 +107,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnLoadGameBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_LoadGameBtn, m_NewGameBtn, m_QuitBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_LoadGameBtn, m_NewGameBtn, m_QuitBtn);
         }
 
         private void OnLoadGameBtnSubmitted(NavigationSubmitEvent evt)
@@ -134,10 +128,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnQuitBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_QuitBtn, m_LoadGameBtn, m_NewGameBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_QuitBtn, m_LoadGameBtn, m_NewGameBtn);
         }
 
         private void OnQuitBtnSubmitted(NavigationSubmitEvent evt)

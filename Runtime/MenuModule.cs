@@ -63,6 +63,7 @@ namespace RPGFramework.Menu
         async Task IModule.OnExitAsync()
         {
             m_InputAdapter.Disable();
+            SetTopMenuInputEnabled(false);
 
             await m_ScreenFadeService.FadeOutAsync();
 
@@ -76,21 +77,25 @@ namespace RPGFramework.Menu
         Task IModule.OnSuspendAsync()
         {
             m_InputAdapter.Disable();
+            SetTopMenuInputEnabled(false);
 
             return Task.CompletedTask;
         }
 
         Task IModule.OnResumeAsync()
         {
+            SetTopMenuInputEnabled(true);
             m_InputAdapter.Enable();
 
             return Task.CompletedTask;
         }
 
-        // Every menu change fades the screen out, swaps the menus and fades back in, with no input while it does.
+        // Every menu change fades the screen out, swaps the menus and fades back in, with no input from the moment it
+        // starts until it has faded in: a press during the fade would start another change.
         async Task IMenuModule.PushMenu(MenuType menuType)
         {
             m_InputAdapter.Disable();
+            SetTopMenuInputEnabled(false);
 
             await m_ScreenFadeService.FadeOutAsync();
 
@@ -107,12 +112,14 @@ namespace RPGFramework.Menu
             await newMenu.OnEnterAsync(m_UIContainer);
             await m_ScreenFadeService.FadeInAsync();
 
+            SetTopMenuInputEnabled(true);
             m_InputAdapter.Enable();
         }
 
         async Task IMenuModule.PopMenu()
         {
             m_InputAdapter.Disable();
+            SetTopMenuInputEnabled(false);
 
             await m_ScreenFadeService.FadeOutAsync();
 
@@ -136,7 +143,18 @@ namespace RPGFramework.Menu
 
             await m_ScreenFadeService.FadeInAsync();
 
+            SetTopMenuInputEnabled(true);
             m_InputAdapter.Enable();
+        }
+
+        // The top when the change ends, not the menu it pushed: a menu may open another as it enters, as the title does
+        // its language menu on a first launch.
+        private void SetTopMenuInputEnabled(bool enabled)
+        {
+            if (m_Menus.TryPeek(out IMenu top))
+            {
+                top.SetInputEnabled(enabled);
+            }
         }
 
         void IMenuModule.RequestModuleChange(byte outcome)

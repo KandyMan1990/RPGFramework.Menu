@@ -165,10 +165,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnLanguageBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_LanguageBtn, m_FieldMessageSpeedBtn, m_ControlsBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_LanguageBtn, m_FieldMessageSpeedBtn, m_ControlsBtn);
 
             if (evt.direction == NavigationMoveEvent.Direction.Left)
             {
@@ -186,48 +183,33 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnControlsBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_ControlsBtn, m_LanguageBtn, m_MusicVolumeBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_ControlsBtn, m_LanguageBtn, m_MusicVolumeBtn);
         }
 
         private void OnMusicVolumeBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_MusicVolumeBtn, m_ControlsBtn, m_SfxVolumeBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_MusicVolumeBtn, m_ControlsBtn, m_SfxVolumeBtn);
 
             OnSliderNavigate(m_MusicVolumeSlider, evt);
         }
 
         private void OnSfxVolumeBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_SfxVolumeBtn, m_MusicVolumeBtn, m_BattleMessageSpeedBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_SfxVolumeBtn, m_MusicVolumeBtn, m_BattleMessageSpeedBtn);
 
             OnSliderNavigate(m_SfxVolumeSlider, evt);
         }
 
         private void OnBattleMessageSpeedBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_BattleMessageSpeedBtn, m_SfxVolumeBtn, m_FieldMessageSpeedBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_BattleMessageSpeedBtn, m_SfxVolumeBtn, m_FieldMessageSpeedBtn);
 
             OnSliderNavigate(m_BattleMessageSpeedSlider, evt);
         }
 
         private void OnFieldMessageSpeedBtnNavigate(NavigationMoveEvent evt)
         {
-            if (UIToolkitInputUtility.Navigate(evt, m_FieldMessageSpeedBtn, m_BattleMessageSpeedBtn, m_LanguageBtn))
-            {
-                OnBtnNavigate();
-            }
+            UIToolkitInputUtility.Navigate(evt, m_FieldMessageSpeedBtn, m_BattleMessageSpeedBtn, m_LanguageBtn);
 
             OnSliderNavigate(m_FieldMessageSpeedSlider, evt);
         }

@@ -19,6 +19,8 @@ namespace RPGFramework.Menu.SubMenus
         protected readonly IMenuModule        m_MenuModule;
         protected readonly IAudioIntentPlayer m_AudioIntentPlayer;
 
+        private bool m_InputEnabled;
+
         protected Menu(TMenuUI            menuUI,
                        IInputRouter       inputRouter,
                        IMenuModule        menuModule,
@@ -28,6 +30,7 @@ namespace RPGFramework.Menu.SubMenus
             m_InputRouter       = inputRouter;
             m_MenuModule        = menuModule;
             m_AudioIntentPlayer = audioIntentPlayer;
+            m_InputEnabled      = false;
         }
 
         async Task IMenu.OnEnterAsync(VisualElement parent, Dictionary<string, object> args)
@@ -36,8 +39,6 @@ namespace RPGFramework.Menu.SubMenus
 
             await m_MenuUI.OnEnterAsync(parent, args);
 
-            RegisterCallbacks();
-
             m_InputRouter.Push(this);
 
             await OnEnterComplete();
@@ -45,8 +46,6 @@ namespace RPGFramework.Menu.SubMenus
 
         async Task IMenu.OnSuspendAsync(bool hideUI)
         {
-            UnregisterCallbacks();
-
             await m_MenuUI.OnSuspendAsync(hideUI);
 
             await OnSuspendAsync(hideUI);
@@ -57,19 +56,44 @@ namespace RPGFramework.Menu.SubMenus
             await OnResumeAsync();
 
             await m_MenuUI.OnResumeAsync();
-
-            RegisterCallbacks();
         }
 
         async Task IMenu.OnExitAsync()
         {
             m_InputRouter.Pop(this);
 
-            UnregisterCallbacks();
+            SetInputEnabled(false);
 
             await m_MenuUI.OnExitAsync();
 
             await OnExitAsync();
+        }
+
+        void IMenu.SetInputEnabled(bool enabled)
+        {
+            SetInputEnabled(enabled);
+        }
+
+        // Callbacks registered twice would answer a press twice, so this keeps count of whether they are.
+        protected void SetInputEnabled(bool enabled)
+        {
+            if (enabled == m_InputEnabled)
+            {
+                return;
+            }
+
+            m_InputEnabled = enabled;
+
+            if (enabled)
+            {
+                m_MenuUI.SetInputEnabled(true);
+                RegisterCallbacks();
+            }
+            else
+            {
+                UnregisterCallbacks();
+                m_MenuUI.SetInputEnabled(false);
+            }
         }
 
         bool IInputContext.Handle(ControlSlot slot)
