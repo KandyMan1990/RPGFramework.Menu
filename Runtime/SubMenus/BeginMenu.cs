@@ -43,6 +43,10 @@ namespace RPGFramework.Menu.SubMenus
             m_MusicPlayer         = musicPlayer;
             m_SfxPlayer           = sfxPlayer;
             m_PlayTimeStore       = playTimeStore;
+
+            m_MenuUI.OnNewGamePressed  += OnNewGamePressed;
+            m_MenuUI.OnLoadGamePressed += OnLoadGamePressed;
+            m_MenuUI.OnQuitPressed     += OnQuitPressed;
         }
 
         protected override Task OnEnterComplete()
@@ -63,20 +67,6 @@ namespace RPGFramework.Menu.SubMenus
             }
 
             return base.OnResumeAsync();
-        }
-
-        protected override void RegisterCallbacks()
-        {
-            m_MenuUI.OnNewGamePressed  += OnNewGamePressed;
-            m_MenuUI.OnLoadGamePressed += OnLoadGamePressed;
-            m_MenuUI.OnQuitPressed     += OnQuitPressed;
-        }
-
-        protected override void UnregisterCallbacks()
-        {
-            m_MenuUI.OnQuitPressed     -= OnQuitPressed;
-            m_MenuUI.OnLoadGamePressed -= OnLoadGamePressed;
-            m_MenuUI.OnNewGamePressed  -= OnNewGamePressed;
         }
 
         protected override bool HandleControl(ControlSlot slot)

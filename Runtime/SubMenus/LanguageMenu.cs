@@ -29,6 +29,8 @@ namespace RPGFramework.Menu.SubMenus
         {
             m_LocalisationService = localisationService;
             m_SettingsService     = settingsService;
+
+            m_MenuUI.OnLanguageChanged += OnLanguageChanged;
         }
 
         protected override async Task OnEnterAsync(Dictionary<string, object> args)
@@ -49,16 +51,6 @@ namespace RPGFramework.Menu.SubMenus
             m_SettingsService.Commit();
 
             return base.OnExitAsync();
-        }
-
-        protected override void RegisterCallbacks()
-        {
-            m_MenuUI.OnLanguageChanged += OnLanguageChanged;
-        }
-
-        protected override void UnregisterCallbacks()
-        {
-            m_MenuUI.OnLanguageChanged -= OnLanguageChanged;
         }
 
         protected override bool HandleControl(ControlSlot slot)

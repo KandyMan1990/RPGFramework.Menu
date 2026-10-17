@@ -19,8 +19,6 @@ namespace RPGFramework.Menu.SubMenus
         protected readonly IMenuModule        m_MenuModule;
         protected readonly IAudioIntentPlayer m_AudioIntentPlayer;
 
-        private bool m_InputEnabled;
-
         protected Menu(TMenuUI            menuUI,
                        IInputRouter       inputRouter,
                        IMenuModule        menuModule,
@@ -30,7 +28,6 @@ namespace RPGFramework.Menu.SubMenus
             m_InputRouter       = inputRouter;
             m_MenuModule        = menuModule;
             m_AudioIntentPlayer = audioIntentPlayer;
-            m_InputEnabled      = false;
         }
 
         async Task IMenu.OnEnterAsync(VisualElement parent, Dictionary<string, object> args)
@@ -74,26 +71,9 @@ namespace RPGFramework.Menu.SubMenus
             SetInputEnabled(enabled);
         }
 
-        // Callbacks registered twice would answer a press twice, so this keeps count of whether they are.
         protected void SetInputEnabled(bool enabled)
         {
-            if (enabled == m_InputEnabled)
-            {
-                return;
-            }
-
-            m_InputEnabled = enabled;
-
-            if (enabled)
-            {
-                m_MenuUI.SetInputEnabled(true);
-                RegisterCallbacks();
-            }
-            else
-            {
-                UnregisterCallbacks();
-                m_MenuUI.SetInputEnabled(false);
-            }
+            m_MenuUI.SetInputEnabled(enabled);
         }
 
         bool IInputContext.Handle(ControlSlot slot)
@@ -126,16 +106,6 @@ namespace RPGFramework.Menu.SubMenus
         protected virtual Task OnExitAsync()
         {
             return Task.CompletedTask;
-        }
-
-        protected virtual void RegisterCallbacks()
-        {
-
-        }
-
-        protected virtual void UnregisterCallbacks()
-        {
-
         }
 
         protected abstract bool HandleControl(ControlSlot slot);

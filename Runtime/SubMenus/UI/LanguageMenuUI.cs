@@ -1,6 +1,5 @@
 ﻿using System;
 using RPGFramework.Core.Audio;
-using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine.UIElements;
@@ -35,6 +34,8 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_TitleLabel    = m_UIInstance.Q<Label>("TitleLabel");
             m_LanguageBtn   = m_UIInstance.Q<RPGUIButton>("LanguageBtn");
             m_LanguageLabel = m_UIInstance.Q<Label>("LanguageLabel");
+
+            m_LanguageBtn.RegisterCallback<NavigationMoveEvent>(OnLanguageBtnNavigate);
         }
 
         protected override void LocaliseUI()
@@ -44,16 +45,6 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_TitleLabel.text    = m_LocalisationService.Get(args.ScreenTitle);
             m_LanguageBtn.text   = m_LocalisationService.Get(args.Language);
             m_LanguageLabel.text = m_LocalisationService.Get(args.Language);
-        }
-
-        protected override void RegisterCallbacks()
-        {
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_LanguageBtn, OnLanguageBtnNavigate);
-        }
-
-        protected override void UnregisterCallbacks()
-        {
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_LanguageBtn, OnLanguageBtnNavigate);
         }
 
         void ILanguageMenuUI.RefreshLocalisation()

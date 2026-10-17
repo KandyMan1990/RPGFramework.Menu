@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
-using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine;
@@ -58,6 +57,12 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_VersionLabel = m_UIInstance.Q<Label>("VersionLabel");
 
             m_VersionLabel.text = $"v{Application.version}";
+
+            RPGUIButton.LinkColumn(new RPGUIButton[] { m_NewGameBtn, m_LoadGameBtn, m_QuitBtn }, true);
+
+            m_NewGameBtn.Chosen  += OnNewGameChosen;
+            m_LoadGameBtn.Chosen += OnLoadGameChosen;
+            m_QuitBtn.Chosen     += OnQuitChosen;
         }
 
         protected override void LocaliseUI()
@@ -70,78 +75,19 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_QuitBtn.text     = m_LocalisationService.Get(args.QuitGame);
         }
 
-        protected override void RegisterCallbacks()
-        {
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_NewGameBtn,  OnNewGameBtnNavigate,  OnNewGameBtnSubmitted,  OnNewGameBtnClicked);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_LoadGameBtn, OnLoadGameBtnNavigate, OnLoadGameBtnSubmitted, OnLoadGameBtnClicked);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_QuitBtn,     OnQuitBtnNavigate,     OnQuitBtnSubmitted,     OnQuitBtnClicked);
-        }
-
-        protected override void UnregisterCallbacks()
-        {
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_QuitBtn,     OnQuitBtnNavigate,     OnQuitBtnSubmitted,     OnQuitBtnClicked);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_LoadGameBtn, OnLoadGameBtnNavigate, OnLoadGameBtnSubmitted, OnLoadGameBtnClicked);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_NewGameBtn,  OnNewGameBtnNavigate,  OnNewGameBtnSubmitted,  OnNewGameBtnClicked);
-        }
-
-        private void OnNewGameBtnNavigate(NavigationMoveEvent evt)
-        {
-            UIToolkitInputUtility.Navigate(evt, m_NewGameBtn, m_QuitBtn, m_LoadGameBtn);
-        }
-
-        private void OnNewGameBtnSubmitted(NavigationSubmitEvent evt)
-        {
-            OnNewGameBtnCallback();
-        }
-
-        private void OnNewGameBtnClicked(ClickEvent evt)
-        {
-            OnNewGameBtnCallback();
-        }
-
-        private void OnNewGameBtnCallback()
+        private void OnNewGameChosen()
         {
             m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_OnNewGamePressed?.Invoke();
         }
 
-        private void OnLoadGameBtnNavigate(NavigationMoveEvent evt)
-        {
-            UIToolkitInputUtility.Navigate(evt, m_LoadGameBtn, m_NewGameBtn, m_QuitBtn);
-        }
-
-        private void OnLoadGameBtnSubmitted(NavigationSubmitEvent evt)
-        {
-            OnLoadGameBtnCallback();
-        }
-
-        private void OnLoadGameBtnClicked(ClickEvent evt)
-        {
-            OnLoadGameBtnCallback();
-        }
-
-        private void OnLoadGameBtnCallback()
+        private void OnLoadGameChosen()
         {
             m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_OnLoadGamePressed?.Invoke();
         }
 
-        private void OnQuitBtnNavigate(NavigationMoveEvent evt)
-        {
-            UIToolkitInputUtility.Navigate(evt, m_QuitBtn, m_LoadGameBtn, m_NewGameBtn);
-        }
-
-        private void OnQuitBtnSubmitted(NavigationSubmitEvent evt)
-        {
-            OnQuitBtnCallback();
-        }
-
-        private void OnQuitBtnClicked(ClickEvent evt)
-        {
-            OnQuitBtnCallback();
-        }
-
-        private void OnQuitBtnCallback()
+        private void OnQuitChosen()
         {
             Task cancelSound = m_AudioIntentPlayer.PlayAsync(AudioIntent.Cancel, AudioContext.Menu);
 

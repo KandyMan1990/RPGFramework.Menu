@@ -1,7 +1,6 @@
 ﻿using System;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
-using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using Unity.Mathematics;
@@ -92,6 +91,34 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_BattleMessageSpeedSlider = m_UIInstance.Q<Slider>("BattleMessageSpeedSlider");
             m_FieldMessageSpeedBtn     = m_UIInstance.Q<RPGUIButton>("FieldMessageSpeedBtn");
             m_FieldMessageSpeedSlider  = m_UIInstance.Q<Slider>("FieldMessageSpeedSlider");
+
+            RPGUIButton[] rows =
+            {
+                m_LanguageBtn, m_ControlsBtn, m_MusicVolumeBtn,
+                m_SfxVolumeBtn, m_BattleMessageSpeedBtn, m_FieldMessageSpeedBtn
+            };
+
+            RPGUIButton.LinkColumn(rows, true);
+
+            // Its row's button takes left and right for a slider; one taking focus on a click would leave the cursor
+            // with no neighbours to move by.
+            m_MusicVolumeSlider.focusable        = false;
+            m_SfxVolumeSlider.focusable          = false;
+            m_BattleMessageSpeedSlider.focusable = false;
+            m_FieldMessageSpeedSlider.focusable  = false;
+
+            m_ControlsBtn.Chosen += OnControlsChosen;
+
+            m_LanguageBtn.RegisterCallback<NavigationMoveEvent>(OnLanguageBtnNavigate);
+            m_MusicVolumeBtn.RegisterCallback<NavigationMoveEvent>(OnMusicVolumeBtnNavigate);
+            m_SfxVolumeBtn.RegisterCallback<NavigationMoveEvent>(OnSfxVolumeBtnNavigate);
+            m_BattleMessageSpeedBtn.RegisterCallback<NavigationMoveEvent>(OnBattleMessageSpeedBtnNavigate);
+            m_FieldMessageSpeedBtn.RegisterCallback<NavigationMoveEvent>(OnFieldMessageSpeedBtnNavigate);
+
+            m_MusicVolumeSlider.RegisterValueChangedCallback(OnMusicVolumeSliderChanged);
+            m_SfxVolumeSlider.RegisterValueChangedCallback(OnSfxVolumeSliderChanged);
+            m_BattleMessageSpeedSlider.RegisterValueChangedCallback(OnBattleMessageSpeedSliderChanged);
+            m_FieldMessageSpeedSlider.RegisterValueChangedCallback(OnFieldMessageSpeedSliderChanged);
         }
 
         protected override void LocaliseUI()
@@ -106,36 +133,6 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_SfxVolumeBtn.text          = m_LocalisationService.Get(args.SfxVolume);
             m_BattleMessageSpeedBtn.text = m_LocalisationService.Get(args.BattleMessageSpeed);
             m_FieldMessageSpeedBtn.text  = m_LocalisationService.Get(args.FieldMessageSpeed);
-        }
-
-        protected override void RegisterCallbacks()
-        {
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_LanguageBtn,           OnLanguageBtnNavigate);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_ControlsBtn,           OnControlsBtnNavigate, OnControlsBtnSubmitted, OnControlsBtnClicked);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_MusicVolumeBtn,        OnMusicVolumeBtnNavigate);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_SfxVolumeBtn,          OnSfxVolumeBtnNavigate);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_BattleMessageSpeedBtn, OnBattleMessageSpeedBtnNavigate);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_FieldMessageSpeedBtn,  OnFieldMessageSpeedBtnNavigate);
-
-            m_MusicVolumeSlider.RegisterValueChangedCallback(OnMusicVolumeSliderChanged);
-            m_SfxVolumeSlider.RegisterValueChangedCallback(OnSfxVolumeSliderChanged);
-            m_BattleMessageSpeedSlider.RegisterValueChangedCallback(OnBattleMessageSpeedSliderChanged);
-            m_FieldMessageSpeedSlider.RegisterValueChangedCallback(OnFieldMessageSpeedSliderChanged);
-        }
-
-        protected override void UnregisterCallbacks()
-        {
-            m_FieldMessageSpeedSlider.UnregisterValueChangedCallback(OnFieldMessageSpeedSliderChanged);
-            m_BattleMessageSpeedSlider.UnregisterValueChangedCallback(OnBattleMessageSpeedSliderChanged);
-            m_SfxVolumeSlider.UnregisterValueChangedCallback(OnSfxVolumeSliderChanged);
-            m_MusicVolumeSlider.UnregisterValueChangedCallback(OnMusicVolumeSliderChanged);
-
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_FieldMessageSpeedBtn,  OnFieldMessageSpeedBtnNavigate);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_BattleMessageSpeedBtn, OnBattleMessageSpeedBtnNavigate);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_SfxVolumeBtn,          OnSfxVolumeBtnNavigate);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_MusicVolumeBtn,        OnMusicVolumeBtnNavigate);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_ControlsBtn,           OnControlsBtnNavigate, OnControlsBtnSubmitted, OnControlsBtnClicked);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_LanguageBtn,           OnLanguageBtnNavigate);
         }
 
         void IConfigMenuUI.RefreshLocalisation()
@@ -165,8 +162,6 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnLanguageBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_LanguageBtn, m_FieldMessageSpeedBtn, m_ControlsBtn);
-
             if (evt.direction == NavigationMoveEvent.Direction.Left)
             {
                 OnBtnNavigate();
@@ -181,50 +176,27 @@ namespace RPGFramework.Menu.SubMenus.UI
             }
         }
 
-        private void OnControlsBtnNavigate(NavigationMoveEvent evt)
-        {
-            UIToolkitInputUtility.Navigate(evt, m_ControlsBtn, m_LanguageBtn, m_MusicVolumeBtn);
-        }
-
         private void OnMusicVolumeBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_MusicVolumeBtn, m_ControlsBtn, m_SfxVolumeBtn);
-
             OnSliderNavigate(m_MusicVolumeSlider, evt);
         }
 
         private void OnSfxVolumeBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_SfxVolumeBtn, m_MusicVolumeBtn, m_BattleMessageSpeedBtn);
-
             OnSliderNavigate(m_SfxVolumeSlider, evt);
         }
 
         private void OnBattleMessageSpeedBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_BattleMessageSpeedBtn, m_SfxVolumeBtn, m_FieldMessageSpeedBtn);
-
             OnSliderNavigate(m_BattleMessageSpeedSlider, evt);
         }
 
         private void OnFieldMessageSpeedBtnNavigate(NavigationMoveEvent evt)
         {
-            UIToolkitInputUtility.Navigate(evt, m_FieldMessageSpeedBtn, m_BattleMessageSpeedBtn, m_LanguageBtn);
-
             OnSliderNavigate(m_FieldMessageSpeedSlider, evt);
         }
 
-        private void OnControlsBtnSubmitted(NavigationSubmitEvent evt)
-        {
-            OnControlsBtnCallback();
-        }
-
-        private void OnControlsBtnClicked(ClickEvent evt)
-        {
-            OnControlsBtnCallback();
-        }
-
-        private void OnControlsBtnCallback()
+        private void OnControlsChosen()
         {
             m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_OnControlsPressed?.Invoke();

@@ -40,6 +40,10 @@ namespace RPGFramework.Menu.SubMenus
             m_SaveDataService = saveDataService;
             m_Files           = Array.Empty<string>();
             m_CanLoad         = Array.Empty<bool>();
+
+            m_MenuUI.OnSlotChosen       += OnSlotChosen;
+            m_MenuUI.OnNewSaveChosen    += OnNewSaveChosen;
+            m_MenuUI.OnQuestionAnswered += OnQuestionAnswered;
         }
 
         protected override Task OnEnterAsync(Dictionary<string, object> args)
@@ -54,20 +58,6 @@ namespace RPGFramework.Menu.SubMenus
             ShowSlots(m_SaveDataService.GetCurrentSaveFileName());
 
             return base.OnEnterComplete();
-        }
-
-        protected override void RegisterCallbacks()
-        {
-            m_MenuUI.OnSlotChosen       += OnSlotChosen;
-            m_MenuUI.OnNewSaveChosen    += OnNewSaveChosen;
-            m_MenuUI.OnQuestionAnswered += OnQuestionAnswered;
-        }
-
-        protected override void UnregisterCallbacks()
-        {
-            m_MenuUI.OnQuestionAnswered -= OnQuestionAnswered;
-            m_MenuUI.OnNewSaveChosen    -= OnNewSaveChosen;
-            m_MenuUI.OnSlotChosen       -= OnSlotChosen;
         }
 
         protected override bool HandleControl(ControlSlot slot)

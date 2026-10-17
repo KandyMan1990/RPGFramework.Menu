@@ -35,6 +35,9 @@ Then make it your own:
 - **Each menu is a pair**: a menu for what it does and a menu UI for how it looks, the UI built from the
   `VisualTreeAsset` the **Menu UI Provider** asset holds for it (Create > RPG Framework > Menu > Menu UI Provider), and
   given its text through its own localisation arguments.
+- **The cursor moves the same way by key, pad or pointer**, between each menu's buttons, with the cursor sound, and
+  nothing in a menu reacts while the screen fades. A menu and its UI are bound transient, as the sample binds them:
+  each menu listens to its own UI.
 - **Sounds are requested by what happened**, such as navigating, cancelling or saving, through Core's audio intents, so
   your game decides which sound each one is.
 - **Settings are read and written through Core's settings service**, never the save, and the music and sound effect

@@ -38,6 +38,13 @@ namespace RPGFramework.Menu.SubMenus
             m_LocalisationService = localisationService;
             m_MusicPlayer         = musicPlayer;
             m_SfxPlayer           = sfxPlayer;
+
+            m_MenuUI.OnLanguageChanged           += OnLanguageChanged;
+            m_MenuUI.OnControlsPressed           += OnControlsPressed;
+            m_MenuUI.OnMusicVolumeChanged        += OnMusicVolumeChanged;
+            m_MenuUI.OnSfxVolumeChanged          += OnSfxVolumeChanged;
+            m_MenuUI.OnBattleMessageSpeedChanged += OnBattleMessageSpeedChanged;
+            m_MenuUI.OnFieldMessageSpeedChanged  += OnFieldMessageSpeedChanged;
         }
 
         protected override Task OnEnterAsync(Dictionary<string, object> args)
@@ -67,26 +74,6 @@ namespace RPGFramework.Menu.SubMenus
             m_SettingsService.Commit();
 
             return base.OnExitAsync();
-        }
-
-        protected override void RegisterCallbacks()
-        {
-            m_MenuUI.OnLanguageChanged           += OnLanguageChanged;
-            m_MenuUI.OnControlsPressed           += OnControlsPressed;
-            m_MenuUI.OnMusicVolumeChanged        += OnMusicVolumeChanged;
-            m_MenuUI.OnSfxVolumeChanged          += OnSfxVolumeChanged;
-            m_MenuUI.OnBattleMessageSpeedChanged += OnBattleMessageSpeedChanged;
-            m_MenuUI.OnFieldMessageSpeedChanged  += OnFieldMessageSpeedChanged;
-        }
-
-        protected override void UnregisterCallbacks()
-        {
-            m_MenuUI.OnFieldMessageSpeedChanged  -= OnFieldMessageSpeedChanged;
-            m_MenuUI.OnBattleMessageSpeedChanged -= OnBattleMessageSpeedChanged;
-            m_MenuUI.OnSfxVolumeChanged          -= OnSfxVolumeChanged;
-            m_MenuUI.OnMusicVolumeChanged        -= OnMusicVolumeChanged;
-            m_MenuUI.OnControlsPressed           -= OnControlsPressed;
-            m_MenuUI.OnLanguageChanged           -= OnLanguageChanged;
         }
 
         protected override bool HandleControl(ControlSlot slot)

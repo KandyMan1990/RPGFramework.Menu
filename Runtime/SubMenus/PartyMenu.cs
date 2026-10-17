@@ -29,6 +29,10 @@ namespace RPGFramework.Menu.SubMenus
             m_SaveEnabledStore  = saveEnabledStore;
             m_LocationNameStore = locationNameStore;
             m_PlayTimeStore     = playTimeStore;
+
+            m_MenuUI.OnConfigPressed += OnConfigPressed;
+            m_MenuUI.OnSavePressed   += OnSavePressed;
+            m_MenuUI.OnLoadPressed   += OnLoadPressed;
         }
 
         protected override Task OnEnterAsync(Dictionary<string, object> args)
@@ -52,20 +56,6 @@ namespace RPGFramework.Menu.SubMenus
             m_MenuUI.SetPlayTime(m_PlayTimeStore.PlayTime);
 
             return base.OnResumeAsync();
-        }
-
-        protected override void RegisterCallbacks()
-        {
-            m_MenuUI.OnConfigPressed += OnConfigPressed;
-            m_MenuUI.OnSavePressed   += OnSavePressed;
-            m_MenuUI.OnLoadPressed   += OnLoadPressed;
-        }
-
-        protected override void UnregisterCallbacks()
-        {
-            m_MenuUI.OnLoadPressed   -= OnLoadPressed;
-            m_MenuUI.OnSavePressed   -= OnSavePressed;
-            m_MenuUI.OnConfigPressed -= OnConfigPressed;
         }
 
         protected override bool HandleControl(ControlSlot slot)

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using RPGFramework.Core.Audio;
-using RPGFramework.Core.Input;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine.UIElements;
@@ -70,6 +69,11 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_NoBtn           = m_UIInstance.Q<RPGUIButton>("NoBtn");
 
             m_QuestionPanel.style.display = DisplayStyle.None;
+
+            RPGUIButton.LinkRow(new RPGUIButton[] { m_YesBtn, m_NoBtn }, true);
+
+            m_YesBtn.Chosen += OnYesChosen;
+            m_NoBtn.Chosen  += OnNoChosen;
         }
 
         protected override void LocaliseUI()
@@ -91,18 +95,6 @@ namespace RPGFramework.Menu.SubMenus.UI
             {
                 m_Rows[first + i].text = Describe(m_Slots[i], args);
             }
-        }
-
-        protected override void RegisterCallbacks()
-        {
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_YesBtn, OnYesBtnNavigate, OnYesBtnSubmitted, OnYesBtnClicked);
-            UIToolkitInputUtility.RegisterButtonCallbacks(m_NoBtn,  OnNoBtnNavigate,  OnNoBtnSubmitted,  OnNoBtnClicked);
-        }
-
-        protected override void UnregisterCallbacks()
-        {
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_NoBtn,  OnNoBtnNavigate,  OnNoBtnSubmitted,  OnNoBtnClicked);
-            UIToolkitInputUtility.UnregisterButtonCallbacks(m_YesBtn, OnYesBtnNavigate, OnYesBtnSubmitted, OnYesBtnClicked);
         }
 
         void ISaveSlotMenuUI.SetSaving(bool saving)
@@ -134,6 +126,8 @@ namespace RPGFramework.Menu.SubMenus.UI
                     row.style.opacity = UNAVAILABLE_OPACITY;
                 }
             }
+
+            RPGUIButton.LinkColumn(m_Rows, false);
 
             LocaliseUI();
 
@@ -188,26 +182,13 @@ namespace RPGFramework.Menu.SubMenus.UI
         {
             RPGUIButton row = new RPGUIButton { focusable = true };
 
-            row.RegisterCallback<ClickEvent>(_ => choose());
-            row.RegisterCallback<NavigationSubmitEvent>(_ => choose());
-            row.RegisterCallback<NavigationMoveEvent>(OnRowNavigate);
+            row.Chosen += choose;
             row.RegisterCallback<FocusInEvent>(_ => m_SlotsScrollView.ScrollTo(row));
 
             m_Rows[index] = row;
             m_SlotsScrollView.Add(row);
 
             return row;
-        }
-
-        private void OnRowNavigate(NavigationMoveEvent evt)
-        {
-            RPGUIButton row   = (RPGUIButton)evt.currentTarget;
-            int         index = Array.IndexOf(m_Rows, row);
-
-            RPGUIButton up   = index > 0 ? m_Rows[index                - 1] : null;
-            RPGUIButton down = index < m_Rows.Length - 1 ? m_Rows[index + 1] : null;
-
-            UIToolkitInputUtility.Navigate(evt, row, up, down);
         }
 
         private string Describe(SaveSlotInfo slot, ISaveMenuLocalisationArgs args)
@@ -229,32 +210,12 @@ namespace RPGFramework.Menu.SubMenus.UI
             return description;
         }
 
-        private void OnYesBtnNavigate(NavigationMoveEvent evt)
-        {
-            UIToolkitInputUtility.Navigate(evt, m_YesBtn, left: m_NoBtn, right: m_NoBtn);
-        }
-
-        private void OnYesBtnSubmitted(NavigationSubmitEvent evt)
+        private void OnYesChosen()
         {
             Answer(true);
         }
 
-        private void OnYesBtnClicked(ClickEvent evt)
-        {
-            Answer(true);
-        }
-
-        private void OnNoBtnNavigate(NavigationMoveEvent evt)
-        {
-            UIToolkitInputUtility.Navigate(evt, m_NoBtn, left: m_YesBtn, right: m_YesBtn);
-        }
-
-        private void OnNoBtnSubmitted(NavigationSubmitEvent evt)
-        {
-            Answer(false);
-        }
-
-        private void OnNoBtnClicked(ClickEvent evt)
+        private void OnNoChosen()
         {
             Answer(false);
         }
