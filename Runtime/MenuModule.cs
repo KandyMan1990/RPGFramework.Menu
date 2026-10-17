@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.Input;
-using RPGFramework.Core.Rendering;
 using RPGFramework.Core.SharedTypes;
+using RPGFramework.Core.Transitions;
 using RPGFramework.DI;
 using RPGFramework.Menu.SharedTypes;
 using RPGFramework.Menu.SharedTypes.Constants;
@@ -17,7 +17,7 @@ namespace RPGFramework.Menu
     {
         private readonly ICoreModule        m_CoreModule;
         private readonly IDIResolver        m_DIResolver;
-        private readonly IScreenFadeService m_ScreenFadeService;
+        private readonly ITransitionService m_Transitions;
         private readonly IMenuArgsStore     m_MenuArgsStore;
         private readonly IMenuTypeProvider  m_MenuTypeProvider;
         private readonly IModuleScene       m_ModuleScene;
@@ -27,45 +27,49 @@ namespace RPGFramework.Menu
 
         private byte         m_RequestedOutcome;
         private InputAdapter m_InputAdapter;
+        private bool         m_Entering;
 
         public MenuModule(ICoreModule        coreModule,
                           IDIResolver        diResolver,
-                          IScreenFadeService screenFadeService,
+                          ITransitionService transitions,
                           IMenuArgsStore     menuArgsStore,
                           IMenuTypeProvider  menuTypeProvider,
                           IModuleScene       moduleScene)
         {
             m_CoreModule        = coreModule;
             m_DIResolver        = diResolver;
-            m_ScreenFadeService = screenFadeService;
+            m_Transitions       = transitions;
             m_MenuArgsStore     = menuArgsStore;
             m_MenuTypeProvider  = menuTypeProvider;
             m_ModuleScene       = moduleScene;
             m_MenuModule        = this;
             m_Menus             = new Stack<IMenu>();
+            m_Entering          = false;
 
             UIDocument uIDocument = m_ModuleScene.Find<UIDocument>();
             m_UIContainer = uIDocument.rootVisualElement;
         }
 
+        // Core reveals the module once it has entered, so the menus pushed as it enters — the title's language menu on a
+        // first launch among them — open under the cover rather than revealing themselves.
         async Task IModule.OnEnterAsync(byte entry)
         {
-            await m_ScreenFadeService.FadeOutAsync(true);
-
             m_InputAdapter = m_ModuleScene.Find<InputAdapter>();
             m_DIResolver.InjectInto(m_InputAdapter);
 
             MenuArgs args = m_MenuArgsStore.Args;
 
+            m_Entering = true;
+
             await m_MenuModule.PushMenu((MenuType)args.MenuId);
+
+            m_Entering = false;
         }
 
         async Task IModule.OnExitAsync()
         {
             m_InputAdapter.Disable();
             SetTopMenuInputEnabled(false);
-
-            await m_ScreenFadeService.FadeOutAsync();
 
             while (m_Menus.Count > 0)
             {
@@ -84,10 +88,13 @@ namespace RPGFramework.Menu
 
         Task IModule.OnResumeAsync()
         {
+            return Task.CompletedTask;
+        }
+
+        void IModule.OnRevealed()
+        {
             SetTopMenuInputEnabled(true);
             m_InputAdapter.Enable();
-
-            return Task.CompletedTask;
         }
 
         // Every menu change fades the screen out, swaps the menus and fades back in, with no input from the moment it
@@ -97,7 +104,7 @@ namespace RPGFramework.Menu
             m_InputAdapter.Disable();
             SetTopMenuInputEnabled(false);
 
-            await m_ScreenFadeService.FadeOutAsync();
+            await m_Transitions.CoverAsync();
 
             Type  menuToPushType = m_MenuTypeProvider.GetType(menuType);
             IMenu newMenu        = (IMenu)m_DIResolver.Resolve(menuToPushType);
@@ -110,7 +117,13 @@ namespace RPGFramework.Menu
             m_Menus.Push(newMenu);
 
             await newMenu.OnEnterAsync(m_UIContainer);
-            await m_ScreenFadeService.FadeInAsync();
+
+            if (m_Entering)
+            {
+                return;
+            }
+
+            await m_Transitions.RevealAsync();
 
             SetTopMenuInputEnabled(true);
             m_InputAdapter.Enable();
@@ -121,7 +134,7 @@ namespace RPGFramework.Menu
             m_InputAdapter.Disable();
             SetTopMenuInputEnabled(false);
 
-            await m_ScreenFadeService.FadeOutAsync();
+            await m_Transitions.CoverAsync();
 
             IMenu menu = m_Menus.Pop();
             await menu.OnExitAsync();
@@ -141,7 +154,7 @@ namespace RPGFramework.Menu
                 return;
             }
 
-            await m_ScreenFadeService.FadeInAsync();
+            await m_Transitions.RevealAsync();
 
             SetTopMenuInputEnabled(true);
             m_InputAdapter.Enable();
