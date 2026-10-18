@@ -14,6 +14,7 @@ Import the **Menu Sample** from the Package Manager. It is a menu scene with:
 
 - an installer binding every menu, its UI and its localisation;
 - a UI provider holding each menu's UXML;
+- a transition config for menu changes, using your game's default transitions;
 - the `InputAdapter` the menu module finds on entering, with its actions left for you to assign.
 
 Then make it your own:
@@ -32,6 +33,10 @@ Then make it your own:
 - **The menu module keeps a stack.** It opens the menu named by `IMenuArgsStore` as it enters, `PushMenu` opens another
   over it, and `PopMenu` closes the top one, suspending and resuming the menu beneath. When the stack empties, the game
   returns to the module it came from: the field, from the party menu, for instance.
+- **Every menu change covers the screen** and reveals it again, with the transitions your **Menu Transition Config**
+  names (Create > RPG Framework > Menu > Menu Transition Config), bound by your menu scene installer as
+  `IMenuTransitionConfig`, as the sample's is: empty for your game's default transitions, or none at all, the menus then
+  swapping at once.
 - **Each menu is a pair**: a menu for what it does and a menu UI for how it looks, the UI built from the
   `VisualTreeAsset` the **Menu UI Provider** asset holds for it (Create > RPG Framework > Menu > Menu UI Provider), and
   given its text through its own localisation arguments.

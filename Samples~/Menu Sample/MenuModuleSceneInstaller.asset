@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: MenuModuleSceneInstaller
   m_EditorClassIdentifier: MenuSample::RPGFramework.Menu.Menu_Sample.MenuModuleSceneInstaller
   m_MenuUIProvider: {fileID: 11400000, guid: 6b1c478f119a7d741b26c3a467e59a47, type: 2}
+  m_TransitionConfig: {fileID: 11400000, guid: a9e5862fe67740158892aaeb4a705e41, type: 2}
