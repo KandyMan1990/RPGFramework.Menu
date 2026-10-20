@@ -10,7 +10,7 @@ namespace RPGFramework.Menu.Menu_Sample
     /// The keys name the sheets this installer expects the game to ship. A game passes the constants its localisation
     /// generates instead of these literals.
     /// </summary>
-    public class MenuModuleSceneInstaller : SceneInstallerBase
+    public sealed class MenuModuleSceneInstaller : SceneInstallerBase
     {
         private const string GENERIC_SHEET     = "Generic";
         private const string BEGIN_MENU_SHEET  = "BeginMenu";

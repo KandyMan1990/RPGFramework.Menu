@@ -13,7 +13,7 @@ using RPGFramework.Menu.SharedTypes.Constants;
 
 namespace RPGFramework.Menu.SubMenus
 {
-    public class BeginMenu : Menu<IBeginMenuUI>, IBeginMenu
+    public sealed class BeginMenu : Menu<IBeginMenuUI>, IBeginMenu
     {
         protected override bool m_HidePreviousUIOnSuspend => true;
 

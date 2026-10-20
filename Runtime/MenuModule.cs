@@ -13,7 +13,7 @@ using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu
 {
-    public class MenuModule : IMenuModule
+    public sealed class MenuModule : IMenuModule
     {
         private readonly ICoreModule           m_CoreModule;
         private readonly IDIResolver           m_DIResolver;

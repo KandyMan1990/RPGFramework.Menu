@@ -18,7 +18,7 @@ namespace RPGFramework.Menu
         string QuitGame { get; }
     }
 
-    public class BeginMenuLocalisationArgs : IBeginMenuLocalisationArgs
+    public sealed class BeginMenuLocalisationArgs : IBeginMenuLocalisationArgs
     {
         private readonly string   m_GameTitle;
         private readonly string   m_NewGame;
@@ -56,7 +56,7 @@ namespace RPGFramework.Menu
         string Language { get; }
     }
 
-    public class LanguageMenuLocalisationArgs : ILanguageMenuLocalisationArgs
+    public sealed class LanguageMenuLocalisationArgs : ILanguageMenuLocalisationArgs
     {
         private readonly string   m_ScreenTitle;
         private readonly string   m_Language;
@@ -104,7 +104,7 @@ namespace RPGFramework.Menu
         string FieldMessageSpeed { get; }
     }
 
-    public class ConfigMenuLocalisationArgs : IConfigMenuLocalisationArgs
+    public sealed class ConfigMenuLocalisationArgs : IConfigMenuLocalisationArgs
     {
         private readonly string   m_ScreenTitle;
         private readonly string   m_LanguageTitle;
@@ -164,7 +164,7 @@ namespace RPGFramework.Menu
         string Time { get; }
     }
 
-    public class PartyMenuLocalisationArgs : IPartyMenuLocalisationArgs
+    public sealed class PartyMenuLocalisationArgs : IPartyMenuLocalisationArgs
     {
         private readonly string   m_Config;
         private readonly string   m_Save;
@@ -223,7 +223,7 @@ namespace RPGFramework.Menu
         string No { get; }
     }
 
-    public class SaveMenuLocalisationArgs : ISaveMenuLocalisationArgs
+    public sealed class SaveMenuLocalisationArgs : ISaveMenuLocalisationArgs
     {
         private readonly string   m_SaveTitle;
         private readonly string   m_LoadTitle;

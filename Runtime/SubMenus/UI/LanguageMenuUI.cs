@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
 {
-    public class LanguageMenuUI : MenuUI<ILanguageMenuUI>, ILanguageMenuUI
+    public sealed class LanguageMenuUI : MenuUI<ILanguageMenuUI>, ILanguageMenuUI
     {
         event Action<int> ILanguageMenuUI.OnLanguageChanged
         {

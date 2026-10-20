@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
 {
-    public class ConfigMenuUI : MenuUI<IConfigMenuUI>, IConfigMenuUI
+    public sealed class ConfigMenuUI : MenuUI<IConfigMenuUI>, IConfigMenuUI
     {
         event Action<int> IConfigMenuUI.OnLanguageChanged
         {

@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
 {
-    public class BeginMenuUI : MenuUI<IBeginMenuUI>, IBeginMenuUI
+    public sealed class BeginMenuUI : MenuUI<IBeginMenuUI>, IBeginMenuUI
     {
         event Action IBeginMenuUI.OnNewGamePressed
         {

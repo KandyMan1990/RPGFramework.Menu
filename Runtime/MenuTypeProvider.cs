@@ -3,7 +3,7 @@ using RPGFramework.Menu.SharedTypes;
 
 namespace RPGFramework.Menu
 {
-    public class MenuTypeProvider : IMenuTypeProvider
+    public sealed class MenuTypeProvider : IMenuTypeProvider
     {
         private readonly IMenuTypeProvider m_MenuTypeProvider;
 

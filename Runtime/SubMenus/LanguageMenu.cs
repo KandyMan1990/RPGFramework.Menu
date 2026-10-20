@@ -13,7 +13,7 @@ using RPGFramework.Menu.SharedTypes;
 
 namespace RPGFramework.Menu.SubMenus
 {
-    public class LanguageMenu : Menu<ILanguageMenuUI>, ILanguageMenu
+    public sealed class LanguageMenu : Menu<ILanguageMenuUI>, ILanguageMenu
     {
         protected override bool m_HidePreviousUIOnSuspend => true;
 

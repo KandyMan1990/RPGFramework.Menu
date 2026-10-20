@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 namespace RPGFramework.Menu
 {
     [CreateAssetMenu(fileName = "Menu UI Provider", menuName = "RPG Framework/Menu/Menu UI Provider")]
-    public class MenuUIProvider : ScriptableObject, IMenuUIProvider
+    public sealed class MenuUIProvider : ScriptableObject, IMenuUIProvider
     {
         [SerializeField]
         private VisualTreeAsset m_BeginMenu;
