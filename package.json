@@ -4,7 +4,7 @@
   "displayName": "RPG Framework Menu",
   "description": "Menu system for the RPG Framework",
   "dependencies": {
-    "com.rpgframework.audio": "4.1.0",
+    "com.rpgframework.audio": "4.1.1",
     "com.rpgframework.core": "0.8.0",
     "com.rpgframework.core.sharedtypes": "0.3.0",
     "com.rpgframework.di": "4.0.3",
