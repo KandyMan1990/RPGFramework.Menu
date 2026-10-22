@@ -10,6 +10,9 @@ using UnityEngine.UIElements;
 namespace RPGFramework.Menu.SubMenus.UI
 {
     public sealed class BeginMenuUI : MenuUI<IBeginMenuUI>, IBeginMenuUI
+#if ENABLE_RPG_FRAMEWORK_DEBUG
+        , IDebugBeginMenuUI
+#endif
     {
         event Action IBeginMenuUI.OnNewGamePressed
         {
@@ -28,6 +31,18 @@ namespace RPGFramework.Menu.SubMenus.UI
             add => m_OnQuitPressed += value;
             remove => m_OnQuitPressed -= value;
         }
+
+#if ENABLE_RPG_FRAMEWORK_DEBUG
+        event Action IDebugBeginMenuUI.OnDebugRoomPressed
+        {
+            add => m_OnDebugRoomPressed += value;
+            remove => m_OnDebugRoomPressed -= value;
+        }
+
+        private event Action m_OnDebugRoomPressed;
+
+        private RPGUIButton m_DebugRoomBtn;
+#endif
 
         private event Action       m_OnNewGamePressed;
         private event Action       m_OnLoadGamePressed;
@@ -58,7 +73,18 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             m_VersionLabel.text = $"v{Application.version}";
 
+#if ENABLE_RPG_FRAMEWORK_DEBUG
+            m_DebugRoomBtn      = new RPGUIButton();
+            m_DebugRoomBtn.name = "DebugRoomBtn";
+            m_DebugRoomBtn.text = "Debug Room";
+            m_QuitBtn.parent.Insert(m_QuitBtn.parent.IndexOf(m_QuitBtn), m_DebugRoomBtn);
+
+            m_DebugRoomBtn.Chosen += OnDebugRoomChosen;
+
+            RPGUIButton.LinkColumn(new RPGUIButton[] { m_NewGameBtn, m_LoadGameBtn, m_DebugRoomBtn, m_QuitBtn }, true);
+#else
             RPGUIButton.LinkColumn(new RPGUIButton[] { m_NewGameBtn, m_LoadGameBtn, m_QuitBtn }, true);
+#endif
 
             m_NewGameBtn.Chosen  += OnNewGameChosen;
             m_LoadGameBtn.Chosen += OnLoadGameChosen;
@@ -86,6 +112,13 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_OnLoadGamePressed?.Invoke();
         }
+
+#if ENABLE_RPG_FRAMEWORK_DEBUG
+        private void OnDebugRoomChosen()
+        {
+            m_OnDebugRoomPressed?.Invoke();
+        }
+#endif
 
         private void OnQuitChosen()
         {

@@ -47,6 +47,14 @@ namespace RPGFramework.Menu.SubMenus
             m_MenuUI.OnNewGamePressed  += OnNewGamePressed;
             m_MenuUI.OnLoadGamePressed += OnLoadGamePressed;
             m_MenuUI.OnQuitPressed     += OnQuitPressed;
+
+#if ENABLE_RPG_FRAMEWORK_DEBUG
+            // A game's own title UI may not offer the room.
+            if (m_MenuUI is IDebugBeginMenuUI debugUI)
+            {
+                debugUI.OnDebugRoomPressed += OnDebugRoomPressed;
+            }
+#endif
         }
 
         protected override Task OnEnterComplete()
@@ -95,6 +103,16 @@ namespace RPGFramework.Menu.SubMenus
 
             m_MenuModule.PushMenu(MenuType.Load).FireAndForget();
         }
+
+#if ENABLE_RPG_FRAMEWORK_DEBUG
+        private void OnDebugRoomPressed()
+        {
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+
+            m_MenuModule.RequestModuleChange(DebugMenuOutcomes.DEBUG_ROOM);
+            m_MenuModule.PopMenu().FireAndForget();
+        }
+#endif
 
         private void OnQuitPressed(Task cancelSound)
         {

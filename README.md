@@ -57,6 +57,8 @@ Then make it your own:
     map names as the start.
   - **Load Game** opens the Load menu.
   - On the very first launch, before any settings have been saved, it shows the Language menu first.
+  - **Debug Room**, above Quit, only where `ENABLE_RPG_FRAMEWORK_DEBUG` is defined, opens the Debug Room package's room
+    through `DebugMenuOutcomes.DEBUG_ROOM`. The button is added in code, so your layout needs nothing for it.
 - **Config**: music and sound effect volumes and the message speeds, each volume heard live as its slider moves, and
   written when the menu closes.
 - **Language**: every language the game ships, written when the menu closes.
