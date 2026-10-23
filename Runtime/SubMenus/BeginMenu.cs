@@ -105,9 +105,12 @@ namespace RPGFramework.Menu.SubMenus
         }
 
 #if ENABLE_RPG_FRAMEWORK_DEBUG
+        // The room plays a playthrough begun here, as New Game begins one.
         private void OnDebugRoomPressed()
         {
             m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+
+            m_SaveDataService.BeginSave(m_SaveDataService.GetUnusedSaveFileName());
 
             m_MenuModule.RequestModuleChange(DebugMenuOutcomes.DEBUG_ROOM);
             m_MenuModule.PopMenu().FireAndForget();
