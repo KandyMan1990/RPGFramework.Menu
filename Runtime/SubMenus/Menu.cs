@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Menu.SharedTypes;
@@ -28,6 +29,8 @@ namespace RPGFramework.Menu.SubMenus
             m_InputRouter       = inputRouter;
             m_MenuModule        = menuModule;
             m_AudioIntentPlayer = audioIntentPlayer;
+
+            m_MenuUI.OnCursorMoved += OnCursorMoved;
         }
 
         async Task IMenu.OnEnterAsync(VisualElement parent, Dictionary<string, object> args)
@@ -82,6 +85,11 @@ namespace RPGFramework.Menu.SubMenus
         }
 
         bool IInputContext.HandleMove(Vector2 move) => true;
+
+        private void OnCursorMoved()
+        {
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+        }
 
         protected virtual Task OnEnterAsync(Dictionary<string, object> args)
         {

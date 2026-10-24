@@ -1,5 +1,4 @@
 ﻿using System;
-using RPGFramework.Core.Audio;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine.UIElements;
@@ -24,8 +23,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         public LanguageMenuUI(ILanguageMenuLocalisationArgs localisationArgs,
                               IMenuUIProvider               uiProvider,
-                              IAudioIntentPlayer            audioIntentPlayer,
-                              ILocalisationService          localisationService) : base(localisationArgs, uiProvider, audioIntentPlayer, localisationService)
+                              ILocalisationService          localisationService) : base(localisationArgs, uiProvider, localisationService)
         {
         }
 
@@ -56,14 +54,12 @@ namespace RPGFramework.Menu.SubMenus.UI
         {
             if (evt.direction == NavigationMoveEvent.Direction.Left)
             {
-                OnBtnNavigate();
                 m_OnLanguageChanged?.Invoke(-1);
                 return;
             }
 
             if (evt.direction == NavigationMoveEvent.Direction.Right)
             {
-                OnBtnNavigate();
                 m_OnLanguageChanged?.Invoke(1);
             }
         }

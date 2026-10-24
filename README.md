@@ -44,7 +44,8 @@ Then make it your own:
   nothing in a menu reacts while the screen fades. A menu and its UI are bound transient, as the sample binds them:
   each menu listens to its own UI.
 - **Sounds are requested by what happened**, such as navigating, cancelling or saving, through Core's audio intents, so
-  your game decides which sound each one is.
+  your game decides which sound each one is. The menus play them, never their UIs: a UI reports what the player did
+  and holds no audio player, so a menu UI of your own plays nothing either.
 - **Settings are read and written through Core's settings service**, never the save, and the music and sound effect
   volumes are applied as the game starts.
 

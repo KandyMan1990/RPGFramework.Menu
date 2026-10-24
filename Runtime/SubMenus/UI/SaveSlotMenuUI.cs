@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using RPGFramework.Core.Audio;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine.UIElements;
@@ -52,8 +51,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         public SaveSlotMenuUI(ISaveMenuLocalisationArgs localisationArgs,
                               IMenuUIProvider           uiProvider,
-                              IAudioIntentPlayer        audioIntentPlayer,
-                              ILocalisationService      localisationService) : base(localisationArgs, uiProvider, audioIntentPlayer, localisationService)
+                              ILocalisationService      localisationService) : base(localisationArgs, uiProvider, localisationService)
         {
             m_Rows  = Array.Empty<RPGUIButton>();
             m_Slots = Array.Empty<SaveSlotInfo>();

@@ -41,6 +41,7 @@ namespace RPGFramework.Menu.SubMenus
 
             m_MenuUI.OnLanguageChanged           += OnLanguageChanged;
             m_MenuUI.OnControlsPressed           += OnControlsPressed;
+            m_MenuUI.OnSliderStepped             += OnSliderStepped;
             m_MenuUI.OnMusicVolumeChanged        += OnMusicVolumeChanged;
             m_MenuUI.OnSfxVolumeChanged          += OnSfxVolumeChanged;
             m_MenuUI.OnBattleMessageSpeedChanged += OnBattleMessageSpeedChanged;
@@ -93,6 +94,8 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnLanguageChanged(int direction)
         {
+            PlayNavigate();
+
             async Task Run()
             {
                 string   currentLanguage    = m_LocalisationService.CurrentLanguage;
@@ -115,8 +118,20 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnControlsPressed()
         {
+            PlayNavigate();
+
             // TODO: open a page to configure the controls
             UnityEngine.Debug.Log("OnControlsPressed");
+        }
+
+        private void OnSliderStepped()
+        {
+            PlayNavigate();
+        }
+
+        private void PlayNavigate()
+        {
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
         }
 
         private void OnMusicVolumeChanged(float value)

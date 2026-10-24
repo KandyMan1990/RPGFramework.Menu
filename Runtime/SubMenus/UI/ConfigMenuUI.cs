@@ -1,6 +1,5 @@
 ﻿using System;
 using RPGFramework.Core;
-using RPGFramework.Core.Audio;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using Unity.Mathematics;
@@ -20,6 +19,12 @@ namespace RPGFramework.Menu.SubMenus.UI
         {
             add => m_OnControlsPressed += value;
             remove => m_OnControlsPressed -= value;
+        }
+
+        event Action IConfigMenuUI.OnSliderStepped
+        {
+            add => m_OnSliderStepped += value;
+            remove => m_OnSliderStepped -= value;
         }
 
         event Action<float> IConfigMenuUI.OnMusicVolumeChanged
@@ -50,6 +55,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private event Action<int>   m_OnLanguageChanged;
         private event Action        m_OnControlsPressed;
+        private event Action        m_OnSliderStepped;
         private event Action<float> m_OnMusicVolumeChanged;
         private event Action<float> m_OnSfxVolumeChanged;
         private event Action<float> m_OnBattleMessageSpeedChanged;
@@ -72,8 +78,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         public ConfigMenuUI(IConfigMenuLocalisationArgs localisationArgs,
                             IMenuUIProvider             uiProvider,
-                            IAudioIntentPlayer          audioIntentPlayer,
-                            ILocalisationService        localisationService) : base(localisationArgs, uiProvider, audioIntentPlayer, localisationService)
+                            ILocalisationService        localisationService) : base(localisationArgs, uiProvider, localisationService)
         {
         }
 
@@ -164,14 +169,12 @@ namespace RPGFramework.Menu.SubMenus.UI
         {
             if (evt.direction == NavigationMoveEvent.Direction.Left)
             {
-                OnBtnNavigate();
                 m_OnLanguageChanged?.Invoke(-1);
                 return;
             }
 
             if (evt.direction == NavigationMoveEvent.Direction.Right)
             {
-                OnBtnNavigate();
                 m_OnLanguageChanged?.Invoke(1);
             }
         }
@@ -198,7 +201,6 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private void OnControlsChosen()
         {
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_OnControlsPressed?.Invoke();
         }
 
@@ -218,7 +220,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             if (math.abs(slider.value - value) > epsilon)
             {
-                OnBtnNavigate();
+                m_OnSliderStepped?.Invoke();
                 slider.value = value;
             }
         }

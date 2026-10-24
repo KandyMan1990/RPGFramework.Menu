@@ -85,6 +85,8 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnNewGamePressed()
         {
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+
             string filename = m_SaveDataService.GetUnusedSaveFileName();
 
             m_SaveDataService.BeginSave(filename);
@@ -102,6 +104,7 @@ namespace RPGFramework.Menu.SubMenus
                 return;
             }
 
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_MenuModule.PushMenu(MenuType.Load).FireAndForget();
         }
 
@@ -118,8 +121,10 @@ namespace RPGFramework.Menu.SubMenus
         }
 #endif
 
-        private void OnQuitPressed(Task cancelSound)
+        private void OnQuitPressed()
         {
+            Task cancelSound = m_AudioIntentPlayer.PlayAsync(AudioIntent.Cancel, AudioContext.Menu);
+
             QuitAsync(cancelSound).FireAndForget();
         }
 

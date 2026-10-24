@@ -62,6 +62,9 @@ namespace RPGFramework.Menu
         /// <summary>Raised when the player presses back in the UI.</summary>
         event Action OnBackButtonPressed;
 
+        /// <summary>Raised when the player moves the cursor to another button, for the menu to sound.</summary>
+        event Action OnCursorMoved;
+
         /// <summary>The element focused when the menu opens.</summary>
         VisualElement GetDefaultFocusedElement();
 
@@ -137,10 +140,8 @@ namespace RPGFramework.Menu
         /// <summary>Raised when the player chooses Load Game.</summary>
         event Action OnLoadGamePressed;
 
-        /// <summary>
-        /// Raised when the player chooses Quit, with the task of its cancel sound playing out, for quitting to wait on.
-        /// </summary>
-        event Action<Task> OnQuitPressed;
+        /// <summary>Raised when the player chooses Quit.</summary>
+        event Action OnQuitPressed;
     }
 
     /// <summary>The Config menu's UI.</summary>
@@ -151,6 +152,12 @@ namespace RPGFramework.Menu
 
         /// <summary>Raised when the player chooses Controls.</summary>
         event Action OnControlsPressed;
+
+        /// <summary>
+        /// Raised as the player steps a slider by a direction, before its value changes; dragging it with the pointer
+        /// raises only the value.
+        /// </summary>
+        event Action OnSliderStepped;
 
         /// <summary>Raised with the music volume, 0 to 1, as the player moves its slider.</summary>
         event Action<float> OnMusicVolumeChanged;

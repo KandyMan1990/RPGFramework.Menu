@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Core;
-using RPGFramework.Core.Audio;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine;
@@ -18,16 +17,22 @@ namespace RPGFramework.Menu.SubMenus.UI
             remove => m_OnBackButtonPressed -= value;
         }
 
+        event Action IMenuUI.OnCursorMoved
+        {
+            add => m_OnCursorMoved += value;
+            remove => m_OnCursorMoved -= value;
+        }
+
         VisualElement IMenuUI.GetDefaultFocusedElement() => GetDefaultFocusedElement();
         VisualElement IMenuUI.GetLastFocusedElement()    => m_LastFocusedElement;
 
         private event Action m_OnBackButtonPressed;
+        private event Action m_OnCursorMoved;
 
         protected abstract VisualElement GetDefaultFocusedElement();
 
         protected readonly ILocalisationArgs    m_LocalisationArgs;
         protected readonly IMenuUIProvider      m_UIProvider;
-        protected readonly IAudioIntentPlayer   m_AudioIntentPlayer;
         protected readonly ILocalisationService m_LocalisationService;
 
         protected VisualElement m_UIInstance;
@@ -38,12 +43,10 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected MenuUI(ILocalisationArgs    localisationArgs,
                          IMenuUIProvider      uiProvider,
-                         IAudioIntentPlayer   audioIntentPlayer,
                          ILocalisationService localisationService)
         {
             m_LocalisationArgs    = localisationArgs;
             m_UIProvider          = uiProvider;
-            m_AudioIntentPlayer   = audioIntentPlayer;
             m_LocalisationService = localisationService;
             m_Selection           = null;
         }
@@ -54,7 +57,9 @@ namespace RPGFramework.Menu.SubMenus.UI
             uiAsset.CloneTree(parent);
 
             m_UIInstance = parent[parent.childCount - 1];
-            m_Selection  = new SelectionScope(m_UIInstance, m_AudioIntentPlayer, AudioContext.Menu);
+            m_Selection  = new SelectionScope(m_UIInstance);
+
+            m_Selection.Moved += OnSelectionMoved;
 
             ShowUI(false);
 
@@ -172,9 +177,9 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_OnBackButtonPressed?.Invoke();
         }
 
-        protected void OnBtnNavigate()
+        private void OnSelectionMoved()
         {
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            m_OnCursorMoved?.Invoke();
         }
 
         protected virtual async Task OnShowAnimationAsync()

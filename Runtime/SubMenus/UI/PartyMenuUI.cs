@@ -1,5 +1,4 @@
 using System;
-using RPGFramework.Core.Audio;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine.UIElements;
@@ -45,8 +44,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         public PartyMenuUI(IPartyMenuLocalisationArgs localisationArgs,
                            IMenuUIProvider            uiProvider,
-                           IAudioIntentPlayer         audioIntentPlayer,
-                           ILocalisationService       localisationService) : base(localisationArgs, uiProvider, audioIntentPlayer, localisationService)
+                           ILocalisationService       localisationService) : base(localisationArgs, uiProvider, localisationService)
         {
         }
 

@@ -57,6 +57,8 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnLanguageChanged(int direction)
         {
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+
             async Task Run()
             {
                 string   currentLanguage    = m_LocalisationService.CurrentLanguage;
