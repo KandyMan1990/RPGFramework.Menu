@@ -56,7 +56,9 @@ Then make it your own:
   - **New Game** begins a save in memory, writing nothing until the player saves, and starts in the module your variable
     map names as the start.
   - **Load Game** opens the Load menu.
-  - On the very first launch, before any settings have been saved, it shows the Language menu first.
+  - On the very first launch, before any settings have been saved, it shows the Language menu first, starting on the
+    device's language or the nearest the game ships. Afterwards it applies the saved language, unless a later build
+    no longer ships it, when the game stays in the device's or the nearest.
   - **Debug Room**, above Quit, only where `ENABLE_RPG_FRAMEWORK_DEBUG` is defined, begins a save in memory as New Game
     does and opens the Debug Room package's room through `DebugMenuOutcomes.DEBUG_ROOM`. The button is added in code,
     so your layout needs nothing for it.

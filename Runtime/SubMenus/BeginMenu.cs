@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
@@ -143,7 +144,7 @@ namespace RPGFramework.Menu.SubMenus
             }
         }
 
-        private Task ApplySettingsAsync()
+        private async Task ApplySettingsAsync()
         {
             m_SettingsService.TryGetSection(FrameworkSettingsSections.CONFIG_DATA, out SaveSection<ConfigData_V1> configData);
 
@@ -154,12 +155,17 @@ namespace RPGFramework.Menu.SubMenus
 
             if (!m_SettingsService.IsSaved)
             {
-                return m_MenuModule.PushMenu(MenuType.Language);
+                await m_MenuModule.PushMenu(MenuType.Language);
+                return;
             }
 
-            string language = data.GetLanguage();
+            string   language  = data.GetLanguage();
+            string[] languages = await m_LocalisationService.GetAllLanguages();
 
-            return m_LocalisationService.SetCurrentLanguage(language);
+            if (Array.IndexOf(languages, language) >= 0)
+            {
+                await m_LocalisationService.SetCurrentLanguage(language);
+            }
         }
     }
 }

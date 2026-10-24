@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
@@ -33,13 +31,6 @@ namespace RPGFramework.Menu.SubMenus
             m_MenuUI.OnLanguageChanged += OnLanguageChanged;
         }
 
-        protected override async Task OnEnterAsync(Dictionary<string, object> args)
-        {
-            await base.OnEnterAsync(args);
-
-            await InitLanguageAsync();
-        }
-
         protected override Task OnExitAsync()
         {
             m_SettingsService.TryGetSection(FrameworkSettingsSections.CONFIG_DATA, out SaveSection<ConfigData_V1> configData);
@@ -62,17 +53,6 @@ namespace RPGFramework.Menu.SubMenus
             }
 
             return true;
-        }
-
-        private async Task InitLanguageAsync()
-        {
-            string[] availableLanguages = await m_LocalisationService.GetAllLanguages();
-
-            int languageIndex = Array.IndexOf(availableLanguages, CultureInfo.CurrentCulture.Name);
-
-            string newLanguage = languageIndex >= 0 ? availableLanguages[languageIndex] : "en-GB";
-
-            await m_LocalisationService.SetCurrentLanguage(newLanguage);
         }
 
         private void OnLanguageChanged(int direction)
