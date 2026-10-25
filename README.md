@@ -16,11 +16,14 @@ Import the **Menu Sample** from the Package Manager. It is a menu scene with:
 - an installer binding the menus' localisation, the UI provider and the transition config;
 - a UI provider holding each menu's UXML;
 - a transition config for menu changes, using your game's default transitions;
-- the `InputAdapter` the menu module finds on entering, with its actions left for you to assign.
+- the `InputAdapter` the menu module finds on entering, its actions the RPG Framework Starter sample's;
+- the text its installer names, in five languages: **RPG Framework > Menu > Install Sample Text** copies it into
+  `StreamingAssets/Localisation`, which a sample cannot put files in itself, and refuses a project with text of its own.
 
-Then make it your own:
+It runs as the title screen of the **Starter** sample's game (RPG Framework Starter), which says how to set it up. Then
+make it your own:
 
-1. **Assign the Input Adapter's actions.** Deleting a save uses the Tertiary control, so give it an action.
+1. **Assign your own actions to the Input Adapter.** Deleting a save uses the Tertiary control, so give it an action.
 2. **Pass your own localisation keys to the installer.** The sample writes keys from an example spreadsheet as literals;
    your game passes its own, or its generated keys constants.
 3. **In your global installer, bind `IMenuArgsStore` to `MenuArgsStore`**, so whatever opens the menus and the menu
