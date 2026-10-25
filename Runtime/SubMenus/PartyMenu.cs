@@ -8,7 +8,7 @@ using RPGFramework.Menu.SharedTypes;
 
 namespace RPGFramework.Menu.SubMenus
 {
-    public sealed class PartyMenu : Menu<IPartyMenuUI>, IPartyMenu
+    internal sealed class PartyMenu : Menu<IPartyMenuUI>, IPartyMenu
     {
         protected override bool m_HidePreviousUIOnSuspend => true;
 

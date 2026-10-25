@@ -1,7 +1,5 @@
 using RPGFramework.DI;
 using RPGFramework.Menu.SharedTypes;
-using RPGFramework.Menu.SubMenus;
-using RPGFramework.Menu.SubMenus.UI;
 using UnityEngine;
 
 namespace RPGFramework.Menu.Menu_Sample
@@ -31,20 +29,6 @@ namespace RPGFramework.Menu.Menu_Sample
 
             container.BindSingletonFromInstance<IMenuUIProvider>(m_MenuUIProvider);
             container.BindSingletonFromInstance<IMenuTransitionConfig>(m_TransitionConfig);
-            container.BindTransient<IBeginMenu, BeginMenu>();
-            container.BindTransient<IBeginMenuUI, BeginMenuUI>();
-            container.BindTransient<IConfigMenu, ConfigMenu>();
-            container.BindTransient<IConfigMenuUI, ConfigMenuUI>();
-            container.BindTransient<ILanguageMenu, LanguageMenu>();
-            container.BindTransient<ILanguageMenuUI, LanguageMenuUI>();
-            container.BindTransient<IPartyMenu, PartyMenu>();
-            container.BindTransient<IPartyMenuUI, PartyMenuUI>();
-            container.BindTransient<ISaveMenu, SaveMenu>();
-            container.BindTransient<ILoadMenu, LoadMenu>();
-            container.BindTransient<ISaveSlotMenuUI, SaveSlotMenuUI>();
-
-            container.BindSingleton<IMenuTypeProvider, MenuTypeProvider>();
-            container.BindSingleton<IMenuModule, MenuModule>();
         }
 
         private static void BindLocalisationArgs(IDIContainer container)

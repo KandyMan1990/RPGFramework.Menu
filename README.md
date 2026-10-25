@@ -12,7 +12,8 @@ RPGFramework.DI, RPGFramework.Audio, RPGFramework.Localisation and Unity.Mathema
 
 Import the **Menu Sample** from the Package Manager. It is a menu scene with:
 
-- an installer binding every menu, its UI and its localisation;
+- a **Menu Module** object (GameObject > RPG Framework > Menu > Menu Module), which binds every menu and its UI;
+- an installer binding the menus' localisation, the UI provider and the transition config;
 - a UI provider holding each menu's UXML;
 - a transition config for menu changes, using your game's default transitions;
 - the `InputAdapter` the menu module finds on entering, with its actions left for you to assign.
@@ -25,6 +26,9 @@ Then make it your own:
 3. **In your global installer, bind `IMenuArgsStore` to `MenuArgsStore`**, so whatever opens the menus and the menu
    module share it.
 4. **Add the scene to your game's module and scene databases**, under `MenuConstants.MODULE_ID`.
+
+To replace a menu or a menu UI with your own, bind its interface — `IBeginMenuUI`, say — in the scene's installer: the
+Menu Module binds each only where nothing is bound yet.
 
 ---
 

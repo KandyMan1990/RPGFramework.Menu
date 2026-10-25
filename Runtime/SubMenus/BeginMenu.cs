@@ -14,7 +14,7 @@ using RPGFramework.Menu.SharedTypes.Constants;
 
 namespace RPGFramework.Menu.SubMenus
 {
-    public sealed class BeginMenu : Menu<IBeginMenuUI>, IBeginMenu
+    internal sealed class BeginMenu : Menu<IBeginMenuUI>, IBeginMenu
     {
         protected override bool m_HidePreviousUIOnSuspend => true;
 

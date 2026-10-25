@@ -8,7 +8,7 @@ using RPGFramework.Menu.SharedTypes.Constants;
 
 namespace RPGFramework.Menu.SubMenus
 {
-    public sealed class LoadMenu : SaveSlotMenu, ILoadMenu
+    internal sealed class LoadMenu : SaveSlotMenu, ILoadMenu
     {
         protected override bool IsSaving => false;
 

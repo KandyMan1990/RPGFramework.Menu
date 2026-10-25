@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
 {
-    public sealed class SaveSlotMenuUI : MenuUI<ISaveSlotMenuUI>, ISaveSlotMenuUI
+    internal sealed class SaveSlotMenuUI : MenuUI<ISaveSlotMenuUI>, ISaveSlotMenuUI
     {
         private const float UNAVAILABLE_OPACITY = 0.5f;
 

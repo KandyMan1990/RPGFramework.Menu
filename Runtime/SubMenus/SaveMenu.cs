@@ -6,7 +6,7 @@ using RPGFramework.Menu.SharedTypes;
 
 namespace RPGFramework.Menu.SubMenus
 {
-    public sealed class SaveMenu : SaveSlotMenu, ISaveMenu
+    internal sealed class SaveMenu : SaveSlotMenu, ISaveMenu
     {
         protected override bool IsSaving => true;
 

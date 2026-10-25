@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
 {
-    public sealed class BeginMenuUI : MenuUI<IBeginMenuUI>, IBeginMenuUI
+    internal sealed class BeginMenuUI : MenuUI<IBeginMenuUI>, IBeginMenuUI
 #if ENABLE_RPG_FRAMEWORK_DEBUG
         , IDebugBeginMenuUI
 #endif

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RPGFramework.Menu.SubMenus
 {
-    public abstract class SaveSlotMenu : Menu<ISaveSlotMenuUI>
+    internal abstract class SaveSlotMenu : Menu<ISaveSlotMenuUI>
     {
         private enum Question
         {

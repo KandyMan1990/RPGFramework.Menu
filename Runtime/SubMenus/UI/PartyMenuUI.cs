@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
 {
-    public sealed class PartyMenuUI : MenuUI<IPartyMenuUI>, IPartyMenuUI
+    internal sealed class PartyMenuUI : MenuUI<IPartyMenuUI>, IPartyMenuUI
     {
         event Action IPartyMenuUI.OnConfigPressed
         {
