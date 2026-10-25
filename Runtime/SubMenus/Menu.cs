@@ -4,7 +4,6 @@ using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Menu.SharedTypes;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus
@@ -84,7 +83,7 @@ namespace RPGFramework.Menu.SubMenus
             return HandleControl(slot);
         }
 
-        bool IInputContext.HandleMove(Vector2 move) => true;
+        bool IInputContext.TakesMovement => true;
 
         private void OnCursorMoved()
         {
