@@ -25,6 +25,12 @@ namespace RPGFramework.Menu.SubMenus.UI
             remove => m_OnLoadGamePressed -= value;
         }
 
+        event Action IBeginMenuUI.OnConfigPressed
+        {
+            add => m_OnConfigPressed += value;
+            remove => m_OnConfigPressed -= value;
+        }
+
         event Action IBeginMenuUI.OnQuitPressed
         {
             add => m_OnQuitPressed += value;
@@ -43,13 +49,15 @@ namespace RPGFramework.Menu.SubMenus.UI
         private RPGUIButton m_DebugRoomBtn;
 #endif
 
-        private event Action       m_OnNewGamePressed;
-        private event Action       m_OnLoadGamePressed;
+        private event Action m_OnNewGamePressed;
+        private event Action m_OnLoadGamePressed;
+        private event Action m_OnConfigPressed;
         private event Action m_OnQuitPressed;
 
         private Label       m_TitleLabel;
         private RPGUIButton m_NewGameBtn;
         private RPGUIButton m_LoadGameBtn;
+        private RPGUIButton m_ConfigBtn;
         private RPGUIButton m_QuitBtn;
         private Label       m_VersionLabel;
 
@@ -66,6 +74,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_TitleLabel   = m_UIInstance.Q<Label>("TitleLabel");
             m_NewGameBtn   = m_UIInstance.Q<RPGUIButton>("NewGameBtn");
             m_LoadGameBtn  = m_UIInstance.Q<RPGUIButton>("LoadGameBtn");
+            m_ConfigBtn    = m_UIInstance.Q<RPGUIButton>("ConfigBtn");
             m_QuitBtn      = m_UIInstance.Q<RPGUIButton>("QuitBtn");
             m_VersionLabel = m_UIInstance.Q<Label>("VersionLabel");
 
@@ -79,13 +88,14 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             m_DebugRoomBtn.Chosen += OnDebugRoomChosen;
 
-            RPGUIButton.LinkColumn(new RPGUIButton[] { m_NewGameBtn, m_LoadGameBtn, m_DebugRoomBtn, m_QuitBtn }, true);
+            RPGUIButton.LinkColumn(new RPGUIButton[] { m_NewGameBtn, m_LoadGameBtn, m_ConfigBtn, m_DebugRoomBtn, m_QuitBtn }, true);
 #else
-            RPGUIButton.LinkColumn(new RPGUIButton[] { m_NewGameBtn, m_LoadGameBtn, m_QuitBtn }, true);
+            RPGUIButton.LinkColumn(new RPGUIButton[] { m_NewGameBtn, m_LoadGameBtn, m_ConfigBtn, m_QuitBtn }, true);
 #endif
 
             m_NewGameBtn.Chosen  += OnNewGameChosen;
             m_LoadGameBtn.Chosen += OnLoadGameChosen;
+            m_ConfigBtn.Chosen   += OnConfigChosen;
             m_QuitBtn.Chosen     += OnQuitChosen;
         }
 
@@ -96,6 +106,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_TitleLabel.text  = m_LocalisationService.Get(args.GameTitle);
             m_NewGameBtn.text  = m_LocalisationService.Get(args.NewGame);
             m_LoadGameBtn.text = m_LocalisationService.Get(args.LoadGame);
+            m_ConfigBtn.text   = m_LocalisationService.Get(args.Config);
             m_QuitBtn.text     = m_LocalisationService.Get(args.QuitGame);
         }
 
@@ -107,6 +118,11 @@ namespace RPGFramework.Menu.SubMenus.UI
         private void OnLoadGameChosen()
         {
             m_OnLoadGamePressed?.Invoke();
+        }
+
+        private void OnConfigChosen()
+        {
+            m_OnConfigPressed?.Invoke();
         }
 
 #if ENABLE_RPG_FRAMEWORK_DEBUG

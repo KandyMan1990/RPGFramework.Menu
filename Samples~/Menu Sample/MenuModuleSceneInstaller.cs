@@ -36,6 +36,7 @@ namespace RPGFramework.Menu.Menu_Sample
             IBeginMenuLocalisationArgs beginMenuLocalisationArgs = new BeginMenuLocalisationArgs("Generic/Game_Title",
                                                                                                  "BeginMenu/New_Game",
                                                                                                  "BeginMenu/Load_Game",
+                                                                                                 "Generic/Settings",
                                                                                                  "BeginMenu/Quit_Game",
                                                                                                  new[] { GENERIC_SHEET, BEGIN_MENU_SHEET });
 

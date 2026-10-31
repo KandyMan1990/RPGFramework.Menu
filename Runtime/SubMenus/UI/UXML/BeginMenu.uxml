@@ -8,6 +8,7 @@
             <ui:VisualElement name="ButtonsContainer" style="flex-grow: 1; justify-content: space-evenly; margin-top: 5%; margin-bottom: 5%;">
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" text="New Game" name="NewGameBtn"/>
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" name="LoadGameBtn" text="Load Game"/>
+                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="ConfigBtn" text="Settings"/>
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" name="QuitBtn" text="Quit"/>
             </ui:VisualElement>
         </ui:VisualElement>

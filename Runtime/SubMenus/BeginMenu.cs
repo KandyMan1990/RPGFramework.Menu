@@ -25,8 +25,6 @@ namespace RPGFramework.Menu.SubMenus
         private readonly ISfxPlayer           m_SfxPlayer;
         private readonly IPlayTimeStore       m_PlayTimeStore;
 
-        private bool m_StartingNewGame;
-
         public BeginMenu(ILocalisationService localisationService,
                          ISaveDataService     saveDataService,
                          ISettingsService     settingsService,
@@ -47,6 +45,7 @@ namespace RPGFramework.Menu.SubMenus
 
             m_MenuUI.OnNewGamePressed  += OnNewGamePressed;
             m_MenuUI.OnLoadGamePressed += OnLoadGamePressed;
+            m_MenuUI.OnConfigPressed   += OnConfigPressed;
             m_MenuUI.OnQuitPressed     += OnQuitPressed;
 
 #if ENABLE_RPG_FRAMEWORK_DEBUG
@@ -65,19 +64,6 @@ namespace RPGFramework.Menu.SubMenus
             return ApplySettingsAsync();
         }
 
-        protected override Task OnResumeAsync()
-        {
-            if (m_StartingNewGame)
-            {
-                m_PlayTimeStore.StartCounting();
-
-                m_MenuModule.RequestModuleChange(MenuOutcomes.PLAYTHROUGH);
-                return Task.CompletedTask;
-            }
-
-            return base.OnResumeAsync();
-        }
-
         protected override bool HandleControl(ControlSlot slot)
         {
             return false;
@@ -85,15 +71,16 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnNewGamePressed()
         {
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.NewGame, AudioContext.Menu).FireAndForget();
 
             string filename = m_SaveDataService.GetUnusedSaveFileName();
 
             m_SaveDataService.BeginSave(filename);
 
-            m_StartingNewGame = true;
+            m_PlayTimeStore.StartCounting();
 
-            m_MenuModule.PushMenu(MenuType.Config).FireAndForget();
+            m_MenuModule.RequestModuleChange(MenuOutcomes.PLAYTHROUGH);
+            m_MenuModule.PopMenu().FireAndForget();
         }
 
         private void OnLoadGamePressed()
@@ -106,6 +93,12 @@ namespace RPGFramework.Menu.SubMenus
 
             m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
             m_MenuModule.PushMenu(MenuType.Load).FireAndForget();
+        }
+
+        private void OnConfigPressed()
+        {
+            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            m_MenuModule.PushMenu(MenuType.Config).FireAndForget();
         }
 
 #if ENABLE_RPG_FRAMEWORK_DEBUG

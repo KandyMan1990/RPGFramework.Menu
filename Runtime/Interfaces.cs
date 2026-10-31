@@ -140,6 +140,12 @@ namespace RPGFramework.Menu
         /// <summary>Raised when the player chooses Load Game.</summary>
         event Action OnLoadGamePressed;
 
+        /// <summary>
+        /// Raised when the player chooses Config, to set their preferences before playing. A title that offers no Config
+        /// never raises it.
+        /// </summary>
+        event Action OnConfigPressed;
+
         /// <summary>Raised when the player chooses Quit.</summary>
         event Action OnQuitPressed;
     }

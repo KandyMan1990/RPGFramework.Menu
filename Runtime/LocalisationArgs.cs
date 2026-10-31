@@ -14,6 +14,9 @@ namespace RPGFramework.Menu
         /// <summary>The key of the Load Game button.</summary>
         string LoadGame { get; }
 
+        /// <summary>The key of the Config button.</summary>
+        string Config { get; }
+
         /// <summary>The key of the Quit button.</summary>
         string QuitGame { get; }
     }
@@ -23,24 +26,28 @@ namespace RPGFramework.Menu
         private readonly string   m_GameTitle;
         private readonly string   m_NewGame;
         private readonly string   m_LoadGame;
+        private readonly string   m_Config;
         private readonly string   m_QuitGame;
         private readonly string[] m_DataSheetsToLoad;
 
         string IBeginMenuLocalisationArgs.GameTitle        => m_GameTitle;
         string IBeginMenuLocalisationArgs.NewGame          => m_NewGame;
         string IBeginMenuLocalisationArgs.LoadGame         => m_LoadGame;
+        string IBeginMenuLocalisationArgs.Config           => m_Config;
         string IBeginMenuLocalisationArgs.QuitGame         => m_QuitGame;
         string[] ILocalisationArgs.       DataSheetsToLoad => m_DataSheetsToLoad;
 
         public BeginMenuLocalisationArgs(string   gameTitle,
                                          string   newGame,
                                          string   loadGame,
+                                         string   config,
                                          string   quitGame,
                                          string[] dataSheetsToLoad)
         {
             m_GameTitle        = gameTitle;
             m_NewGame          = newGame;
             m_LoadGame         = loadGame;
+            m_Config           = config;
             m_QuitGame         = quitGame;
             m_DataSheetsToLoad = dataSheetsToLoad;
         }

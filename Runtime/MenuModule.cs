@@ -198,24 +198,5 @@ namespace RPGFramework.Menu
 
             m_CoreModule.RequestModuleChangeAsync(outcome).FireAndForget();
         }
-
-        bool IMenuModule.IsMenuInStack<T>()
-        {
-            Type type = typeof(T);
-            if (type.GetInterface(nameof(IMenu)) == null)
-            {
-                return false;
-            }
-
-            foreach (IMenu menu in m_Menus)
-            {
-                if (menu is T)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
     }
 }
