@@ -217,12 +217,6 @@ namespace RPGFramework.Menu
         /// <summary>The key of the question asked before deleting a save.</summary>
         string DeleteQuestion { get; }
 
-        /// <summary>The key shown on a save written by a newer build of the game, which cannot be loaded.</summary>
-        string NewerVersion { get; }
-
-        /// <summary>The key shown on a save that is damaged, which cannot be loaded.</summary>
-        string Damaged { get; }
-
         /// <summary>The key of a question's yes answer.</summary>
         string Yes { get; }
 
@@ -237,8 +231,6 @@ namespace RPGFramework.Menu
         private readonly string   m_NewSave;
         private readonly string   m_OverwriteQuestion;
         private readonly string   m_DeleteQuestion;
-        private readonly string   m_NewerVersion;
-        private readonly string   m_Damaged;
         private readonly string   m_Yes;
         private readonly string   m_No;
         private readonly string[] m_DataSheetsToLoad;
@@ -248,8 +240,6 @@ namespace RPGFramework.Menu
         string ISaveMenuLocalisationArgs.NewSave           => m_NewSave;
         string ISaveMenuLocalisationArgs.OverwriteQuestion => m_OverwriteQuestion;
         string ISaveMenuLocalisationArgs.DeleteQuestion    => m_DeleteQuestion;
-        string ISaveMenuLocalisationArgs.NewerVersion      => m_NewerVersion;
-        string ISaveMenuLocalisationArgs.Damaged           => m_Damaged;
         string ISaveMenuLocalisationArgs.Yes               => m_Yes;
         string ISaveMenuLocalisationArgs.No                => m_No;
         string[] ILocalisationArgs.      DataSheetsToLoad  => m_DataSheetsToLoad;
@@ -259,8 +249,6 @@ namespace RPGFramework.Menu
                                         string   newSave,
                                         string   overwriteQuestion,
                                         string   deleteQuestion,
-                                        string   newerVersion,
-                                        string   damaged,
                                         string   yes,
                                         string   no,
                                         string[] dataSheetsToLoad)
@@ -270,8 +258,6 @@ namespace RPGFramework.Menu
             m_NewSave           = newSave;
             m_OverwriteQuestion = overwriteQuestion;
             m_DeleteQuestion    = deleteQuestion;
-            m_NewerVersion      = newerVersion;
-            m_Damaged           = damaged;
             m_Yes               = yes;
             m_No                = no;
             m_DataSheetsToLoad  = dataSheetsToLoad;

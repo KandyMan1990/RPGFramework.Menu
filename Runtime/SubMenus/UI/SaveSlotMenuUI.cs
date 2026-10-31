@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RPGFramework.Core.SaveData;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine.UIElements;
@@ -32,7 +33,8 @@ namespace RPGFramework.Menu.SubMenus.UI
         private event Action       m_OnNewSaveChosen;
         private event Action<bool> m_OnQuestionAnswered;
 
-        private RPGUIButton[] m_Rows;
+        private RPGUIButton[]        m_Rows;
+        private ISaveSlotElement[][] m_SlotElements;
 
         private Label         m_TitleLabel;
         private ScrollView    m_SlotsScrollView;
@@ -41,9 +43,9 @@ namespace RPGFramework.Menu.SubMenus.UI
         private RPGUIButton   m_YesBtn;
         private RPGUIButton   m_NoBtn;
 
-        private bool                        m_Saving;
-        private IReadOnlyList<SaveSlotInfo> m_Slots;
-        private VisualElement               m_RowAskedAbout;
+        private bool                       m_Saving;
+        private IReadOnlyList<SavePreview> m_Slots;
+        private VisualElement              m_RowAskedAbout;
 
         private int FirstSlotRow => m_Saving ? 1 : 0;
 
@@ -53,8 +55,9 @@ namespace RPGFramework.Menu.SubMenus.UI
                               IMenuUIProvider           uiProvider,
                               ILocalisationService      localisationService) : base(localisationArgs, uiProvider, localisationService)
         {
-            m_Rows  = Array.Empty<RPGUIButton>();
-            m_Slots = Array.Empty<SaveSlotInfo>();
+            m_Rows         = Array.Empty<RPGUIButton>();
+            m_SlotElements = Array.Empty<ISaveSlotElement[]>();
+            m_Slots        = Array.Empty<SavePreview>();
         }
 
         protected override void HookupUI()
@@ -82,16 +85,19 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_YesBtn.text     = m_LocalisationService.Get(args.Yes);
             m_NoBtn.text      = m_LocalisationService.Get(args.No);
 
-            int first = FirstSlotRow;
-
             if (m_Saving && m_Rows.Length > 0)
             {
                 m_Rows[0].text = m_LocalisationService.Get(args.NewSave);
             }
 
-            for (int i = 0; i < m_Slots.Count && first + i < m_Rows.Length; i++)
+            for (int i = 0; i < m_SlotElements.Length; i++)
             {
-                m_Rows[first + i].text = Describe(m_Slots[i], args);
+                ISaveSlotElement[] elements = m_SlotElements[i];
+
+                for (int j = 0; j < elements.Length; j++)
+                {
+                    elements[j].Show(m_Slots[i], m_LocalisationService);
+                }
             }
         }
 
@@ -100,12 +106,13 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_Saving = saving;
         }
 
-        void ISaveSlotMenuUI.SetSlots(IReadOnlyList<SaveSlotInfo> slots, int focusIndex)
+        void ISaveSlotMenuUI.SetSlots(IReadOnlyList<SavePreview> slots, int focusIndex)
         {
             m_Slots = slots;
 
             m_SlotsScrollView.Clear();
-            m_Rows = new RPGUIButton[FirstSlotRow + slots.Count];
+            m_Rows         = new RPGUIButton[FirstSlotRow + slots.Count];
+            m_SlotElements = new ISaveSlotElement[slots.Count][];
 
             if (m_Saving)
             {
@@ -118,8 +125,10 @@ namespace RPGFramework.Menu.SubMenus.UI
 
                 RPGUIButton row = AddRow(FirstSlotRow + i, () => m_OnSlotChosen?.Invoke(index));
 
+                m_SlotElements[i] = AddSlotLayout(row);
+
                 // Still focusable when it cannot be loaded, so choosing it can say no.
-                if (!m_Saving && (slots[i].FromNewerVersion || slots[i].Damaged))
+                if (!m_Saving && !slots[i].CanLoad)
                 {
                     row.style.opacity = UNAVAILABLE_OPACITY;
                 }
@@ -189,23 +198,36 @@ namespace RPGFramework.Menu.SubMenus.UI
             return row;
         }
 
-        private string Describe(SaveSlotInfo slot, ISaveMenuLocalisationArgs args)
+        private ISaveSlotElement[] AddSlotLayout(RPGUIButton row)
         {
-            if (slot.Damaged)
-            {
-                string damaged = $"{m_LocalisationService.Get(args.Damaged)}    {slot.LastWritten:g}";
+            TemplateContainer layout = m_UIProvider.SaveSlot.Instantiate();
 
-                return damaged;
+            row.text = string.Empty;
+            row.Add(layout);
+
+            List<VisualElement> descendants = layout.Query<VisualElement>().ToList();
+            int                 count       = 0;
+
+            for (int i = 0; i < descendants.Count; i++)
+            {
+                if (descendants[i] is ISaveSlotElement)
+                {
+                    count++;
+                }
             }
 
-            string location = m_LocalisationService.TryGet(slot.LocationName, out string name) ? name : string.Empty;
-            string time     = $"{slot.PlayTime / 3600}:{slot.PlayTime / 60 % 60:00}";
+            ISaveSlotElement[] elements = new ISaveSlotElement[count];
+            int                next     = 0;
 
-            string description = slot.FromNewerVersion
-                                     ? $"{location}    {time}    {slot.LastWritten:g}    {m_LocalisationService.Get(args.NewerVersion)}"
-                                     : $"{location}    {time}    {slot.LastWritten:g}";
+            for (int i = 0; i < descendants.Count; i++)
+            {
+                if (descendants[i] is ISaveSlotElement element)
+                {
+                    elements[next++] = element;
+                }
+            }
 
-            return description;
+            return elements;
         }
 
         private void OnYesChosen()

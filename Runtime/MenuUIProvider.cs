@@ -17,6 +17,10 @@ namespace RPGFramework.Menu
         private VisualTreeAsset m_PartyMenu;
         [SerializeField]
         private VisualTreeAsset m_SaveMenu;
+        [SerializeField]
+        private VisualTreeAsset m_SaveSlot;
+
+        VisualTreeAsset IMenuUIProvider.SaveSlot => m_SaveSlot;
 
         VisualTreeAsset IMenuUIProvider.GetMenuUI<T>()
         {

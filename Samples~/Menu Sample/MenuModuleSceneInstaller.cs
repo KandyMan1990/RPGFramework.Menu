@@ -65,8 +65,6 @@ namespace RPGFramework.Menu.Menu_Sample
                                                                                               "SaveMenu/New_Save",
                                                                                               "SaveMenu/Overwrite_Question",
                                                                                               "SaveMenu/Delete_Question",
-                                                                                              "SaveMenu/Newer_Version",
-                                                                                              "SaveMenu/Damaged",
                                                                                               "Generic/Yes",
                                                                                               "Generic/No",
                                                                                               new[] { GENERIC_SHEET, SAVE_MENU_SHEET, LOCATIONS_SHEET });

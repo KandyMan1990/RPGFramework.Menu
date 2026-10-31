@@ -78,14 +78,16 @@ Menu Module binds each only where nothing is bound yet.
 - **Party**: the menu opened from the field, showing Config, Save and Load, with the location name and play time. Save
   is offered only when the field allows saving, and is greyed out otherwise. Loading from here leaves the field under
   the menu behind and enters the save's.
-- **Save** and **Load**: one list of save slots, each previewed without loading it, newest first, with the location,
-  play time and when it was saved. Save also offers a new slot. Overwriting or deleting a save asks first, with No
-  selected. A save made by a newer version of the game, or a damaged one, is listed and marked, and can't be loaded.
-
----
-
-## Not in this version
-
-- **Inventory, Abilities and CharacterInfo aren't built**, and asking for one fails.
-- **Controls can't be rebound** from the Config menu.
-- **The set of menus is fixed**: a game can restyle and re-word them, but can't add a menu type of its own.
+- **Save** and **Load**: one list of save slots, each previewed without loading it, newest first. Save also offers a
+  new slot. Overwriting or deleting a save asks first, with No selected. A save made by a newer version of the game, or
+  a damaged one, is listed and marked, and can't be loaded.
+  - **Each slot has a layout of its own**, the **Save Slot** on your Menu UI Provider. The framework's shows the
+    location, the play time, the money and its name, and when it was saved.
+  - **Show any saved value by naming its variable** in the layout, as scripts name it: `Money`, `Items[3]`,
+    `Party[0].Level`. **`SaveSlotNumber`** shows a number, **`SaveSlotPlayTime`** hours and minutes,
+    **`SaveSlotText`** a text by its localisation key's hash, such as `LocationName`, **`SaveSlotCaption`** text by
+    its localisation key — what your money is called, say, `Generic/Money` reading "Gil" or "Dollars" — and
+    **`SaveSlotDate`** when it was saved, in the game's language. **`SaveSlotStatus`** names the keys shown for a
+    damaged save and a newer one, and what is inside a **`SaveSlotDetails`** is hidden for a damaged save.
+  - **Anything else is an element of your own** implementing `ISaveSlotElement`, which is handed each save to show:
+    the party's portraits, say, from sprites it references in the layout.

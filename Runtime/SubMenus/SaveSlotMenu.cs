@@ -1,7 +1,6 @@
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
-using RPGFramework.Core.Memory;
 using RPGFramework.Core.SaveData;
 using RPGFramework.Menu.SharedTypes;
 using System;
@@ -119,8 +118,7 @@ namespace RPGFramework.Menu.SubMenus
 
             Array.Sort(previews, (a, b) => b.LastWritten.CompareTo(a.LastWritten));
 
-            SaveSlotInfo[] slots      = new SaveSlotInfo[previews.Length];
-            int            focusIndex = -1;
+            int focusIndex = -1;
 
             m_Files   = new string[previews.Length];
             m_CanLoad = new bool[previews.Length];
@@ -136,10 +134,9 @@ namespace RPGFramework.Menu.SubMenus
 
                 m_Files[i]   = preview.FileName;
                 m_CanLoad[i] = preview.CanLoad;
-                slots[i]     = new SaveSlotInfo(preview.Read<ulong>(CoreVariables.LOCATION_NAME), preview.Read<uint>(CoreVariables.PLAY_TIME), preview.LastWritten, preview.IsFromNewerVersion, preview.IsDamaged);
             }
 
-            m_MenuUI.SetSlots(slots, focusIndex);
+            m_MenuUI.SetSlots(previews, focusIndex);
         }
 
         private void OnBack()

@@ -1,6 +1,7 @@
 using System;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
+using RPGFramework.Menu.UI;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
@@ -91,7 +92,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         void IPartyMenuUI.SetPlayTime(uint seconds)
         {
-            m_PlayTimeLabel.text = $"{seconds / 3600}:{seconds / 60 % 60:00}";
+            m_PlayTimeLabel.text = MenuFormat.PlayTime(seconds);
         }
 
         private void OnConfigChosen()

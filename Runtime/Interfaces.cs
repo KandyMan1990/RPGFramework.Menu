@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RPGFramework.Core.SaveData;
+using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
 using UnityEngine.UIElements;
 
@@ -11,6 +13,23 @@ namespace RPGFramework.Menu
     {
         /// <summary>The layout for the menu UI of this type, such as <see cref="IBeginMenuUI" />.</summary>
         VisualTreeAsset GetMenuUI<T>() where T : IMenuUI;
+
+        /// <summary>
+        /// The layout of one slot in the Save and Load menus, each of its <see cref="ISaveSlotElement" />s showing
+        /// something of the save.
+        /// </summary>
+        VisualTreeAsset SaveSlot { get; }
+    }
+
+    /// <summary>
+    /// An element of a save slot's layout that shows something of the save, filled as the slot is shown and again as
+    /// the language changes. The framework's show a variable as a number, a play time or a text, a caption, the date
+    /// and why a save cannot be loaded; a game's own, such as the party's portraits, implements this.
+    /// </summary>
+    public interface ISaveSlotElement
+    {
+        /// <summary>Shows <paramref name="preview" />, its text in <paramref name="localisation" />'s language.</summary>
+        void Show(SavePreview preview, ILocalisationService localisation);
     }
 
     /// <summary>Which menu interface each <see cref="MenuType" /> names, for the menu module to resolve.</summary>
@@ -235,9 +254,10 @@ namespace RPGFramework.Menu
         void SetSaving(bool saving);
 
         /// <summary>
-        /// Shows a row for each save, focusing the one at <paramref name="focusIndex" />, or the first row below 0.
+        /// Shows a row for each save, laid out as <see cref="IMenuUIProvider.SaveSlot" />, focusing the one at
+        /// <paramref name="focusIndex" />, or the first row below 0.
         /// </summary>
-        void SetSlots(IReadOnlyList<SaveSlotInfo> slots, int focusIndex);
+        void SetSlots(IReadOnlyList<SavePreview> slots, int focusIndex);
 
         /// <summary>The focused save's index in the list, or -1 when no save's row is focused.</summary>
         int GetFocusedSlot();
