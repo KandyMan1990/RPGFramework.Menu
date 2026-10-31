@@ -1,12 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
-using RPGFramework.Core.Data;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveData;
-using RPGFramework.Core.Settings;
 using RPGFramework.Core.Store;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
@@ -20,14 +17,14 @@ namespace RPGFramework.Menu.SubMenus
 
         private readonly ILocalisationService m_LocalisationService;
         private readonly ISaveDataService     m_SaveDataService;
-        private readonly ISettingsService     m_SettingsService;
+        private readonly ISettingsStore       m_SettingsStore;
         private readonly IMusicPlayer         m_MusicPlayer;
         private readonly ISfxPlayer           m_SfxPlayer;
         private readonly IPlayTimeStore       m_PlayTimeStore;
 
         public BeginMenu(ILocalisationService localisationService,
                          ISaveDataService     saveDataService,
-                         ISettingsService     settingsService,
+                         ISettingsStore       settingsStore,
                          IMusicPlayer         musicPlayer,
                          ISfxPlayer           sfxPlayer,
                          IPlayTimeStore       playTimeStore,
@@ -38,7 +35,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             m_LocalisationService = localisationService;
             m_SaveDataService     = saveDataService;
-            m_SettingsService     = settingsService;
+            m_SettingsStore       = settingsStore;
             m_MusicPlayer         = musicPlayer;
             m_SfxPlayer           = sfxPlayer;
             m_PlayTimeStore       = playTimeStore;
@@ -144,25 +141,24 @@ namespace RPGFramework.Menu.SubMenus
 
         private async Task ApplySettingsAsync()
         {
-            m_SettingsService.TryGetSection(FrameworkSettingsSections.CONFIG_DATA, out SaveSection<ConfigData_V1> configData);
+            m_MusicPlayer.SetVolume(m_SettingsStore.MusicVolume);
+            m_SfxPlayer.SetVolume(m_SettingsStore.SfxVolume);
 
-            ConfigData_V1 data = configData.Data;
-
-            m_MusicPlayer.SetVolume(data.MusicVolume);
-            m_SfxPlayer.SetVolume(data.SfxVolume);
-
-            if (!m_SettingsService.IsSaved)
+            if (!m_SettingsStore.IsLanguageChosen)
             {
                 await m_MenuModule.PushMenu(MenuType.Language);
                 return;
             }
 
-            string   language  = data.GetLanguage();
             string[] languages = await m_LocalisationService.GetAllLanguages();
 
-            if (Array.IndexOf(languages, language) >= 0)
+            for (int i = 0; i < languages.Length; i++)
             {
-                await m_LocalisationService.SetCurrentLanguage(language);
+                if (m_SettingsStore.IsLanguage(languages[i]))
+                {
+                    await m_LocalisationService.SetCurrentLanguage(languages[i]);
+                    return;
+                }
             }
         }
     }

@@ -53,8 +53,8 @@ Menu Module binds each only where nothing is bound yet.
 - **Sounds are requested by what happened**, such as navigating, cancelling or saving, through Core's audio intents, so
   your game decides which sound each one is. The menus play them, never their UIs: a UI reports what the player did
   and holds no audio player, so a menu UI of your own plays nothing either.
-- **Settings are read and written through Core's settings service**, never the save, and the music and sound effect
-  volumes are applied as the game starts.
+- **Settings are read and written through Core's settings store** and written to its settings file, never the save,
+  and the music and sound effect volumes are applied as the title opens.
 
 ---
 
@@ -67,9 +67,8 @@ Menu Module binds each only where nothing is bound yet.
   - **Settings** opens Config, so the player can set their preferences before starting or loading a game; closing it
     comes back to the title. Its label is the key your `BeginMenuLocalisationArgs` names for Config, the sample's
     `Generic/Settings`, as the Party menu's is.
-  - On the very first launch, before any settings have been saved, it shows the Language menu first, starting on the
-    device's language or the nearest the game ships. Afterwards it applies the saved language, unless a later build
-    no longer ships it, when the game stays in the device's or the nearest.
+  - On the very first launch, before the player has chosen a language, it shows the Language menu first, starting on
+    the device's language or the nearest the game ships. Afterwards it applies the language the player chose.
   - **Debug Room**, between Settings and Quit, only where `ENABLE_RPG_FRAMEWORK_DEBUG` is defined, begins a save in
     memory as New Game does and opens the Debug Room package's room through `DebugMenuOutcomes.DEBUG_ROOM`. The
     button is added in code, so your layout needs nothing for it.

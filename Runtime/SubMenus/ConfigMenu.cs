@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
-using RPGFramework.Core.Data;
 using RPGFramework.Core.Input;
-using RPGFramework.Core.SaveData;
 using RPGFramework.Core.Settings;
+using RPGFramework.Core.Store;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
 
@@ -19,22 +16,23 @@ namespace RPGFramework.Menu.SubMenus
         protected override bool m_HidePreviousUIOnSuspend => true;
 
         private readonly ISettingsService     m_SettingsService;
+        private readonly ISettingsStore       m_SettingsStore;
         private readonly ILocalisationService m_LocalisationService;
         private readonly IMusicPlayer         m_MusicPlayer;
         private readonly ISfxPlayer           m_SfxPlayer;
-
-        private ConfigData_V1 m_ConfigData;
 
         public ConfigMenu(IMenuModule          menuModule,
                           IConfigMenuUI        configMenuUI,
                           IInputRouter         inputRouter,
                           ISettingsService     settingsService,
+                          ISettingsStore       settingsStore,
                           ILocalisationService localisationService,
                           IMusicPlayer         musicPlayer,
                           ISfxPlayer           sfxPlayer,
                           IAudioIntentPlayer   audioIntentPlayer) : base(configMenuUI, inputRouter, menuModule, audioIntentPlayer)
         {
             m_SettingsService     = settingsService;
+            m_SettingsStore       = settingsStore;
             m_LocalisationService = localisationService;
             m_MusicPlayer         = musicPlayer;
             m_SfxPlayer           = sfxPlayer;
@@ -48,18 +46,6 @@ namespace RPGFramework.Menu.SubMenus
             m_MenuUI.OnFieldMessageSpeedChanged  += OnFieldMessageSpeedChanged;
         }
 
-        protected override Task OnEnterAsync(Dictionary<string, object> args)
-        {
-            if (!m_SettingsService.TryGetSection(FrameworkSettingsSections.CONFIG_DATA, out SaveSection<ConfigData_V1> configData))
-            {
-                throw new InvalidDataException($"{nameof(IConfigMenu)}::{nameof(OnEnterAsync)} Config data not found in the settings. The game's {nameof(IDefaultSettings)} must provide it");
-            }
-
-            m_ConfigData = configData.Data;
-
-            return base.OnEnterAsync(args);
-        }
-
         protected override Task OnEnterComplete()
         {
             SetSliders();
@@ -69,9 +55,6 @@ namespace RPGFramework.Menu.SubMenus
 
         protected override Task OnExitAsync()
         {
-            SaveSection<ConfigData_V1> data = new SaveSection<ConfigData_V1>(Versions.GLOBAL_CONFIG, m_ConfigData);
-
-            m_SettingsService.SetSection(FrameworkSettingsSections.CONFIG_DATA, data);
             m_SettingsService.Commit();
 
             return base.OnExitAsync();
@@ -104,7 +87,7 @@ namespace RPGFramework.Menu.SubMenus
 
                 await m_LocalisationService.SetCurrentLanguage(newLanguage);
 
-                m_ConfigData.SetLanguage(newLanguage);
+                m_SettingsStore.SetLanguage(newLanguage);
 
                 m_MenuUI.RefreshLocalisation();
             }
@@ -132,34 +115,34 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnMusicVolumeChanged(float value)
         {
-            m_ConfigData.MusicVolume = value;
+            m_SettingsStore.SetMusicVolume(value);
 
             m_MusicPlayer.SetVolume(value);
         }
 
         private void OnSfxVolumeChanged(float value)
         {
-            m_ConfigData.SfxVolume = value;
+            m_SettingsStore.SetSfxVolume(value);
 
             m_SfxPlayer.SetVolume(value);
         }
 
         private void OnBattleMessageSpeedChanged(float value)
         {
-            m_ConfigData.BattleMessageSpeed = value;
+            m_SettingsStore.SetBattleMessageSpeed(value);
         }
 
         private void OnFieldMessageSpeedChanged(float value)
         {
-            m_ConfigData.FieldMessageSpeed = value;
+            m_SettingsStore.SetFieldMessageSpeed(value);
         }
 
         private void SetSliders()
         {
-            m_MenuUI.SetMusicVolume(m_ConfigData.MusicVolume);
-            m_MenuUI.SetSfxVolume(m_ConfigData.SfxVolume);
-            m_MenuUI.SetBattleMessageSpeed(m_ConfigData.BattleMessageSpeed);
-            m_MenuUI.SetFieldMessageSpeed(m_ConfigData.FieldMessageSpeed);
+            m_MenuUI.SetMusicVolume(m_SettingsStore.MusicVolume);
+            m_MenuUI.SetSfxVolume(m_SettingsStore.SfxVolume);
+            m_MenuUI.SetBattleMessageSpeed(m_SettingsStore.BattleMessageSpeed);
+            m_MenuUI.SetFieldMessageSpeed(m_SettingsStore.FieldMessageSpeed);
         }
     }
 }
