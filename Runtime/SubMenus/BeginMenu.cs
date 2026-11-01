@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
@@ -54,11 +55,23 @@ namespace RPGFramework.Menu.SubMenus
 #endif
         }
 
-        protected override Task OnEnterComplete()
+        protected override async Task OnEnterAsync(Dictionary<string, object> args)
+        {
+            await ApplySettingsAsync();
+
+            await base.OnEnterAsync(args);
+        }
+
+        protected override async Task OnEnterComplete()
         {
             m_PlayTimeStore.StopCounting();
 
-            return ApplySettingsAsync();
+            if (!m_SettingsStore.IsLanguageChosen)
+            {
+                await m_MenuModule.PushMenu(MenuType.Language);
+            }
+
+            await base.OnEnterComplete();
         }
 
         protected override bool HandleControl(ControlSlot slot)
@@ -146,7 +159,6 @@ namespace RPGFramework.Menu.SubMenus
 
             if (!m_SettingsStore.IsLanguageChosen)
             {
-                await m_MenuModule.PushMenu(MenuType.Language);
                 return;
             }
 
