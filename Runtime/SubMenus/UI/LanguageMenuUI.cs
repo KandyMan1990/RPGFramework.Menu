@@ -17,37 +17,23 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private event Action<int> m_OnLanguageChanged;
 
-        private Label       m_TitleLabel;
         private RPGUIButton m_LanguageBtn;
-        private Label       m_LanguageLabel;
 
-        public LanguageMenuUI(ILanguageMenuLocalisationArgs localisationArgs,
-                              IMenuUIProvider               uiProvider,
-                              ILocalisationService          localisationService) : base(localisationArgs, uiProvider, localisationService)
+        public LanguageMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
+            : base(uiProvider, localisationService)
         {
         }
 
         protected override void HookupUI()
         {
-            m_TitleLabel    = m_UIInstance.Q<Label>("TitleLabel");
-            m_LanguageBtn   = m_UIInstance.Q<RPGUIButton>("LanguageBtn");
-            m_LanguageLabel = m_UIInstance.Q<Label>("LanguageLabel");
+            m_LanguageBtn = m_UIInstance.Q<RPGUIButton>("LanguageBtn");
 
             m_LanguageBtn.RegisterCallback<NavigationMoveEvent>(OnLanguageBtnNavigate);
         }
 
-        protected override void LocaliseUI()
-        {
-            ILanguageMenuLocalisationArgs args = (ILanguageMenuLocalisationArgs)m_LocalisationArgs;
-
-            m_TitleLabel.text    = m_LocalisationService.Get(args.ScreenTitle);
-            m_LanguageBtn.text   = m_LocalisationService.Get(args.Language);
-            m_LanguageLabel.text = m_LocalisationService.Get(args.Language);
-        }
-
         void ILanguageMenuUI.RefreshLocalisation()
         {
-            LocaliseUI();
+            Localise();
         }
 
         private void OnLanguageBtnNavigate(NavigationMoveEvent evt)

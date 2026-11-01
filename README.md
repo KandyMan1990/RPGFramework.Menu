@@ -13,19 +13,22 @@ RPGFramework.DI, RPGFramework.Audio, RPGFramework.Localisation and Unity.Mathema
 Import the **Menu Sample** from the Package Manager. It is a menu scene with:
 
 - a **Menu Module** object (GameObject > RPG Framework > Menu > Menu Module), which binds every menu and its UI;
-- an installer binding the menus' localisation, the UI provider and the transition config;
-- a UI provider holding each menu's UXML;
+- an installer binding the UI provider and the transition config;
+- a UI provider holding each menu's UXML, whose text names its localisation keys;
 - a transition config for menu changes, using your game's default transitions;
 - the `InputAdapter` the menu module finds on entering, its actions the RPG Framework Starter sample's;
-- the text its installer names, in five languages: **RPG Framework > Menu > Install Sample Text** copies it into
+- the text its layouts name, in five languages: **RPG Framework > Menu > Install Sample Text** copies it into
   `StreamingAssets/Localisation`, which a sample cannot put files in itself, and refuses a project with text of its own.
 
 It runs as the title screen of the **Starter** sample's game (RPG Framework Starter), which says how to set it up. Then
 make it your own:
 
 1. **Assign your own actions to the Input Adapter.** Deleting a save uses the Tertiary control, so give it an action.
-2. **Pass your own localisation keys to the installer.** The sample writes keys from an example spreadsheet as literals;
-   your game passes its own, or its generated keys constants.
+2. **Name your own localisation keys in the layouts.** Each label and button names its key with a `LocalisedText`
+   binding (RPGFramework.Localisation), and each menu loads the sheets its keys are in as it opens. The framework's
+   layouts name the sample's sheets — `Generic`, `BeginMenu`, `ConfigMenu`, `PartyMenu`, `SaveMenu` and `Locations` —
+   so a game shipping its own text puts copies of the layouts on its Menu UI Provider, naming its keys, and can add
+   or leave out any text it likes.
 3. **In your global installer, bind `IMenuArgsStore` to `MenuArgsStore`**, so whatever opens the menus and the menu
    module share it.
 4. **Add the scene to your game's module and scene databases**, under `MenuConstants.MODULE_ID`.
@@ -65,8 +68,7 @@ Menu Module binds each only where nothing is bound yet.
     your variable map names as the start.
   - **Load Game** opens the Load menu.
   - **Settings** opens Config, so the player can set their preferences before starting or loading a game; closing it
-    comes back to the title. Its label is the key your `BeginMenuLocalisationArgs` names for Config, the sample's
-    `Generic/Settings`, as the Party menu's is.
+    comes back to the title. Its label is `Generic/Settings` in the framework's layout, as the Party menu's is.
   - On the very first launch, before the player has chosen a language, it shows the Language menu first, starting on
     the device's language or the nearest the game ships. Afterwards it applies the language the player chose.
   - **Debug Room**, between Settings and Quit, only where `ENABLE_RPG_FRAMEWORK_DEBUG` is defined, begins a save in
@@ -86,9 +88,10 @@ Menu Module binds each only where nothing is bound yet.
     location, the play time, the money and its name, and when it was saved.
   - **Show any saved value by naming its variable** in the layout, as scripts name it: `Money`, `Items[3]`,
     `Party[0].Level`. **`SaveSlotNumber`** shows a number, **`SaveSlotPlayTime`** hours and minutes,
-    **`SaveSlotText`** a text by its localisation key's hash, such as `LocationName`, **`SaveSlotCaption`** text by
-    its localisation key — what your money is called, say, `Generic/Money` reading "Gil" or "Dollars" — and
-    **`SaveSlotDate`** when it was saved, in the game's language. **`SaveSlotStatus`** names the keys shown for a
-    damaged save and a newer one, and what is inside a **`SaveSlotDetails`** is hidden for a damaged save.
+    **`SaveSlotText`** a text by its localisation key's hash, such as `LocationName`, naming the sheet it is in, and
+    **`SaveSlotDate`** when it was saved, in the game's language. Fixed text is a label with a `LocalisedText` —
+    what your money is called, say, `Generic/Money` reading "Gil" or "Dollars". What is inside a
+    **`SaveSlotShownWhen`** shows only for a damaged save, or only for a newer one, as its `problem` says — the
+    framework's holds the text saying so — and what is inside a **`SaveSlotDetails`** is hidden for a damaged save.
   - **Anything else is an element of your own** implementing `ISaveSlotElement`, which is handed each save to show:
     the party's portraits, say, from sprites it references in the layout.

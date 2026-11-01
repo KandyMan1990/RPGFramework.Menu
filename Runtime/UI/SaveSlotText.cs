@@ -12,9 +12,26 @@ namespace RPGFramework.Menu.UI
         [UxmlAttribute]
         public string Variable { get; set; }
 
+        /// <summary>The sheet the key is in, such as <c>Locations</c>, which the save menu loads.</summary>
+        [UxmlAttribute]
+        public string Sheet
+        {
+            get => m_Text.Sheet;
+            set => m_Text.Sheet = value;
+        }
+
+        private readonly LocalisedText m_Text;
+
+        public SaveSlotText()
+        {
+            m_Text = new LocalisedText();
+
+            SetBinding("text", m_Text);
+        }
+
         void ISaveSlotElement.Show(SavePreview preview, ILocalisationService localisation)
         {
-            text = localisation.TryGet(preview.Read<ulong>(Variable), out string value) ? value : string.Empty;
+            m_Text.Hash = preview.Read<ulong>(Variable);
         }
     }
 }

@@ -31,7 +31,6 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected abstract VisualElement GetDefaultFocusedElement();
 
-        protected readonly ILocalisationArgs    m_LocalisationArgs;
         protected readonly IMenuUIProvider      m_UIProvider;
         protected readonly ILocalisationService m_LocalisationService;
 
@@ -40,15 +39,14 @@ namespace RPGFramework.Menu.SubMenus.UI
         protected VisualElement m_LastFocusedElement;
 
         private SelectionScope m_Selection;
+        private string[]       m_SheetNames;
 
-        protected MenuUI(ILocalisationArgs    localisationArgs,
-                         IMenuUIProvider      uiProvider,
-                         ILocalisationService localisationService)
+        protected MenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
         {
-            m_LocalisationArgs    = localisationArgs;
             m_UIProvider          = uiProvider;
             m_LocalisationService = localisationService;
             m_Selection           = null;
+            m_SheetNames          = Array.Empty<string>();
         }
 
         async Task IMenuUI.OnEnterAsync(VisualElement parent, Dictionary<string, object> args)
@@ -63,13 +61,15 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             ShowUI(false);
 
-            await m_LocalisationService.LoadNewLocalisationDataAsync(m_LocalisationArgs.DataSheetsToLoad);
+            m_SheetNames = GetSheetNames();
+
+            await m_LocalisationService.LoadNewLocalisationDataAsync(m_SheetNames);
 
             await OnEnterAsync(args);
 
             HookupUI();
 
-            LocaliseUI();
+            Localise();
 
             ShowUI(true);
 
@@ -88,16 +88,16 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             ShowUI(!hideUI);
 
-            m_LocalisationService.UnloadLocalisationData(m_LocalisationArgs.DataSheetsToLoad);
+            m_LocalisationService.UnloadLocalisationData(m_SheetNames);
 
             await OnSuspendAsync(hideUI);
         }
 
         async Task IMenuUI.OnResumeAsync()
         {
-            await m_LocalisationService.LoadNewLocalisationDataAsync(m_LocalisationArgs.DataSheetsToLoad);
+            await m_LocalisationService.LoadNewLocalisationDataAsync(m_SheetNames);
 
-            LocaliseUI();
+            Localise();
 
             ShowUI(true);
 
@@ -154,7 +154,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected virtual Task OnExitAsync()
         {
-            m_LocalisationService.UnloadLocalisationData(m_LocalisationArgs.DataSheetsToLoad);
+            m_LocalisationService.UnloadLocalisationData(m_SheetNames);
 
             return Task.CompletedTask;
         }
@@ -163,6 +163,23 @@ namespace RPGFramework.Menu.SubMenus.UI
         {
         }
 
+        /// <summary>
+        /// The sheets the menu loads while it is on top: those its layout's <see cref="LocalisedText" />s name.
+        /// </summary>
+        protected virtual string[] GetSheetNames() => new LocalisedTexts(m_UIInstance).SheetNames;
+
+        /// <summary>
+        /// Shows the menu's text in the current language: what the code chooses (<see cref="LocaliseUI" />), then every
+        /// <see cref="LocalisedText" /> in its layout, found afresh, as a menu may have added or removed some.
+        /// </summary>
+        protected void Localise()
+        {
+            LocaliseUI();
+
+            new LocalisedTexts(m_UIInstance).Show(m_LocalisationService);
+        }
+
+        /// <summary>Text the code chooses: which of the layout's texts shows, or the entry one shows by hash.</summary>
         protected virtual void LocaliseUI()
         {
         }

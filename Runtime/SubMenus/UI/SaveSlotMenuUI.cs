@@ -36,10 +36,13 @@ namespace RPGFramework.Menu.SubMenus.UI
         private RPGUIButton[]        m_Rows;
         private ISaveSlotElement[][] m_SlotElements;
 
-        private Label         m_TitleLabel;
+        private Label         m_SaveTitleLabel;
+        private Label         m_LoadTitleLabel;
         private ScrollView    m_SlotsScrollView;
+        private RPGUIButton   m_NewSaveRow;
         private VisualElement m_QuestionPanel;
-        private Label         m_QuestionLabel;
+        private Label         m_OverwriteQuestionLabel;
+        private Label         m_DeleteQuestionLabel;
         private RPGUIButton   m_YesBtn;
         private RPGUIButton   m_NoBtn;
 
@@ -51,9 +54,8 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override VisualElement GetDefaultFocusedElement() => m_Rows.Length > 0 ? m_Rows[0] : null;
 
-        public SaveSlotMenuUI(ISaveMenuLocalisationArgs localisationArgs,
-                              IMenuUIProvider           uiProvider,
-                              ILocalisationService      localisationService) : base(localisationArgs, uiProvider, localisationService)
+        public SaveSlotMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
+            : base(uiProvider, localisationService)
         {
             m_Rows         = Array.Empty<RPGUIButton>();
             m_SlotElements = Array.Empty<ISaveSlotElement[]>();
@@ -62,14 +64,21 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override void HookupUI()
         {
-            m_TitleLabel      = m_UIInstance.Q<Label>("TitleLabel");
-            m_SlotsScrollView = m_UIInstance.Q<ScrollView>("SlotsScrollView");
-            m_QuestionPanel   = m_UIInstance.Q<VisualElement>("QuestionPanel");
-            m_QuestionLabel   = m_UIInstance.Q<Label>("QuestionLabel");
-            m_YesBtn          = m_UIInstance.Q<RPGUIButton>("YesBtn");
-            m_NoBtn           = m_UIInstance.Q<RPGUIButton>("NoBtn");
+            m_SaveTitleLabel         = m_UIInstance.Q<Label>("SaveTitleLabel");
+            m_LoadTitleLabel         = m_UIInstance.Q<Label>("LoadTitleLabel");
+            m_SlotsScrollView        = m_UIInstance.Q<ScrollView>("SlotsScrollView");
+            m_NewSaveRow             = m_UIInstance.Q<RPGUIButton>("NewSaveBtn");
+            m_QuestionPanel          = m_UIInstance.Q<VisualElement>("QuestionPanel");
+            m_OverwriteQuestionLabel = m_UIInstance.Q<Label>("OverwriteQuestionLabel");
+            m_DeleteQuestionLabel    = m_UIInstance.Q<Label>("DeleteQuestionLabel");
+            m_YesBtn                 = m_UIInstance.Q<RPGUIButton>("YesBtn");
+            m_NoBtn                  = m_UIInstance.Q<RPGUIButton>("NoBtn");
 
             m_QuestionPanel.style.display = DisplayStyle.None;
+
+            // The layout places it among the slots; it is put back first while saving.
+            m_NewSaveRow.RemoveFromHierarchy();
+            HookUpRow(m_NewSaveRow, () => m_OnNewSaveChosen?.Invoke());
 
             RPGUIButton.LinkRow(new RPGUIButton[] { m_YesBtn, m_NoBtn }, true);
 
@@ -77,18 +86,14 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_NoBtn.Chosen  += OnNoChosen;
         }
 
+        // A slot's layout is cloned per save once the slots are known, after the sheets load.
+        protected override string[] GetSheetNames() =>
+            new LocalisedTexts(m_UIInstance, m_UIProvider.SaveSlot.Instantiate()).SheetNames;
+
         protected override void LocaliseUI()
         {
-            ISaveMenuLocalisationArgs args = (ISaveMenuLocalisationArgs)m_LocalisationArgs;
-
-            m_TitleLabel.text = m_LocalisationService.Get(m_Saving ? args.SaveTitle : args.LoadTitle);
-            m_YesBtn.text     = m_LocalisationService.Get(args.Yes);
-            m_NoBtn.text      = m_LocalisationService.Get(args.No);
-
-            if (m_Saving && m_Rows.Length > 0)
-            {
-                m_Rows[0].text = m_LocalisationService.Get(args.NewSave);
-            }
+            ShowIf(m_SaveTitleLabel, m_Saving);
+            ShowIf(m_LoadTitleLabel, !m_Saving);
 
             for (int i = 0; i < m_SlotElements.Length; i++)
             {
@@ -116,7 +121,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             if (m_Saving)
             {
-                AddRow(0, () => m_OnNewSaveChosen?.Invoke());
+                PlaceRow(0, m_NewSaveRow);
             }
 
             for (int i = 0; i < slots.Count; i++)
@@ -136,7 +141,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             RPGUIButton.LinkColumn(m_Rows, false);
 
-            LocaliseUI();
+            Localise();
 
             if (m_Rows.Length > 0)
             {
@@ -154,12 +159,12 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         void ISaveSlotMenuUI.AskToOverwrite()
         {
-            Ask(((ISaveMenuLocalisationArgs)m_LocalisationArgs).OverwriteQuestion);
+            Ask(m_OverwriteQuestionLabel);
         }
 
         void ISaveSlotMenuUI.AskToDelete()
         {
-            Ask(((ISaveMenuLocalisationArgs)m_LocalisationArgs).DeleteQuestion);
+            Ask(m_DeleteQuestionLabel);
         }
 
         void ISaveSlotMenuUI.CloseQuestion()
@@ -167,11 +172,13 @@ namespace RPGFramework.Menu.SubMenus.UI
             CloseQuestion();
         }
 
-        private void Ask(string questionKey)
+        private void Ask(Label question)
         {
             m_RowAskedAbout = (VisualElement)m_UIInstance.focusController.focusedElement;
 
-            m_QuestionLabel.text          = m_LocalisationService.Get(questionKey);
+            ShowIf(m_OverwriteQuestionLabel, question == m_OverwriteQuestionLabel);
+            ShowIf(m_DeleteQuestionLabel, question == m_DeleteQuestionLabel);
+
             m_QuestionPanel.style.display = DisplayStyle.Flex;
 
             m_NoBtn.Focus();
@@ -185,17 +192,31 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_RowAskedAbout = null;
         }
 
+        private static void ShowIf(VisualElement element, bool shown)
+        {
+            element.style.display = shown ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
         private RPGUIButton AddRow(int index, Action choose)
         {
             RPGUIButton row = new RPGUIButton { focusable = true };
 
-            row.Chosen += choose;
-            row.RegisterCallback<FocusInEvent>(_ => m_SlotsScrollView.ScrollTo(row));
-
-            m_Rows[index] = row;
-            m_SlotsScrollView.Add(row);
+            HookUpRow(row, choose);
+            PlaceRow(index, row);
 
             return row;
+        }
+
+        private void HookUpRow(RPGUIButton row, Action choose)
+        {
+            row.Chosen += choose;
+            row.RegisterCallback<FocusInEvent>(_ => m_SlotsScrollView.ScrollTo(row));
+        }
+
+        private void PlaceRow(int index, RPGUIButton row)
+        {
+            m_Rows[index] = row;
+            m_SlotsScrollView.Add(row);
         }
 
         private ISaveSlotElement[] AddSlotLayout(RPGUIButton row)

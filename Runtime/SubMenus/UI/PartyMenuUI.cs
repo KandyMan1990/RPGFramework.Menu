@@ -34,17 +34,14 @@ namespace RPGFramework.Menu.SubMenus.UI
         private RPGUIButton m_ConfigBtn;
         private RPGUIButton m_SaveBtn;
         private RPGUIButton m_LoadBtn;
-        private Label       m_LocationLabel;
-        private Label       m_TimeLabel;
         private Label       m_PlayTimeLabel;
 
-        private ulong m_LocationName;
+        private LocalisedText m_LocationName;
 
         protected override VisualElement GetDefaultFocusedElement() => m_ConfigBtn;
 
-        public PartyMenuUI(IPartyMenuLocalisationArgs localisationArgs,
-                           IMenuUIProvider            uiProvider,
-                           ILocalisationService       localisationService) : base(localisationArgs, uiProvider, localisationService)
+        public PartyMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
+            : base(uiProvider, localisationService)
         {
         }
 
@@ -53,27 +50,14 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_ConfigBtn     = m_UIInstance.Q<RPGUIButton>("ConfigBtn");
             m_SaveBtn       = m_UIInstance.Q<RPGUIButton>("SaveBtn");
             m_LoadBtn       = m_UIInstance.Q<RPGUIButton>("LoadBtn");
-            m_LocationLabel = m_UIInstance.Q<Label>("LocationLabel");
-            m_TimeLabel     = m_UIInstance.Q<Label>("TimeLabel");
             m_PlayTimeLabel = m_UIInstance.Q<Label>("PlayTimeLabel");
+            m_LocationName  = (LocalisedText)m_UIInstance.Q<Label>("LocationLabel").GetBinding("text");
 
             RPGUIButton.LinkColumn(new RPGUIButton[] { m_ConfigBtn, m_SaveBtn, m_LoadBtn }, true);
 
             m_ConfigBtn.Chosen += OnConfigChosen;
             m_SaveBtn.Chosen   += OnSaveChosen;
             m_LoadBtn.Chosen   += OnLoadChosen;
-        }
-
-        protected override void LocaliseUI()
-        {
-            IPartyMenuLocalisationArgs args = (IPartyMenuLocalisationArgs)m_LocalisationArgs;
-
-            m_ConfigBtn.text = m_LocalisationService.Get(args.Config);
-            m_SaveBtn.text   = m_LocalisationService.Get(args.Save);
-            m_LoadBtn.text   = m_LocalisationService.Get(args.Load);
-            m_TimeLabel.text = m_LocalisationService.Get(args.Time);
-
-            m_LocationLabel.text = m_LocalisationService.TryGet(m_LocationName, out string locationName) ? locationName : string.Empty;
         }
 
         void IPartyMenuUI.SetSaveEnabled(bool enabled)
@@ -84,9 +68,9 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         void IPartyMenuUI.SetLocationName(ulong keyHash)
         {
-            m_LocationName = keyHash;
+            m_LocationName.Hash = keyHash;
 
-            LocaliseUI();
+            Localise();
         }
 
         void IPartyMenuUI.SetPlayTime(uint seconds, bool colonLit)

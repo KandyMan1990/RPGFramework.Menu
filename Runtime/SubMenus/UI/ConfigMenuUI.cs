@@ -61,9 +61,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         private event Action<float> m_OnBattleMessageSpeedChanged;
         private event Action<float> m_OnFieldMessageSpeedChanged;
 
-        private Label       m_TitleLabel;
         private RPGUIButton m_LanguageBtn;
-        private Label       m_LanguageLabel;
         private RPGUIButton m_ControlsBtn;
         private RPGUIButton m_MusicVolumeBtn;
         private Slider      m_MusicVolumeSlider;
@@ -76,17 +74,14 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override VisualElement GetDefaultFocusedElement() => m_LanguageBtn;
 
-        public ConfigMenuUI(IConfigMenuLocalisationArgs localisationArgs,
-                            IMenuUIProvider             uiProvider,
-                            ILocalisationService        localisationService) : base(localisationArgs, uiProvider, localisationService)
+        public ConfigMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
+            : base(uiProvider, localisationService)
         {
         }
 
         protected override void HookupUI()
         {
-            m_TitleLabel               = m_UIInstance.Q<Label>("TitleLabel");
             m_LanguageBtn              = m_UIInstance.Q<RPGUIButton>("LanguageBtn");
-            m_LanguageLabel            = m_UIInstance.Q<Label>("LanguageLabel");
             m_ControlsBtn              = m_UIInstance.Q<RPGUIButton>("ControlsBtn");
             m_MusicVolumeBtn           = m_UIInstance.Q<RPGUIButton>("MusicVolumeBtn");
             m_MusicVolumeSlider        = m_UIInstance.Q<Slider>("MusicVolumeSlider");
@@ -126,23 +121,9 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_FieldMessageSpeedSlider.RegisterValueChangedCallback(OnFieldMessageSpeedSliderChanged);
         }
 
-        protected override void LocaliseUI()
-        {
-            IConfigMenuLocalisationArgs args = (IConfigMenuLocalisationArgs)m_LocalisationArgs;
-
-            m_TitleLabel.text            = m_LocalisationService.Get(args.ScreenTitle);
-            m_LanguageBtn.text           = m_LocalisationService.Get(args.LanguageTitle);
-            m_LanguageLabel.text         = m_LocalisationService.Get(args.Language);
-            m_ControlsBtn.text           = m_LocalisationService.Get(args.Controls);
-            m_MusicVolumeBtn.text        = m_LocalisationService.Get(args.MusicVolume);
-            m_SfxVolumeBtn.text          = m_LocalisationService.Get(args.SfxVolume);
-            m_BattleMessageSpeedBtn.text = m_LocalisationService.Get(args.BattleMessageSpeed);
-            m_FieldMessageSpeedBtn.text  = m_LocalisationService.Get(args.FieldMessageSpeed);
-        }
-
         void IConfigMenuUI.RefreshLocalisation()
         {
-            LocaliseUI();
+            Localise();
         }
 
         void IConfigMenuUI.SetMusicVolume(float volume)
