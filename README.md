@@ -75,8 +75,9 @@ Menu Module binds each only where nothing is bound yet.
 - **Config**: music and sound effect volumes and the message speeds, each volume heard live as its slider moves, and
   written when the menu closes.
 - **Language**: every language the game ships, written when the menu closes.
-- **Party**: the menu opened from the field, showing Config, Save and Load, with the location name and play time. Save
-  is offered only when the field allows saving, and is greyed out otherwise. Loading from here leaves the field under
+- **Party**: the menu opened from the field, showing Config, Save and Load, with the location name and a live clock:
+  the play time as hours and minutes, or the countdown as minutes and seconds in its place while it is on screen, the
+  colon blinking once a second. Save is offered only when the field allows saving, and is greyed out otherwise. Loading from here leaves the field under
   the menu behind and enters the save's.
 - **Save** and **Load**: one list of save slots, each previewed without loading it, newest first. Save also offers a
   new slot. Overwriting or deleting a save asks first, with No selected. A save made by a newer version of the game, or

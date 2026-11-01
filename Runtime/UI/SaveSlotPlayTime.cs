@@ -1,5 +1,6 @@
 using RPGFramework.Core.Memory;
 using RPGFramework.Core.SaveData;
+using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine.UIElements;
 
@@ -20,7 +21,7 @@ namespace RPGFramework.Menu.UI
 
         void ISaveSlotElement.Show(SavePreview preview, ILocalisationService localisation)
         {
-            text = MenuFormat.PlayTime((uint)preview.ReadNumber(Variable));
+            text = ClockText.PlayTime((uint)preview.ReadNumber(Variable), true);
         }
     }
 }

@@ -232,8 +232,14 @@ namespace RPGFramework.Menu
         /// <summary>Shows where the player is, by the place's localisation key hash.</summary>
         void SetLocationName(ulong keyHash);
 
-        /// <summary>Shows the play time as hours and minutes.</summary>
-        void SetPlayTime(uint seconds);
+        /// <summary>Shows the play time as hours and minutes, the colon lit or not as it blinks.</summary>
+        void SetPlayTime(uint seconds, bool colonLit);
+
+        /// <summary>
+        /// Shows the countdown as minutes and seconds in the play time's place, while it is on screen, the colon lit or
+        /// not as it blinks.
+        /// </summary>
+        void SetCountdown(uint seconds, bool colonLit);
     }
 
     /// <summary>The save slots' UI, shared by the Save and Load menus.</summary>

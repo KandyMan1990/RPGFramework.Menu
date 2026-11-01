@@ -3,18 +3,27 @@ using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
+using RPGFramework.Core.PlayerLoop;
 using RPGFramework.Core.Store;
+using RPGFramework.Core.UI;
+using UnityEngine;
 using RPGFramework.Menu.SharedTypes;
 
 namespace RPGFramework.Menu.SubMenus
 {
-    internal sealed class PartyMenu : Menu<IPartyMenuUI>, IPartyMenu
+    /// <summary>
+    /// The party menu, its clock live while it shows: the play time, or the countdown in its place while it is on
+    /// screen.
+    /// </summary>
+    internal sealed class PartyMenu : Menu<IPartyMenuUI>, IPartyMenu, IUpdatable
     {
         protected override bool m_HidePreviousUIOnSuspend => true;
 
         private readonly ISaveEnabledStore  m_SaveEnabledStore;
         private readonly ILocationNameStore m_LocationNameStore;
         private readonly IPlayTimeStore     m_PlayTimeStore;
+        private readonly ICountdownStore    m_CountdownStore;
+        private readonly ClockBlink         m_Blink;
 
         private bool m_SaveEnabled;
 
@@ -24,11 +33,14 @@ namespace RPGFramework.Menu.SubMenus
                          IAudioIntentPlayer audioIntentPlayer,
                          ISaveEnabledStore  saveEnabledStore,
                          ILocationNameStore locationNameStore,
-                         IPlayTimeStore     playTimeStore) : base(partyMenuUI, inputRouter, menuModule, audioIntentPlayer)
+                         IPlayTimeStore     playTimeStore,
+                         ICountdownStore    countdownStore) : base(partyMenuUI, inputRouter, menuModule, audioIntentPlayer)
         {
             m_SaveEnabledStore  = saveEnabledStore;
             m_LocationNameStore = locationNameStore;
             m_PlayTimeStore     = playTimeStore;
+            m_CountdownStore    = countdownStore;
+            m_Blink             = new ClockBlink();
 
             m_MenuUI.OnConfigPressed += OnConfigPressed;
             m_MenuUI.OnSavePressed   += OnSavePressed;
@@ -46,16 +58,54 @@ namespace RPGFramework.Menu.SubMenus
         {
             m_MenuUI.SetSaveEnabled(m_SaveEnabled);
             m_MenuUI.SetLocationName(m_LocationNameStore.LocationName);
-            m_MenuUI.SetPlayTime(m_PlayTimeStore.PlayTime);
+
+            ShowClock(0f);
+            UpdateManager.RegisterUpdatable(this);
 
             return base.OnEnterComplete();
         }
 
+        protected override Task OnSuspendAsync(bool hideUI)
+        {
+            UpdateManager.UnregisterUpdatable(this);
+
+            return base.OnSuspendAsync(hideUI);
+        }
+
         protected override Task OnResumeAsync()
         {
-            m_MenuUI.SetPlayTime(m_PlayTimeStore.PlayTime);
+            ShowClock(0f);
+            UpdateManager.RegisterUpdatable(this);
 
             return base.OnResumeAsync();
+        }
+
+        protected override Task OnExitAsync()
+        {
+            UpdateManager.UnregisterUpdatable(this);
+
+            return base.OnExitAsync();
+        }
+
+        void IUpdatable.Update()
+        {
+            ShowClock(Time.unscaledDeltaTime);
+        }
+
+        // A countdown at zero has stopped, so its colon stays lit.
+        private void ShowClock(float deltaTime)
+        {
+            if (m_CountdownStore.IsShown)
+            {
+                uint left = m_CountdownStore.Seconds;
+
+                m_MenuUI.SetCountdown(left, left == 0 || m_Blink.Tick(left, deltaTime));
+                return;
+            }
+
+            uint played = m_PlayTimeStore.PlayTime;
+
+            m_MenuUI.SetPlayTime(played, m_Blink.Tick(played, deltaTime));
         }
 
         protected override bool HandleControl(ControlSlot slot)

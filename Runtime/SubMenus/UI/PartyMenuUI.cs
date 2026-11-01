@@ -1,7 +1,6 @@
 using System;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
-using RPGFramework.Menu.UI;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
@@ -90,9 +89,14 @@ namespace RPGFramework.Menu.SubMenus.UI
             LocaliseUI();
         }
 
-        void IPartyMenuUI.SetPlayTime(uint seconds)
+        void IPartyMenuUI.SetPlayTime(uint seconds, bool colonLit)
         {
-            m_PlayTimeLabel.text = MenuFormat.PlayTime(seconds);
+            m_PlayTimeLabel.text = ClockText.PlayTime(seconds, colonLit);
+        }
+
+        void IPartyMenuUI.SetCountdown(uint seconds, bool colonLit)
+        {
+            m_PlayTimeLabel.text = ClockText.Countdown(seconds, colonLit);
         }
 
         private void OnConfigChosen()
