@@ -13,18 +13,18 @@ namespace RPGFramework.Menu.UI
         public string Variable { get; set; }
 
         /// <summary>The sheet the key is in, such as <c>Locations</c>, which the save menu loads.</summary>
-        [UxmlAttribute]
+        [UxmlAttribute, LocalisationSheet]
         public string Sheet
         {
             get => m_Text.Sheet;
             set => m_Text.Sheet = value;
         }
 
-        private readonly LocalisedText m_Text;
+        private readonly PickedLocalisedText m_Text;
 
         public SaveSlotText()
         {
-            m_Text = new LocalisedText();
+            m_Text = new PickedLocalisedText();
 
             SetBinding("text", m_Text);
         }

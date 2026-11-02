@@ -1,24 +1,26 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement name="SaveSlot" style="flex-grow: 1; flex-direction: row; align-items: center;">
-        <RPGFramework.Menu.UI.SaveSlotDetails name="Details" style="flex-grow: 1; flex-direction: row; align-items: center;">
-            <RPGFramework.Menu.UI.SaveSlotText variable="LocationName" sheet="Locations" name="Location" class="rpg-ui-label" style="flex-grow: 1;"/>
-            <RPGFramework.Menu.UI.SaveSlotPlayTime name="PlayTime" class="rpg-ui-label" style="margin-left: 40px;"/>
-            <RPGFramework.Menu.UI.SaveSlotNumber variable="Money" name="Money" class="rpg-ui-label" style="margin-left: 40px;"/>
-            <ui:Label text="Money" name="MoneyName" class="rpg-ui-label" style="margin-left: 8px;">
+    <Style src="project://database/Packages/com.rpgframework.core/Runtime/UI%20Toolkit/UIShared.uss?fileID=7433441132597879392&amp;guid=94d472c2b9a84d747912b7c0d4c5d053&amp;type=3#UIShared"/>
+    <Style src="Menus.uss"/>
+    <ui:VisualElement name="SaveSlot" class="rpg-save-slot">
+        <RPGFramework.Menu.UI.SaveSlotDetails name="Details">
+            <RPGFramework.Menu.UI.SaveSlotText variable="LocationName" sheet="Locations" name="Location" class="rpg-ui-label"/>
+            <RPGFramework.Menu.UI.SaveSlotPlayTime name="PlayTime" class="rpg-ui-label"/>
+            <RPGFramework.Menu.UI.SaveSlotNumber variable="Money" name="Money" class="rpg-ui-label"/>
+            <ui:Label text="Money" name="MoneyName" class="rpg-ui-label">
                 <Bindings>
                     <RPGFramework.Localisation.LocalisedText property="text" key="Generic/Money"/>
                 </Bindings>
             </ui:Label>
         </RPGFramework.Menu.UI.SaveSlotDetails>
-        <RPGFramework.Menu.UI.SaveSlotDate name="Written" class="rpg-ui-label" style="margin-left: 40px;"/>
-        <RPGFramework.Menu.UI.SaveSlotShownWhen problem="Damaged" name="Damaged" style="margin-left: 40px;">
+        <RPGFramework.Menu.UI.SaveSlotDate name="Written" class="rpg-ui-label"/>
+        <RPGFramework.Menu.UI.SaveSlotShownWhen problem="Damaged" name="Damaged">
             <ui:Label text="Damaged" class="rpg-ui-label">
                 <Bindings>
                     <RPGFramework.Localisation.LocalisedText property="text" key="SaveMenu/Damaged"/>
                 </Bindings>
             </ui:Label>
         </RPGFramework.Menu.UI.SaveSlotShownWhen>
-        <RPGFramework.Menu.UI.SaveSlotShownWhen problem="FromNewerVersion" name="NewerVersion" style="margin-left: 40px;">
+        <RPGFramework.Menu.UI.SaveSlotShownWhen problem="FromNewerVersion" name="NewerVersion">
             <ui:Label text="Newer version" class="rpg-ui-label">
                 <Bindings>
                     <RPGFramework.Localisation.LocalisedText property="text" key="SaveMenu/Newer_Version"/>

@@ -1,0 +1,157 @@
+/* RPG Framework menus */
+/* How the menus' layouts look. The create menu, Assets > Create > RPG Framework > Menu > Layouts, finds this file
+   by its first line. */
+
+/* Every menu's panel. */
+.rpg-menu {
+    flex-grow: 1;
+    background-color: rgb(54, 8, 68);
+    margin: 2% 5%;
+    border-color: rgba(209, 209, 209, 0.87);
+    border-width: 4px;
+    border-radius: 100px;
+}
+
+/* The title across a menu's top. */
+.rpg-menu-title-area {
+    height: 25%;
+}
+
+.rpg-menu .rpg-menu-title {
+    width: 100%;
+    height: 100%;
+    -unity-text-align: middle-center;
+    font-size: 100px;
+}
+
+/* What a menu holds, its buttons among it, and its foot. */
+.rpg-menu-content {
+    flex-grow: 1;
+    flex-direction: column;
+    align-items: center;
+    font-size: 48px;
+}
+
+.rpg-menu-buttons {
+    flex-grow: 1;
+    justify-content: space-evenly;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.rpg-menu-footer {
+    height: 12%;
+}
+
+/* A setting's button with its value beside it. */
+.rpg-menu-setting {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.rpg-menu-slider {
+    width: 240px;
+}
+
+/* The title menu. */
+#BeginMenu .rpg-menu-footer {
+    margin-right: 2%;
+}
+
+#BeginMenu #VersionLabel {
+    flex-grow: 1;
+    -unity-text-align: upper-right;
+    font-size: 24px;
+}
+
+/* Settings and Language: their buttons down the middle half. */
+#ConfigMenu .rpg-menu-buttons,
+#LanguageMenu .rpg-menu-buttons {
+    width: 50%;
+}
+
+#ConfigMenu #Controls {
+    flex-grow: 1;
+}
+
+/* The party menu: the location and the clock along its foot. */
+#PartyMenu .rpg-menu-buttons {
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
+
+#PartyMenu .rpg-menu-footer {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 8%;
+    margin-right: 8%;
+    font-size: 36px;
+}
+
+#PartyMenu #PlayTime {
+    flex-direction: row;
+}
+
+#PartyMenu #TimeLabel {
+    margin-right: 24px;
+}
+
+/* Save and Load: the slots, and the question asked over them. */
+#SaveMenu .rpg-menu-title-area {
+    height: 20%;
+}
+
+#SaveMenu #SlotsScrollView {
+    flex-grow: 1;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 5%;
+    font-size: 36px;
+}
+
+#SaveMenu #QuestionPanel {
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    top: 35%;
+    bottom: 35%;
+    background-color: rgb(54, 8, 68);
+    border-color: rgba(209, 209, 209, 0.87);
+    border-width: 4px;
+    border-radius: 40px;
+    align-items: center;
+    justify-content: space-evenly;
+    font-size: 48px;
+}
+
+#SaveMenu #QuestionButtons {
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+/* A save slot: one row of the list. */
+.rpg-save-slot,
+.rpg-save-slot #Details {
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+}
+
+.rpg-save-slot #Location {
+    flex-grow: 1;
+}
+
+.rpg-save-slot #PlayTime,
+.rpg-save-slot #Money,
+.rpg-save-slot #Written,
+.rpg-save-slot #Damaged,
+.rpg-save-slot #NewerVersion {
+    margin-left: 40px;
+}
+
+.rpg-save-slot #MoneyName {
+    margin-left: 8px;
+}

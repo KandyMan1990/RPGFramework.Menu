@@ -1,6 +1,6 @@
 {
   "name": "com.rpgframework.menu",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "displayName": "RPG Framework Menu",
   "description": "Menu system for the RPG Framework",
   "dependencies": {
@@ -16,7 +16,7 @@
   "samples": [
     {
       "displayName": "Menu Sample",
-      "description": "A menu module scene with its installer and UI provider. Assign the Input Adapter's actions and ship the Generic, BeginMenu, ConfigMenu, PartyMenu, SaveMenu and Locations sheets the installer names.",
+      "description": "A menu module scene with its installer and UI provider. Assign the Input Adapter's actions and ship the Generic, BeginMenu, ConfigMenu, PartyMenu, SaveMenu and Locations sheets its layouts name.",
       "path": "Samples~/Menu Sample"
     }
   ],
