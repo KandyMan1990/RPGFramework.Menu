@@ -5,7 +5,7 @@
         <ui:VisualElement name="TitleContainer" class="rpg-menu-title-area">
             <ui:Label text="Game Name" name="TitleLabel" class="rpg-ui-label rpg-menu-title">
                 <Bindings>
-                    <RPGFramework.Localisation.LocalisedText property="text" key="Generic/Game_Title"/>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/Game_Title"/>
                 </Bindings>
             </ui:Label>
         </ui:VisualElement>
@@ -13,22 +13,22 @@
             <ui:VisualElement name="ButtonsContainer" class="rpg-menu-buttons">
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" text="New Game" name="NewGameBtn">
                     <Bindings>
-                        <RPGFramework.Localisation.LocalisedText property="text" key="BeginMenu/New_Game"/>
+                        <RPGFramework.Localisation.StaticLocalisedText property="text" key="BeginMenu/New_Game"/>
                     </Bindings>
                 </RPGFramework.Core.UI.RPGUIButton>
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" name="LoadGameBtn" text="Load Game">
                     <Bindings>
-                        <RPGFramework.Localisation.LocalisedText property="text" key="BeginMenu/Load_Game"/>
+                        <RPGFramework.Localisation.StaticLocalisedText property="text" key="BeginMenu/Load_Game"/>
                     </Bindings>
                 </RPGFramework.Core.UI.RPGUIButton>
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" name="ConfigBtn" text="Settings">
                     <Bindings>
-                        <RPGFramework.Localisation.LocalisedText property="text" key="Generic/Settings"/>
+                        <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/Settings"/>
                     </Bindings>
                 </RPGFramework.Core.UI.RPGUIButton>
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" name="QuitBtn" text="Quit">
                     <Bindings>
-                        <RPGFramework.Localisation.LocalisedText property="text" key="BeginMenu/Quit_Game"/>
+                        <RPGFramework.Localisation.StaticLocalisedText property="text" key="BeginMenu/Quit_Game"/>
                     </Bindings>
                 </RPGFramework.Core.UI.RPGUIButton>
             </ui:VisualElement>

@@ -20,11 +20,11 @@ namespace RPGFramework.Menu.UI
             set => m_Text.Sheet = value;
         }
 
-        private readonly PickedLocalisedText m_Text;
+        private readonly DynamicLocalisedText m_Text;
 
         public SaveSlotText()
         {
-            m_Text = new PickedLocalisedText();
+            m_Text = new DynamicLocalisedText();
 
             SetBinding("text", m_Text);
         }

@@ -164,13 +164,13 @@ namespace RPGFramework.Menu.SubMenus.UI
         }
 
         /// <summary>
-        /// The sheets the menu loads while it is on top: those its layout's <see cref="LocalisedText" />s name.
+        /// The sheets the menu loads while it is on top: those its layout's localised texts name.
         /// </summary>
         protected virtual string[] GetSheetNames() => new LocalisedTexts(m_UIInstance).SheetNames;
 
         /// <summary>
         /// Shows the menu's text in the current language: what the code chooses (<see cref="LocaliseUI" />), then every
-        /// <see cref="LocalisedText" /> in its layout, found afresh, as a menu may have added or removed some.
+        /// localised text in its layout, found afresh, as a menu may have added or removed some.
         /// </summary>
         protected void Localise()
         {

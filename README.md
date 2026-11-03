@@ -25,8 +25,8 @@ It runs as the title screen of the **Starter** sample's game (RPG Framework Star
 make it your own:
 
 1. **Assign your own actions to the Input Adapter.** Deleting a save uses the Tertiary control, so give it an action.
-2. **Make the layouts your own.** Each label and button names its localisation key with a `LocalisedText` binding
-   (RPGFramework.Localisation), and each menu loads the sheets its keys are in as it opens. They name the sample's
+2. **Make the layouts your own.** Each label and button names its localisation key with a `StaticLocalisedText`
+   binding (RPGFramework.Localisation), and each menu loads the sheets its keys are in as it opens. They name the sample's
    sheets — `Generic`, `BeginMenu`, `ConfigMenu`, `PartyMenu`, `SaveMenu` and `Locations` — so with text of your own,
    choose each label's key in the UI Builder, from a list of the keys your sheets hold, and add or leave out any text
    you like. A player build refuses a layout naming a key none of your sheets holds. **`Menus.uss`** holds how they
@@ -97,7 +97,7 @@ Menu Module binds each only where nothing is bound yet.
   - **Show any saved value by naming its variable** in the layout, as scripts name it: `Money`, `Items[3]`,
     `Party[0].Level`. **`SaveSlotNumber`** shows a number, **`SaveSlotPlayTime`** hours and minutes,
     **`SaveSlotText`** a text by its localisation key's hash, such as `LocationName`, naming the sheet it is in, and
-    **`SaveSlotDate`** when it was saved, in the game's language. Fixed text is a label with a `LocalisedText` —
+    **`SaveSlotDate`** when it was saved, in the game's language. Fixed text is a label with a `StaticLocalisedText` —
     what your money is called, say, `Generic/Money` reading "Gil" or "Dollars". What is inside a
     **`SaveSlotShownWhen`** shows only for a damaged save, or only for a newer one, as its `problem` says — the
     sample's holds the text saying so — and what is inside a **`SaveSlotDetails`** is hidden for a damaged save.

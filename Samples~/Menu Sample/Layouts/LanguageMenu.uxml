@@ -5,7 +5,7 @@
         <ui:VisualElement name="TitleContainer" class="rpg-menu-title-area">
             <ui:Label text="Language" name="TitleLabel" class="rpg-ui-label rpg-menu-title">
                 <Bindings>
-                    <RPGFramework.Localisation.LocalisedText property="text" key="ConfigMenu/Language_Title"/>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Language_Title"/>
                 </Bindings>
             </ui:Label>
         </ui:VisualElement>
@@ -14,12 +14,12 @@
                 <ui:VisualElement name="Language" class="rpg-menu-setting">
                     <RPGFramework.Core.UI.RPGUIButton focusable="true" name="LanguageBtn" text="Language">
                         <Bindings>
-                            <RPGFramework.Localisation.LocalisedText property="text" key="ConfigMenu/Language"/>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Language"/>
                         </Bindings>
                     </RPGFramework.Core.UI.RPGUIButton>
                     <ui:Label text="Label" name="LanguageLabel" class="rpg-ui-label">
                         <Bindings>
-                            <RPGFramework.Localisation.LocalisedText property="text" key="ConfigMenu/Language"/>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Language"/>
                         </Bindings>
                     </ui:Label>
                 </ui:VisualElement>

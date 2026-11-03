@@ -36,7 +36,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         private RPGUIButton m_LoadBtn;
         private Label       m_PlayTimeLabel;
 
-        private PickedLocalisedText m_LocationName;
+        private DynamicLocalisedText m_LocationName;
 
         protected override VisualElement GetDefaultFocusedElement() => m_ConfigBtn;
 
@@ -51,7 +51,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_SaveBtn       = m_UIInstance.Q<RPGUIButton>("SaveBtn");
             m_LoadBtn       = m_UIInstance.Q<RPGUIButton>("LoadBtn");
             m_PlayTimeLabel = m_UIInstance.Q<Label>("PlayTimeLabel");
-            m_LocationName  = (PickedLocalisedText)m_UIInstance.Q<Label>("LocationLabel").GetBinding("text");
+            m_LocationName  = (DynamicLocalisedText)m_UIInstance.Q<Label>("LocationLabel").GetBinding("text");
 
             RPGUIButton.LinkColumn(new RPGUIButton[] { m_ConfigBtn, m_SaveBtn, m_LoadBtn }, true);
 

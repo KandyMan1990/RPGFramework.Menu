@@ -6,17 +6,17 @@
             <ui:VisualElement name="ButtonsContainer" class="rpg-menu-buttons">
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" name="ConfigBtn" text="Config">
                     <Bindings>
-                        <RPGFramework.Localisation.LocalisedText property="text" key="Generic/Settings"/>
+                        <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/Settings"/>
                     </Bindings>
                 </RPGFramework.Core.UI.RPGUIButton>
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" name="SaveBtn" text="Save">
                     <Bindings>
-                        <RPGFramework.Localisation.LocalisedText property="text" key="PartyMenu/Save"/>
+                        <RPGFramework.Localisation.StaticLocalisedText property="text" key="PartyMenu/Save"/>
                     </Bindings>
                 </RPGFramework.Core.UI.RPGUIButton>
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" name="LoadBtn" text="Load">
                     <Bindings>
-                        <RPGFramework.Localisation.LocalisedText property="text" key="PartyMenu/Load"/>
+                        <RPGFramework.Localisation.StaticLocalisedText property="text" key="PartyMenu/Load"/>
                     </Bindings>
                 </RPGFramework.Core.UI.RPGUIButton>
             </ui:VisualElement>
@@ -24,13 +24,13 @@
         <ui:VisualElement name="FooterContainer" class="rpg-menu-footer">
             <ui:Label text="Location" name="LocationLabel" class="rpg-ui-label">
                 <Bindings>
-                    <RPGFramework.Localisation.PickedLocalisedText property="text" sheet="Locations"/>
+                    <RPGFramework.Localisation.DynamicLocalisedText property="text" sheet="Locations"/>
                 </Bindings>
             </ui:Label>
             <ui:VisualElement name="PlayTime">
                 <ui:Label text="Time" name="TimeLabel" class="rpg-ui-label">
                     <Bindings>
-                        <RPGFramework.Localisation.LocalisedText property="text" key="PartyMenu/Time"/>
+                        <RPGFramework.Localisation.StaticLocalisedText property="text" key="PartyMenu/Time"/>
                     </Bindings>
                 </ui:Label>
                 <ui:Label text="0:00" name="PlayTimeLabel" class="rpg-ui-label"/>

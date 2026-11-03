@@ -8,7 +8,7 @@
             <RPGFramework.Menu.UI.SaveSlotNumber variable="Money" name="Money" class="rpg-ui-label"/>
             <ui:Label text="Money" name="MoneyName" class="rpg-ui-label">
                 <Bindings>
-                    <RPGFramework.Localisation.LocalisedText property="text" key="Generic/Money"/>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/Money"/>
                 </Bindings>
             </ui:Label>
         </RPGFramework.Menu.UI.SaveSlotDetails>
@@ -16,14 +16,14 @@
         <RPGFramework.Menu.UI.SaveSlotShownWhen problem="Damaged" name="Damaged">
             <ui:Label text="Damaged" class="rpg-ui-label">
                 <Bindings>
-                    <RPGFramework.Localisation.LocalisedText property="text" key="SaveMenu/Damaged"/>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="SaveMenu/Damaged"/>
                 </Bindings>
             </ui:Label>
         </RPGFramework.Menu.UI.SaveSlotShownWhen>
         <RPGFramework.Menu.UI.SaveSlotShownWhen problem="FromNewerVersion" name="NewerVersion">
             <ui:Label text="Newer version" class="rpg-ui-label">
                 <Bindings>
-                    <RPGFramework.Localisation.LocalisedText property="text" key="SaveMenu/Newer_Version"/>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="SaveMenu/Newer_Version"/>
                 </Bindings>
             </ui:Label>
         </RPGFramework.Menu.UI.SaveSlotShownWhen>

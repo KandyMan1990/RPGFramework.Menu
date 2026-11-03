@@ -5,7 +5,7 @@
         <ui:VisualElement name="TitleContainer" class="rpg-menu-title-area">
             <ui:Label text="Config" name="TitleLabel" class="rpg-ui-label rpg-menu-title">
                 <Bindings>
-                    <RPGFramework.Localisation.LocalisedText property="text" key="Generic/Settings"/>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/Settings"/>
                 </Bindings>
             </ui:Label>
         </ui:VisualElement>
@@ -14,26 +14,26 @@
                 <ui:VisualElement name="Language" class="rpg-menu-setting">
                     <RPGFramework.Core.UI.RPGUIButton focusable="true" name="LanguageBtn" text="Language">
                         <Bindings>
-                            <RPGFramework.Localisation.LocalisedText property="text" key="ConfigMenu/Language_Title"/>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Language_Title"/>
                         </Bindings>
                     </RPGFramework.Core.UI.RPGUIButton>
                     <ui:Label text="Label" name="LanguageLabel" class="rpg-ui-label">
                         <Bindings>
-                            <RPGFramework.Localisation.LocalisedText property="text" key="ConfigMenu/Language"/>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Language"/>
                         </Bindings>
                     </ui:Label>
                 </ui:VisualElement>
                 <ui:VisualElement name="Controls">
                     <RPGFramework.Core.UI.RPGUIButton focusable="true" name="ControlsBtn" text="Controls">
                         <Bindings>
-                            <RPGFramework.Localisation.LocalisedText property="text" key="ConfigMenu/Controls"/>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Controls"/>
                         </Bindings>
                     </RPGFramework.Core.UI.RPGUIButton>
                 </ui:VisualElement>
                 <ui:VisualElement name="MusicVolume" class="rpg-menu-setting">
                     <RPGFramework.Core.UI.RPGUIButton focusable="true" name="MusicVolumeBtn" text="Music Volume">
                         <Bindings>
-                            <RPGFramework.Localisation.LocalisedText property="text" key="ConfigMenu/Music_Volume"/>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Music_Volume"/>
                         </Bindings>
                     </RPGFramework.Core.UI.RPGUIButton>
                     <ui:Slider value="100" name="MusicVolumeSlider" class="rpg-menu-slider" fill="true" high-value="1"/>
@@ -41,7 +41,7 @@
                 <ui:VisualElement name="SfxVolume" class="rpg-menu-setting">
                     <RPGFramework.Core.UI.RPGUIButton focusable="true" name="SfxVolumeBtn" text="Sfx Volume">
                         <Bindings>
-                            <RPGFramework.Localisation.LocalisedText property="text" key="ConfigMenu/Sfx_Volume"/>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Sfx_Volume"/>
                         </Bindings>
                     </RPGFramework.Core.UI.RPGUIButton>
                     <ui:Slider value="100" name="SfxVolumeSlider" class="rpg-menu-slider" fill="true" high-value="1"/>
@@ -49,7 +49,7 @@
                 <ui:VisualElement name="BattleMessageSpeed" class="rpg-menu-setting">
                     <RPGFramework.Core.UI.RPGUIButton focusable="true" name="BattleMessageSpeedBtn" text="Battle Message Speed">
                         <Bindings>
-                            <RPGFramework.Localisation.LocalisedText property="text" key="ConfigMenu/Battle_Message_Speed"/>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Battle_Message_Speed"/>
                         </Bindings>
                     </RPGFramework.Core.UI.RPGUIButton>
                     <ui:Slider value="100" name="BattleMessageSpeedSlider" class="rpg-menu-slider" fill="true" high-value="1"/>
@@ -57,7 +57,7 @@
                 <ui:VisualElement name="FieldMessageSpeed" class="rpg-menu-setting">
                     <RPGFramework.Core.UI.RPGUIButton focusable="true" name="FieldMessageSpeedBtn" text="Field Message Speed">
                         <Bindings>
-                            <RPGFramework.Localisation.LocalisedText property="text" key="ConfigMenu/Field_Message_Speed"/>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Field_Message_Speed"/>
                         </Bindings>
                     </RPGFramework.Core.UI.RPGUIButton>
                     <ui:Slider value="100" name="FieldMessageSpeedSlider" class="rpg-menu-slider" fill="true" high-value="1"/>

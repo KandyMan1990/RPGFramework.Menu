@@ -5,42 +5,42 @@
         <ui:VisualElement name="TitleContainer" class="rpg-menu-title-area">
             <ui:Label text="Save" name="SaveTitleLabel" class="rpg-ui-label rpg-menu-title">
                 <Bindings>
-                    <RPGFramework.Localisation.LocalisedText property="text" key="SaveMenu/Save_Title"/>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="SaveMenu/Save_Title"/>
                 </Bindings>
             </ui:Label>
             <ui:Label text="Load" name="LoadTitleLabel" class="rpg-ui-label rpg-menu-title">
                 <Bindings>
-                    <RPGFramework.Localisation.LocalisedText property="text" key="SaveMenu/Load_Title"/>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="SaveMenu/Load_Title"/>
                 </Bindings>
             </ui:Label>
         </ui:VisualElement>
         <ui:ScrollView name="SlotsScrollView">
             <RPGFramework.Core.UI.RPGUIButton focusable="true" name="NewSaveBtn" text="New Save">
                 <Bindings>
-                    <RPGFramework.Localisation.LocalisedText property="text" key="SaveMenu/New_Save"/>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="SaveMenu/New_Save"/>
                 </Bindings>
             </RPGFramework.Core.UI.RPGUIButton>
         </ui:ScrollView>
         <ui:VisualElement name="QuestionPanel">
             <ui:Label text="Overwrite?" name="OverwriteQuestionLabel" class="rpg-ui-label">
                 <Bindings>
-                    <RPGFramework.Localisation.LocalisedText property="text" key="SaveMenu/Overwrite_Question"/>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="SaveMenu/Overwrite_Question"/>
                 </Bindings>
             </ui:Label>
             <ui:Label text="Delete?" name="DeleteQuestionLabel" class="rpg-ui-label">
                 <Bindings>
-                    <RPGFramework.Localisation.LocalisedText property="text" key="SaveMenu/Delete_Question"/>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="SaveMenu/Delete_Question"/>
                 </Bindings>
             </ui:Label>
             <ui:VisualElement name="QuestionButtons">
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" name="YesBtn" text="Yes">
                     <Bindings>
-                        <RPGFramework.Localisation.LocalisedText property="text" key="Generic/Yes"/>
+                        <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/Yes"/>
                     </Bindings>
                 </RPGFramework.Core.UI.RPGUIButton>
                 <RPGFramework.Core.UI.RPGUIButton focusable="true" name="NoBtn" text="No">
                     <Bindings>
-                        <RPGFramework.Localisation.LocalisedText property="text" key="Generic/No"/>
+                        <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/No"/>
                     </Bindings>
                 </RPGFramework.Core.UI.RPGUIButton>
             </ui:VisualElement>
