@@ -17,14 +17,16 @@ Import the **Menu Sample** from the Package Manager. It is a menu scene with:
 - the menus' layouts, in `Layouts/`, with `Menus.uss`, the stylesheet they share, and a UI provider holding them —
   imported, they are your game's own to change;
 - a transition config for menu changes, using your game's default transitions;
-- the `InputAdapter` the menu module finds on entering, its actions the RPG Framework Starter sample's;
+- the `InputAdapter` the menu module finds on entering, on the `UI` map of the RPG Framework Starter sample's actions;
 - the text its layouts name, in five languages: **RPG Framework > Menu > Install Sample Text** copies it into
   `StreamingAssets/Localisation`, which a sample cannot put files in itself, and refuses a project with text of its own.
 
 It runs as the title screen of the **Starter** sample's game (RPG Framework Starter), which says how to set it up. Then
 make it your own:
 
-1. **Assign your own actions to the Input Adapter.** Deleting a save uses the Tertiary control, so give it an action.
+1. **Give the Input Adapter your own actions**, the project-wide ones, and their `UI` map. The menus read its `Submit`
+   (UI Toolkit's confirm), `Cancel` and `Delete`, which deletes the save the cursor is on, so give your `UI` map a
+   `Delete` button action.
 2. **Make the layouts your own.** Each label and button names its localisation key with a `StaticLocalisedText`
    binding (RPGFramework.Localisation), and each menu loads the sheets its keys are in as it opens. They name the sample's
    sheets — `Generic`, `BeginMenu`, `ConfigMenu`, `PartyMenu`, `SaveMenu` and `Locations` — so with text of your own,

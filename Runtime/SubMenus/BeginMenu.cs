@@ -74,7 +74,7 @@ namespace RPGFramework.Menu.SubMenus
             await base.OnEnterComplete();
         }
 
-        protected override bool HandleControl(ControlSlot slot)
+        protected override bool HandleAction(ulong action)
         {
             return false;
         }

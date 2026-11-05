@@ -5,6 +5,7 @@
         "RPGFramework.Core",
         "RPGFramework.DI",
         "RPGFramework.Audio",
+        "RPGFramework.Hashing",
         "RPGFramework.Localisation",
         "RPGFramework.Core.SharedTypes",
         "RPGFramework.Menu.SharedTypes",

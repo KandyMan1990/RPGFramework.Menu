@@ -60,9 +60,9 @@ namespace RPGFramework.Menu.SubMenus
             return base.OnExitAsync();
         }
 
-        protected override bool HandleControl(ControlSlot slot)
+        protected override bool HandleAction(ulong action)
         {
-            if (slot == ControlSlot.Secondary)
+            if (action == CoreActions.Cancel)
             {
                 m_AudioIntentPlayer.PlayAsync(AudioIntent.Cancel, AudioContext.Menu).FireAndForget();
                 m_MenuModule.PopMenu().FireAndForget();

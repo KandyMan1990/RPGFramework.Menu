@@ -8,6 +8,7 @@
     "com.rpgframework.core": "0.8.1",
     "com.rpgframework.core.sharedtypes": "0.3.0",
     "com.rpgframework.di": "5.0.0",
+    "com.rpgframework.hashing": "2.0.2",
     "com.rpgframework.localisation": "4.0.0",
     "com.rpgframework.menu.sharedtypes": "0.3.0",
     "com.unity.mathematics": "1.4.0"
@@ -16,7 +17,7 @@
   "samples": [
     {
       "displayName": "Menu Sample",
-      "description": "A menu module scene with its installer and UI provider. Assign the Input Adapter's actions and ship the Generic, BeginMenu, ConfigMenu, PartyMenu, SaveMenu and Locations sheets its layouts name.",
+      "description": "A menu module scene with its installer and UI provider. Give the Input Adapter your actions' UI map, with a Delete action, and ship the Generic, BeginMenu, ConfigMenu, PartyMenu, SaveMenu and Locations sheets its layouts name.",
       "path": "Samples~/Menu Sample"
     }
   ],

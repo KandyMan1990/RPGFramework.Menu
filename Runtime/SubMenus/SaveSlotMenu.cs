@@ -59,16 +59,15 @@ namespace RPGFramework.Menu.SubMenus
             return base.OnEnterComplete();
         }
 
-        protected override bool HandleControl(ControlSlot slot)
+        protected override bool HandleAction(ulong action)
         {
-            switch (slot)
+            if (action == CoreActions.Cancel)
             {
-                case ControlSlot.Secondary:
-                    OnBack();
-                    break;
-                case ControlSlot.Tertiary:
-                    OnDeletePressed();
-                    break;
+                OnBack();
+            }
+            else if (action == MenuActions.Delete)
+            {
+                OnDeletePressed();
             }
 
             return true;

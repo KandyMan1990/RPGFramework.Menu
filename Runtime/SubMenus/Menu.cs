@@ -78,9 +78,9 @@ namespace RPGFramework.Menu.SubMenus
             m_MenuUI.SetInputEnabled(enabled);
         }
 
-        bool IInputContext.Handle(ControlSlot slot)
+        bool IInputContext.Handle(ulong action)
         {
-            return HandleControl(slot);
+            return HandleAction(action);
         }
 
         bool IInputContext.TakesMovement => true;
@@ -115,6 +115,7 @@ namespace RPGFramework.Menu.SubMenus
             return Task.CompletedTask;
         }
 
-        protected abstract bool HandleControl(ControlSlot slot);
+        /// <summary>A button action pressed, named by the hash of its name; true if this menu took it.</summary>
+        protected abstract bool HandleAction(ulong action);
     }
 }

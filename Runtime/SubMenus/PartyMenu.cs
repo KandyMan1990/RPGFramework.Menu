@@ -108,9 +108,9 @@ namespace RPGFramework.Menu.SubMenus
             m_MenuUI.SetPlayTime(played, m_Blink.Tick(played, deltaTime));
         }
 
-        protected override bool HandleControl(ControlSlot slot)
+        protected override bool HandleAction(ulong action)
         {
-            if (slot == ControlSlot.Secondary)
+            if (action == CoreActions.Cancel)
             {
                 m_AudioIntentPlayer.PlayAsync(AudioIntent.Cancel, AudioContext.Menu).FireAndForget();
                 m_MenuModule.PopMenu().FireAndForget();
