@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
@@ -8,6 +8,7 @@ using RPGFramework.Core.Settings;
 using RPGFramework.Core.Store;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
+using RPGFramework.Menu.SharedTypes.Constants;
 
 namespace RPGFramework.Menu.SubMenus
 {
@@ -99,7 +100,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             PlayNavigate();
 
-            m_MenuModule.PushMenu(MenuType.Controls).FireAndForget();
+            m_MenuModule.PushMenu(MenuIds.Controls).FireAndForget();
         }
 
         private void OnSliderStepped()

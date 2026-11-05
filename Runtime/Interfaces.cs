@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveData;
 using RPGFramework.Localisation;
-using RPGFramework.Menu.SharedTypes;
+using RPGFramework.Menu.SharedTypes.Constants;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu
@@ -12,8 +12,11 @@ namespace RPGFramework.Menu
     /// <summary>The UXML layout each menu's UI is built from, set by the game.</summary>
     public interface IMenuUIProvider
     {
-        /// <summary>The layout for the menu UI of this type, such as <see cref="IBeginMenuUI" />.</summary>
-        VisualTreeAsset GetMenuUI<T>() where T : IMenuUI;
+        /// <summary>
+        /// The layout of the menu named by <paramref name="menuId" />, the hash of its name: one of the framework's
+        /// <c>MenuIds</c>, or a game's own.
+        /// </summary>
+        VisualTreeAsset GetLayout(ulong menuId);
 
         /// <summary>
         /// The layout of one slot in the Save and Load menus, each of its <see cref="ISaveSlotElement" />s showing
@@ -33,14 +36,29 @@ namespace RPGFramework.Menu
         void Show(SavePreview preview, ILocalisationService localisation);
     }
 
-    /// <summary>Which menu interface each <see cref="MenuType" /> names, for the menu module to resolve.</summary>
-    public interface IMenuTypeProvider
+    /// <summary>
+    /// Each menu's id, the hash of its name, to the interface the menu is bound to, for the menu module to resolve:
+    /// the framework's menus, and a game's own added through <see cref="IMenuDatabaseBuilder" /> in its menu scene's
+    /// installer. Fixed once bound: what reads it cannot add to it.
+    /// </summary>
+    public interface IMenuDatabase
     {
-        /// <summary>The interface the menu of this type is bound to; null for a menu not built yet.</summary>
-        Type GetType(MenuType type);
+        /// <summary>The interface the menu with this id is bound to, such as <see cref="IPartyMenu" />.</summary>
+        Type GetMenuType(ulong menuId);
+    }
 
-        /// <summary>The same, for a menu type stored as its number, as <see cref="MenuArgs" /> carries it.</summary>
-        Type GetType(byte type);
+    /// <summary>
+    /// A <see cref="MenuDatabase" /> as a game's menu scene installer adds its own menus to it, before binding it as
+    /// <see cref="IMenuDatabase" />.
+    /// </summary>
+    public interface IMenuDatabaseBuilder
+    {
+        /// <summary>
+        /// Adds a game's own menu, opened as <paramref name="menuId" />, the hash of its name, and resolved as
+        /// <typeparamref name="TMenu" />, the interface the game binds it to. A framework menu is replaced by binding its
+        /// interface to the game's own class, not here.
+        /// </summary>
+        void Add<TMenu>(ulong menuId) where TMenu : IMenu;
     }
 
     /// <summary>
@@ -54,8 +72,11 @@ namespace RPGFramework.Menu
         /// </summary>
         bool HidePreviousUIOnSuspend { get; }
 
-        /// <summary>Builds the menu's UI in <paramref name="parent" />, without taking input yet.</summary>
-        Task OnEnterAsync(VisualElement parent, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
+        /// <summary>
+        /// Builds the menu's UI in <paramref name="parent" />, from the layout the UI provider holds for
+        /// <paramref name="menuId" />, without taking input yet.
+        /// </summary>
+        Task OnEnterAsync(VisualElement parent, ulong menuId, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
 
         /// <summary>Another menu opens over this one: it hides its UI when asked to.</summary>
         Task OnSuspendAsync(bool hideUI);
@@ -92,9 +113,10 @@ namespace RPGFramework.Menu
         VisualElement GetLastFocusedElement();
 
         /// <summary>
-        /// Builds the UI in <paramref name="parent" />, localises it, focuses its default element and shows it.
+        /// Builds the UI in <paramref name="parent" /> from the layout the UI provider holds for
+        /// <paramref name="menuId" />, localises it, focuses its default element and shows it.
         /// </summary>
-        Task OnEnterAsync(VisualElement parent, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
+        Task OnEnterAsync(VisualElement parent, ulong menuId, Dictionary<string, object> args = null); //TODO: args should probably be more strongly typed than a dictionary
 
         /// <summary>Remembers the focused element, hiding the UI when <paramref name="hideUI" />.</summary>
         Task OnSuspendAsync(bool hideUI);
@@ -112,31 +134,37 @@ namespace RPGFramework.Menu
     /// <summary>
     /// The Language menu: choosing the language the game is shown in, on first launch and from Config.
     /// </summary>
+    [MenuName(MenuIds.LANGUAGE)]
     public interface ILanguageMenu : IMenu
     {
     }
 
     /// <summary>The title menu: New Game, Load Game and Quit.</summary>
+    [MenuName(MenuIds.BEGIN)]
     public interface IBeginMenu : IMenu
     {
     }
 
     /// <summary>The Config menu: language, volumes and message speeds, saved to the player's settings.</summary>
+    [MenuName(MenuIds.CONFIG)]
     public interface IConfigMenu : IMenu
     {
     }
 
     /// <summary>The party menu opened from the field: where the player is, the play time, Config and Save.</summary>
+    [MenuName(MenuIds.PARTY)]
     public interface IPartyMenu : IMenu
     {
     }
 
     /// <summary>The Save menu: a new save or one written over, from the party menu where saving is allowed.</summary>
+    [MenuName(MenuIds.SAVE)]
     public interface ISaveMenu : IMenu
     {
     }
 
     /// <summary>The Load menu: the saves to begin a playthrough from, from the title.</summary>
+    [MenuName(MenuIds.LOAD)]
     public interface ILoadMenu : IMenu
     {
     }
@@ -279,6 +307,7 @@ namespace RPGFramework.Menu
         void CloseQuestion();
     }
     /// <summary>The Controls page, opened from Config: the player's own bindings for the controls its layout lists.</summary>
+    [MenuName(MenuIds.CONTROLS)]
     public interface IControlsMenu : IMenu
     {
     }

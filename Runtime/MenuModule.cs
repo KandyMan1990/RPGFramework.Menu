@@ -20,7 +20,7 @@ namespace RPGFramework.Menu
         private readonly ITransitionService    m_Transitions;
         private readonly IMenuTransitionConfig m_TransitionConfig;
         private readonly IMenuArgsStore        m_MenuArgsStore;
-        private readonly IMenuTypeProvider     m_MenuTypeProvider;
+        private readonly IMenuDatabase         m_MenuDatabase;
         private readonly IModuleScene          m_ModuleScene;
         private readonly IMenuModule           m_MenuModule;
         private readonly Stack<IMenu>          m_Menus;
@@ -35,7 +35,7 @@ namespace RPGFramework.Menu
                           ITransitionService    transitions,
                           IMenuTransitionConfig transitionConfig,
                           IMenuArgsStore        menuArgsStore,
-                          IMenuTypeProvider     menuTypeProvider,
+                          IMenuDatabase         menuDatabase,
                           IModuleScene          moduleScene)
         {
             m_CoreModule       = coreModule;
@@ -43,7 +43,7 @@ namespace RPGFramework.Menu
             m_Transitions      = transitions;
             m_TransitionConfig = transitionConfig;
             m_MenuArgsStore    = menuArgsStore;
-            m_MenuTypeProvider = menuTypeProvider;
+            m_MenuDatabase     = menuDatabase;
             m_ModuleScene      = moduleScene;
             m_MenuModule       = this;
             m_Menus            = new Stack<IMenu>();
@@ -60,11 +60,15 @@ namespace RPGFramework.Menu
             m_InputAdapter = m_ModuleScene.Find<InputAdapter>();
             m_DIResolver.InjectInto(m_InputAdapter);
 
+#if UNITY_EDITOR
+            MenuDatabaseCheck.Log(m_MenuDatabase, m_DIResolver.Resolve<IMenuUIProvider>());
+#endif
+
             MenuArgs args = m_MenuArgsStore.Args;
 
             m_Entering = true;
 
-            await m_MenuModule.PushMenu((MenuType)args.MenuId);
+            await m_MenuModule.PushMenu(args.MenuId);
 
             m_Entering = false;
         }
@@ -102,14 +106,14 @@ namespace RPGFramework.Menu
 
         // Every menu change covers the screen, swaps the menus and reveals them, as the config says, with no input from
         // the moment it starts until it is revealed: a press during the change would start another.
-        async Task IMenuModule.PushMenu(MenuType menuType)
+        async Task IMenuModule.PushMenu(ulong menuId)
         {
             m_InputAdapter.Disable();
             SetTopMenuInputEnabled(false);
 
             await CoverAsync();
 
-            Type  menuToPushType = m_MenuTypeProvider.GetType(menuType);
+            Type  menuToPushType = m_MenuDatabase.GetMenuType(menuId);
             IMenu newMenu        = (IMenu)m_DIResolver.Resolve(menuToPushType);
 
             if (m_Menus.TryPeek(out IMenu menu))
@@ -119,7 +123,7 @@ namespace RPGFramework.Menu
 
             m_Menus.Push(newMenu);
 
-            await newMenu.OnEnterAsync(m_UIContainer);
+            await newMenu.OnEnterAsync(m_UIContainer, menuId);
 
             if (m_Entering)
             {

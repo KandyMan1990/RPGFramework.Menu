@@ -12,10 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d724de9fa6fb9419524e0170e324a0, type: 3}
   m_Name: Menu UI Provider
   m_EditorClassIdentifier: RPGFramework.Menu::RPGFramework.Menu.MenuUIProvider
-  m_BeginMenu: {fileID: 9197481963319205126, guid: b0b672f0244440b4ca822e71e0600d07, type: 3}
-  m_ConfigMenu: {fileID: 9197481963319205126, guid: 367a5d1485eeda54989228d820502700, type: 3}
-  m_LanguageMenu: {fileID: 9197481963319205126, guid: 38499b0b3225300469ad67a8721139d2, type: 3}
-  m_ControlsMenu: {fileID: 9197481963319205126, guid: 5e3c9abb57a045c883670610b187da7d, type: 3}
-  m_PartyMenu: {fileID: 9197481963319205126, guid: 7f2b6311773f54a3b9c630aadb4269bd, type: 3}
-  m_SaveMenu: {fileID: 9197481963319205126, guid: f121a2550404042269bbc584ab344ce1, type: 3}
+  m_Layouts:
+  - m_Menu: Begin
+    m_Layout: {fileID: 9197481963319205126, guid: b0b672f0244440b4ca822e71e0600d07, type: 3}
+  - m_Menu: Config
+    m_Layout: {fileID: 9197481963319205126, guid: 367a5d1485eeda54989228d820502700, type: 3}
+  - m_Menu: Language
+    m_Layout: {fileID: 9197481963319205126, guid: 38499b0b3225300469ad67a8721139d2, type: 3}
+  - m_Menu: Controls
+    m_Layout: {fileID: 9197481963319205126, guid: 5e3c9abb57a045c883670610b187da7d, type: 3}
+  - m_Menu: Party
+    m_Layout: {fileID: 9197481963319205126, guid: 7f2b6311773f54a3b9c630aadb4269bd, type: 3}
+  - m_Menu: Save
+    m_Layout: {fileID: 9197481963319205126, guid: f121a2550404042269bbc584ab344ce1, type: 3}
+  - m_Menu: Load
+    m_Layout: {fileID: 9197481963319205126, guid: f121a2550404042269bbc584ab344ce1, type: 3}
   m_SaveSlot: {fileID: 9197481963319205126, guid: 4475da934cfd4149b2481d1e9624a90c, type: 3}

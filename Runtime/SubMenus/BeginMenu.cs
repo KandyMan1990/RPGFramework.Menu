@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
@@ -68,7 +68,7 @@ namespace RPGFramework.Menu.SubMenus
 
             if (!m_SettingsStore.IsLanguageChosen)
             {
-                await m_MenuModule.PushMenu(MenuType.Language);
+                await m_MenuModule.PushMenu(MenuIds.Language);
             }
 
             await base.OnEnterComplete();
@@ -102,13 +102,13 @@ namespace RPGFramework.Menu.SubMenus
             }
 
             m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
-            m_MenuModule.PushMenu(MenuType.Load).FireAndForget();
+            m_MenuModule.PushMenu(MenuIds.Load).FireAndForget();
         }
 
         private void OnConfigPressed()
         {
             m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
-            m_MenuModule.PushMenu(MenuType.Config).FireAndForget();
+            m_MenuModule.PushMenu(MenuIds.Config).FireAndForget();
         }
 
 #if ENABLE_RPG_FRAMEWORK_DEBUG

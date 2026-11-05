@@ -25,7 +25,7 @@ namespace RPGFramework.Menu
             sceneContainer.BindTransientIfNotRegistered<ILoadMenu, LoadMenu>();
             sceneContainer.BindTransientIfNotRegistered<ISaveSlotMenuUI, SaveSlotMenuUI>();
 
-            sceneContainer.BindSingletonIfNotRegistered<IMenuTypeProvider, MenuTypeProvider>();
+            sceneContainer.BindSingletonIfNotRegistered<IMenuDatabase, MenuDatabase>();
             sceneContainer.BindSingletonIfNotRegistered<IMenuModule, MenuModule>();
         }
     }

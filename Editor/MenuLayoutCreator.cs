@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using RPGFramework.Menu.SharedTypes.Constants;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -59,19 +60,33 @@ namespace RPGFramework.Menu.Editor
 
             AssetDatabase.CreateAsset(provider, path);
 
-            SerializedObject serialized = new SerializedObject(provider);
+            SerializedObject   serialized = new SerializedObject(provider);
+            SerializedProperty layouts    = serialized.FindProperty("m_Layouts");
+            VisualTreeAsset    saveSlots  = Create(SAVE, folder, stylesheet);
 
-            serialized.FindProperty("m_BeginMenu").objectReferenceValue    = Create(BEGIN, folder, stylesheet);
-            serialized.FindProperty("m_ConfigMenu").objectReferenceValue   = Create(CONFIG, folder, stylesheet);
-            serialized.FindProperty("m_LanguageMenu").objectReferenceValue = Create(LANGUAGE, folder, stylesheet);
-            serialized.FindProperty("m_ControlsMenu").objectReferenceValue = Create(CONTROLS, folder, stylesheet);
-            serialized.FindProperty("m_PartyMenu").objectReferenceValue    = Create(PARTY, folder, stylesheet);
-            serialized.FindProperty("m_SaveMenu").objectReferenceValue     = Create(SAVE, folder, stylesheet);
-            serialized.FindProperty("m_SaveSlot").objectReferenceValue     = Create(SLOT, folder, stylesheet);
+            layouts.arraySize = 7;
+
+            SetLayout(layouts, 0, MenuIds.BEGIN, Create(BEGIN, folder, stylesheet));
+            SetLayout(layouts, 1, MenuIds.CONFIG, Create(CONFIG, folder, stylesheet));
+            SetLayout(layouts, 2, MenuIds.LANGUAGE, Create(LANGUAGE, folder, stylesheet));
+            SetLayout(layouts, 3, MenuIds.CONTROLS, Create(CONTROLS, folder, stylesheet));
+            SetLayout(layouts, 4, MenuIds.PARTY, Create(PARTY, folder, stylesheet));
+            SetLayout(layouts, 5, MenuIds.SAVE, saveSlots);
+            SetLayout(layouts, 6, MenuIds.LOAD, saveSlots);
+
+            serialized.FindProperty("m_SaveSlot").objectReferenceValue = Create(SLOT, folder, stylesheet);
             serialized.ApplyModifiedPropertiesWithoutUndo();
 
             AssetDatabase.SaveAssets();
             Show(provider);
+        }
+
+        private static void SetLayout(SerializedProperty layouts, int index, string menu, VisualTreeAsset layout)
+        {
+            SerializedProperty entry = layouts.GetArrayElementAtIndex(index);
+
+            entry.FindPropertyRelative("m_Menu").stringValue           = menu;
+            entry.FindPropertyRelative("m_Layout").objectReferenceValue = layout;
         }
 
         private static void CreateOne(string template)

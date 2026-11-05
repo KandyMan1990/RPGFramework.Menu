@@ -4,7 +4,7 @@ The menus of an RPG Framework game, as a module with a scene of its own: the tit
 menus opened from the field. Menus are UI Toolkit documents, stacked one over another.
 
 Requires Unity 6000.6 or newer, RPGFramework.Core and its shared types, RPGFramework.Menu.SharedTypes,
-RPGFramework.DI, RPGFramework.Audio, RPGFramework.Localisation and Unity.Mathematics.
+RPGFramework.DI, RPGFramework.Audio, RPGFramework.Hashing, RPGFramework.Localisation and Unity.Mathematics.
 
 ---
 
@@ -34,7 +34,9 @@ make it your own:
    you like. A player build refuses a layout naming a key none of your sheets holds. **`Menus.uss`** holds how they
    look — the panel, its colours and borders, each menu's sizes — so restyling every menu is one file.
 3. **In your global installer, bind `IMenuArgsStore` to `MenuArgsStore`**, so whatever opens the menus and the menu
-   module share it.
+   module share it. **Whatever opens the menu module names the menu in it first** — nothing is opened by default: your
+   splash screen sets `new MenuArgs(MenuIds.Begin)` before it finishes, as the Starter's does, and the field names the
+   party menu.
 4. **Add the scene to your game's module and scene databases**, under `MenuConstants.MODULE_ID`.
 
 **Or make the layouts without the sample**, from **Assets > Create > RPG Framework > Menu > Layouts**: one entry per
@@ -44,6 +46,59 @@ first line, `/* RPG Framework menus */`, or made beside the new layout if the pr
 
 To replace a menu or a menu UI with your own, bind its interface — `IBeginMenuUI`, say — in the scene's installer: the
 Menu Module binds each only where nothing is bound yet.
+
+### A menu of your own
+
+A menu is named by the hash of its name, as `MenuIds` names the framework's — `MenuIds.Party` is `"Party"`'s. To add
+one, a Status menu, say:
+
+1. **Name it**, in a class of your own, the name and its hash (RPGFramework.Hashing) side by side so they cannot
+   differ:
+
+   ```csharp
+   public const string STATUS = "Status";
+   public static readonly ulong Status = Fnv1a64.Hash(STATUS);
+   ```
+
+2. **Write it as a pair**: an interface deriving `IMenu`, **declared by its name**, and a class deriving
+   `Menu<IStatusMenuUI>`; an interface deriving `IMenuUI` and a class deriving `MenuUI<IStatusMenuUI>`.
+
+   ```csharp
+   [MenuName(GameMenus.STATUS)]
+   public interface IStatusMenu : IMenu { }
+   ```
+3. **Bind both, and add the menu to a `MenuDatabase`**, in the menu scene's installer, through its
+   `IMenuDatabaseBuilder`. The database starts with the framework's menus; bound as `IMenuDatabase`, which only looks
+   menus up, it replaces the one the Menu Module would bind.
+
+   ```csharp
+   public override void InstallBindings(IDIContainer container)
+   {
+       container.BindSingletonFromInstance<IMenuUIProvider>(m_MenuUIProvider);
+       container.BindSingletonFromInstance<IMenuTransitionConfig>(m_TransitionConfig);
+
+       container.BindTransient<IStatusMenu, StatusMenu>();
+       container.BindTransient<IStatusMenuUI, StatusMenuUI>();
+
+       MenuDatabase         menus   = new MenuDatabase();
+       IMenuDatabaseBuilder builder = menus;
+
+       builder.Add<IStatusMenu>(GameMenus.Status);
+       container.BindSingletonFromInstance<IMenuDatabase>(menus);
+   }
+   ```
+
+4. **Give the Menu UI Provider its layout**: once the menu is declared, the provider's inspector lists it beside the
+   framework's, each with a field for its layout.
+5. **Open it**: `PushMenu(GameMenus.Status)` from another menu, or `new MenuArgs(GameMenus.Status)` in
+   `IMenuArgsStore` from another module, as the field opens the party menu.
+
+**The names are checked before a menu opens.** `[MenuName]` is read only in the editor and left out of a player. The
+provider's inspector shows a declared menu with no layout, a layout no menu declares (with a button removing them) and
+a missing save slot. The menu scene is checked the same way as it loads in play mode, logging what is wrong, and a
+player build fails on it. As the menu module enters in play mode, every menu in the database is checked too: one added
+but never declared, or added under another menu's id, is logged, and with a UI provider of your own rather than the
+asset, so is a menu it has no layout for.
 
 ---
 
@@ -57,8 +112,10 @@ Menu Module binds each only where nothing is bound yet.
   `IMenuTransitionConfig`, as the sample's is: empty for your game's default transitions, or none at all, the menus then
   swapping at once.
 - **Each menu is a pair**: a menu for what it does and a menu UI for how it looks, the UI built from the
-  `VisualTreeAsset` the **Menu UI Provider** asset holds for it (Create > RPG Framework > Menu > Menu UI Provider). The
-  package ships no layouts of its own: the sample's are the starting point. A layout keeps the names of the elements
+  `VisualTreeAsset` the **Menu UI Provider** asset holds under the menu's name (Create > RPG Framework > Menu > Menu UI
+  Provider): its inspector lists every declared menu — `Begin`, `Config`, `Language`, `Controls`, `Party`, `Save` and
+  `Load` for the framework's, Save and Load sharing the sample's save slots layout, and any of your own. The package ships no layouts of its
+  own: the sample's are the starting point. A layout keeps the names of the elements
   its UI looks for — `NewGameBtn`, `SaveTitleLabel` — and its text's keys are its own.
 - **The cursor moves the same way by key, pad or pointer**, between each menu's buttons, with the cursor sound, and
   nothing in a menu reacts while the screen fades. A menu and its UI are bound transient, as the sample binds them:

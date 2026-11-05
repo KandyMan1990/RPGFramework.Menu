@@ -1,0 +1,25 @@
+{
+    "name": "RPGFramework.Menu.Tests",
+    "rootNamespace": "RPGFramework.Menu.Tests",
+    "references": [
+        "RPGFramework.Hashing",
+        "RPGFramework.Menu",
+        "RPGFramework.Menu.Editor",
+        "RPGFramework.Menu.SharedTypes"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

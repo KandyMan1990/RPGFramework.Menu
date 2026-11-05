@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
@@ -32,11 +32,11 @@ namespace RPGFramework.Menu.SubMenus
             m_MenuUI.OnCursorMoved += OnCursorMoved;
         }
 
-        async Task IMenu.OnEnterAsync(VisualElement parent, Dictionary<string, object> args)
+        async Task IMenu.OnEnterAsync(VisualElement parent, ulong menuId, Dictionary<string, object> args)
         {
             await OnEnterAsync(args);
 
-            await m_MenuUI.OnEnterAsync(parent, args);
+            await m_MenuUI.OnEnterAsync(parent, menuId, args);
 
             m_InputRouter.Push(this);
 

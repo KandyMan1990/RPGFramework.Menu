@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Core;
@@ -49,9 +49,9 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_SheetNames          = Array.Empty<string>();
         }
 
-        async Task IMenuUI.OnEnterAsync(VisualElement parent, Dictionary<string, object> args)
+        async Task IMenuUI.OnEnterAsync(VisualElement parent, ulong menuId, Dictionary<string, object> args)
         {
-            VisualTreeAsset uiAsset = m_UIProvider.GetMenuUI<TMenuUI>();
+            VisualTreeAsset uiAsset = m_UIProvider.GetLayout(menuId);
             uiAsset.CloneTree(parent);
 
             m_UIInstance = parent[parent.childCount - 1];

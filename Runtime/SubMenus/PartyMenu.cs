@@ -8,6 +8,7 @@ using RPGFramework.Core.Store;
 using RPGFramework.Core.UI;
 using UnityEngine;
 using RPGFramework.Menu.SharedTypes;
+using RPGFramework.Menu.SharedTypes.Constants;
 
 namespace RPGFramework.Menu.SubMenus
 {
@@ -122,7 +123,7 @@ namespace RPGFramework.Menu.SubMenus
         private void OnConfigPressed()
         {
             m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
-            m_MenuModule.PushMenu(MenuType.Config).FireAndForget();
+            m_MenuModule.PushMenu(MenuIds.Config).FireAndForget();
         }
 
         private void OnSavePressed()
@@ -134,13 +135,13 @@ namespace RPGFramework.Menu.SubMenus
             }
 
             m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
-            m_MenuModule.PushMenu(MenuType.Save).FireAndForget();
+            m_MenuModule.PushMenu(MenuIds.Save).FireAndForget();
         }
 
         private void OnLoadPressed()
         {
             m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
-            m_MenuModule.PushMenu(MenuType.Load).FireAndForget();
+            m_MenuModule.PushMenu(MenuIds.Load).FireAndForget();
         }
     }
 }
