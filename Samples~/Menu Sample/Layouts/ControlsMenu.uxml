@@ -1,0 +1,113 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Packages/com.rpgframework.core/Runtime/UI%20Toolkit/UIShared.uss?fileID=7433441132597879392&amp;guid=94d472c2b9a84d747912b7c0d4c5d053&amp;type=3#UIShared"/>
+    <Style src="Menus.uss"/>
+    <ui:VisualElement name="ControlsMenu" class="rpg-menu">
+        <ui:VisualElement name="TitleContainer" class="rpg-menu-title-area">
+            <ui:Label text="Controls" name="TitleLabel" class="rpg-ui-label rpg-menu-title">
+                <Bindings>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Controls"/>
+                </Bindings>
+            </ui:Label>
+        </ui:VisualElement>
+        <ui:VisualElement name="ContentContainer" class="rpg-menu-content">
+            <ui:VisualElement name="ButtonsContainer" class="rpg-menu-buttons">
+                <ui:VisualElement name="Schemes" class="rpg-menu-setting">
+                    <ui:VisualElement class="rpg-menu-control-name"/>
+                    <ui:Label text="Keyboard" class="rpg-ui-label rpg-menu-control">
+                        <Bindings>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Controls_Keyboard"/>
+                        </Bindings>
+                    </ui:Label>
+                    <ui:Label text="Gamepad" class="rpg-ui-label rpg-menu-control">
+                        <Bindings>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Controls_Gamepad"/>
+                        </Bindings>
+                    </ui:Label>
+                </ui:VisualElement>
+                <RPGFramework.Menu.UI.ControlRow actions="Player/Confirm, UI/Submit" class="rpg-menu-setting">
+                    <ui:Label text="Confirm" class="rpg-ui-label rpg-menu-control-name">
+                        <Bindings>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Control_Confirm"/>
+                        </Bindings>
+                    </ui:Label>
+                    <RPGFramework.Core.UI.RPGUIButton focusable="true" name="Keyboard&amp;Mouse" class="rpg-menu-control"/>
+                    <RPGFramework.Core.UI.RPGUIButton focusable="true" name="Gamepad" class="rpg-menu-control"/>
+                </RPGFramework.Menu.UI.ControlRow>
+                <RPGFramework.Menu.UI.ControlRow actions="Player/Cancel, UI/Cancel" class="rpg-menu-setting">
+                    <ui:Label text="Cancel" class="rpg-ui-label rpg-menu-control-name">
+                        <Bindings>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Control_Cancel"/>
+                        </Bindings>
+                    </ui:Label>
+                    <RPGFramework.Core.UI.RPGUIButton focusable="true" name="Keyboard&amp;Mouse" class="rpg-menu-control"/>
+                    <RPGFramework.Core.UI.RPGUIButton focusable="true" name="Gamepad" class="rpg-menu-control"/>
+                </RPGFramework.Menu.UI.ControlRow>
+                <RPGFramework.Menu.UI.ControlRow actions="Player/Menu" class="rpg-menu-setting">
+                    <ui:Label text="Menu" class="rpg-ui-label rpg-menu-control-name">
+                        <Bindings>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Control_Menu"/>
+                        </Bindings>
+                    </ui:Label>
+                    <RPGFramework.Core.UI.RPGUIButton focusable="true" name="Keyboard&amp;Mouse" class="rpg-menu-control"/>
+                    <RPGFramework.Core.UI.RPGUIButton focusable="true" name="Gamepad" class="rpg-menu-control"/>
+                </RPGFramework.Menu.UI.ControlRow>
+                <RPGFramework.Menu.UI.ControlRow actions="UI/Delete" class="rpg-menu-setting">
+                    <ui:Label text="Delete" class="rpg-ui-label rpg-menu-control-name">
+                        <Bindings>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Control_Delete"/>
+                        </Bindings>
+                    </ui:Label>
+                    <RPGFramework.Core.UI.RPGUIButton focusable="true" name="Keyboard&amp;Mouse" class="rpg-menu-control"/>
+                    <RPGFramework.Core.UI.RPGUIButton focusable="true" name="Gamepad" class="rpg-menu-control"/>
+                </RPGFramework.Menu.UI.ControlRow>
+                <RPGFramework.Menu.UI.ControlRow actions="Player/Movement, UI/Navigate" part="up" class="rpg-menu-setting">
+                    <ui:Label text="Up" class="rpg-ui-label rpg-menu-control-name">
+                        <Bindings>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Control_Up"/>
+                        </Bindings>
+                    </ui:Label>
+                    <RPGFramework.Core.UI.RPGUIButton focusable="true" name="Keyboard&amp;Mouse" class="rpg-menu-control"/>
+                    <ui:VisualElement class="rpg-menu-control"/>
+                </RPGFramework.Menu.UI.ControlRow>
+                <RPGFramework.Menu.UI.ControlRow actions="Player/Movement, UI/Navigate" part="down" class="rpg-menu-setting">
+                    <ui:Label text="Down" class="rpg-ui-label rpg-menu-control-name">
+                        <Bindings>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Control_Down"/>
+                        </Bindings>
+                    </ui:Label>
+                    <RPGFramework.Core.UI.RPGUIButton focusable="true" name="Keyboard&amp;Mouse" class="rpg-menu-control"/>
+                    <ui:VisualElement class="rpg-menu-control"/>
+                </RPGFramework.Menu.UI.ControlRow>
+                <RPGFramework.Menu.UI.ControlRow actions="Player/Movement, UI/Navigate" part="left" class="rpg-menu-setting">
+                    <ui:Label text="Left" class="rpg-ui-label rpg-menu-control-name">
+                        <Bindings>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Control_Left"/>
+                        </Bindings>
+                    </ui:Label>
+                    <RPGFramework.Core.UI.RPGUIButton focusable="true" name="Keyboard&amp;Mouse" class="rpg-menu-control"/>
+                    <ui:VisualElement class="rpg-menu-control"/>
+                </RPGFramework.Menu.UI.ControlRow>
+                <RPGFramework.Menu.UI.ControlRow actions="Player/Movement, UI/Navigate" part="right" class="rpg-menu-setting">
+                    <ui:Label text="Right" class="rpg-ui-label rpg-menu-control-name">
+                        <Bindings>
+                            <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Control_Right"/>
+                        </Bindings>
+                    </ui:Label>
+                    <RPGFramework.Core.UI.RPGUIButton focusable="true" name="Keyboard&amp;Mouse" class="rpg-menu-control"/>
+                    <ui:VisualElement class="rpg-menu-control"/>
+                </RPGFramework.Menu.UI.ControlRow>
+                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="ResetBtn" text="Reset to defaults">
+                    <Bindings>
+                        <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Controls_Reset"/>
+                    </Bindings>
+                </RPGFramework.Core.UI.RPGUIButton>
+            </ui:VisualElement>
+            <ui:Label text="Press a key or button" name="Prompt" class="rpg-ui-label">
+                <Bindings>
+                    <RPGFramework.Localisation.StaticLocalisedText property="text" key="ConfigMenu/Controls_Prompt"/>
+                </Bindings>
+            </ui:Label>
+        </ui:VisualElement>
+        <ui:VisualElement name="FooterContainer" class="rpg-menu-footer"/>
+    </ui:VisualElement>
+</ui:UXML>

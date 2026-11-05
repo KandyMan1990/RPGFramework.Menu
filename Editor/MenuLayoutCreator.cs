@@ -22,6 +22,7 @@ namespace RPGFramework.Menu.Editor
         private const string BEGIN    = "BeginMenu";
         private const string CONFIG   = "ConfigMenu";
         private const string LANGUAGE = "LanguageMenu";
+        private const string CONTROLS = "ControlsMenu";
         private const string PARTY    = "PartyMenu";
         private const string SAVE     = "SaveMenu";
         private const string SLOT     = "SaveSlot";
@@ -34,6 +35,9 @@ namespace RPGFramework.Menu.Editor
 
         [MenuItem(MENU_PATH + "Language Menu")]
         private static void CreateLanguageMenu() => CreateOne(LANGUAGE);
+
+        [MenuItem(MENU_PATH + "Controls Menu")]
+        private static void CreateControlsMenu() => CreateOne(CONTROLS);
 
         [MenuItem(MENU_PATH + "Party Menu")]
         private static void CreatePartyMenu() => CreateOne(PARTY);
@@ -60,6 +64,7 @@ namespace RPGFramework.Menu.Editor
             serialized.FindProperty("m_BeginMenu").objectReferenceValue    = Create(BEGIN, folder, stylesheet);
             serialized.FindProperty("m_ConfigMenu").objectReferenceValue   = Create(CONFIG, folder, stylesheet);
             serialized.FindProperty("m_LanguageMenu").objectReferenceValue = Create(LANGUAGE, folder, stylesheet);
+            serialized.FindProperty("m_ControlsMenu").objectReferenceValue = Create(CONTROLS, folder, stylesheet);
             serialized.FindProperty("m_PartyMenu").objectReferenceValue    = Create(PARTY, folder, stylesheet);
             serialized.FindProperty("m_SaveMenu").objectReferenceValue     = Create(SAVE, folder, stylesheet);
             serialized.FindProperty("m_SaveSlot").objectReferenceValue     = Create(SLOT, folder, stylesheet);

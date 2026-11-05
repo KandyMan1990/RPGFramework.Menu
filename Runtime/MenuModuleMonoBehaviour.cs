@@ -17,6 +17,8 @@ namespace RPGFramework.Menu
             sceneContainer.BindTransientIfNotRegistered<IConfigMenuUI, ConfigMenuUI>();
             sceneContainer.BindTransientIfNotRegistered<ILanguageMenu, LanguageMenu>();
             sceneContainer.BindTransientIfNotRegistered<ILanguageMenuUI, LanguageMenuUI>();
+            sceneContainer.BindTransientIfNotRegistered<IControlsMenu, ControlsMenu>();
+            sceneContainer.BindTransientIfNotRegistered<IControlsMenuUI, ControlsMenuUI>();
             sceneContainer.BindTransientIfNotRegistered<IPartyMenu, PartyMenu>();
             sceneContainer.BindTransientIfNotRegistered<IPartyMenuUI, PartyMenuUI>();
             sceneContainer.BindTransientIfNotRegistered<ISaveMenu, SaveMenu>();

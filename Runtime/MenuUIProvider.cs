@@ -14,6 +14,8 @@ namespace RPGFramework.Menu
         [SerializeField]
         private VisualTreeAsset m_LanguageMenu;
         [SerializeField]
+        private VisualTreeAsset m_ControlsMenu;
+        [SerializeField]
         private VisualTreeAsset m_PartyMenu;
         [SerializeField]
         private VisualTreeAsset m_SaveMenu;
@@ -29,6 +31,7 @@ namespace RPGFramework.Menu
             if (type == typeof(IBeginMenuUI)) return m_BeginMenu;
             if (type == typeof(IConfigMenuUI)) return m_ConfigMenu;
             if (type == typeof(ILanguageMenuUI)) return m_LanguageMenu;
+            if (type == typeof(IControlsMenuUI)) return m_ControlsMenu;
             if (type == typeof(IPartyMenuUI)) return m_PartyMenu;
             if (type == typeof(ISaveSlotMenuUI)) return m_SaveMenu;
 

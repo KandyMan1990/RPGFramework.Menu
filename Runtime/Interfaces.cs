@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveData;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
@@ -276,5 +277,35 @@ namespace RPGFramework.Menu
 
         /// <summary>Closes the question, focus going back to the row it asked about.</summary>
         void CloseQuestion();
+    }
+    /// <summary>The Controls page, opened from Config: the player's own bindings for the controls its layout lists.</summary>
+    public interface IControlsMenu : IMenu
+    {
+    }
+
+    /// <summary>
+    /// The Controls page's UI: a button for each control in each control scheme, from the layout's
+    /// <c>ControlRow</c>s, and a Reset to defaults button.
+    /// </summary>
+    public interface IControlsMenuUI : IMenuUI
+    {
+        /// <summary>Raised as the player chooses a control's button, by its place among the buttons.</summary>
+        event Action<int> OnControlChosen;
+
+        event Action OnResetPressed;
+
+        int ButtonCount { get; }
+
+        /// <summary>Every control the layout lists, one per row.</summary>
+        IReadOnlyList<RebindableControl> Controls { get; }
+
+        RebindableControl GetControl(int button);
+
+        string GetScheme(int button);
+
+        void SetControlName(int button, string name);
+
+        /// <summary>Shows or hides the prompt to press the control to bind.</summary>
+        void ShowPrompt(bool shown);
     }
 }

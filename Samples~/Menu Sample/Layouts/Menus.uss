@@ -155,3 +155,21 @@
 .rpg-save-slot #MoneyName {
     margin-left: 8px;
 }
+
+/* The Controls page: a control's name, then its button in each control scheme. */
+#ControlsMenu .rpg-menu-buttons {
+    width: 80%;
+}
+
+.rpg-menu-control-name {
+    flex-grow: 1;
+}
+
+.rpg-menu-control {
+    width: 30%;
+    -unity-text-align: middle-center;
+}
+
+#ControlsMenu #Prompt {
+    -unity-text-align: middle-center;
+}

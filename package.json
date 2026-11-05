@@ -17,7 +17,7 @@
   "samples": [
     {
       "displayName": "Menu Sample",
-      "description": "A menu module scene with its installer and UI provider. Give the Input Adapter your actions' UI map, with a Delete action, and ship the Generic, BeginMenu, ConfigMenu, PartyMenu, SaveMenu and Locations sheets its layouts name.",
+      "description": "A menu module scene with its installer and UI provider. Give the Input Adapter your actions' UI map, with a Delete action, point the Controls layout's rows at your actions, and ship the Generic, BeginMenu, ConfigMenu, PartyMenu, SaveMenu and Locations sheets its layouts name.",
       "path": "Samples~/Menu Sample"
     }
   ],

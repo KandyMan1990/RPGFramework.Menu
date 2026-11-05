@@ -28,6 +28,8 @@ namespace RPGFramework.Menu
                     return typeof(IPartyMenu);
                 case MenuType.Load:
                     return typeof(ILoadMenu);
+                case MenuType.Controls:
+                    return typeof(IControlsMenu);
                 default:
                     throw new ArgumentOutOfRangeException($"{nameof(IMenuTypeProvider)}::{nameof(IMenuTypeProvider.GetType)} [{type}] not implemented");
             }

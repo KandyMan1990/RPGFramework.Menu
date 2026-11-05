@@ -99,8 +99,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             PlayNavigate();
 
-            // TODO: open a page to configure the controls
-            UnityEngine.Debug.Log("OnControlsPressed");
+            m_MenuModule.PushMenu(MenuType.Controls).FireAndForget();
         }
 
         private void OnSliderStepped()

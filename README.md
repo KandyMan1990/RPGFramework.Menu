@@ -84,6 +84,11 @@ Menu Module binds each only where nothing is bound yet.
   - **Debug Room**, between Settings and Quit, only where `ENABLE_RPG_FRAMEWORK_DEBUG` is defined, begins a save in
     memory as New Game does and opens the Debug Room package's room through `DebugMenuOutcomes.DEBUG_ROOM`. The
     button is added in code, so your layout needs nothing for it.
+- **Controls**, opened from Config's Controls button: each control's key and pad button, chosen to rebind by pressing
+  the new one, waiting a few seconds cancelling, a clash swapped, and Reset to defaults. **Its layout lists the
+  controls**: a `ControlRow` per control, naming the actions it rebinds as one (`actions="Player/Confirm, UI/Submit"`)
+  and, for a direction, its `part` (`up`), with a button per control scheme named for the scheme — add a row for an
+  action of your own.
 - **Config**: music and sound effect volumes and the message speeds, each volume heard live as its slider moves, and
   written when the menu closes.
 - **Language**: every language the game ships, written when the menu closes.
