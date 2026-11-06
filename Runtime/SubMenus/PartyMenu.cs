@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
@@ -31,11 +32,12 @@ namespace RPGFramework.Menu.SubMenus
         public PartyMenu(IPartyMenuUI       partyMenuUI,
                          IInputRouter       inputRouter,
                          IMenuModule        menuModule,
-                         IAudioIntentPlayer audioIntentPlayer,
+                         ISfxPlayer         sfxPlayer,
+                         ISystemSoundConfig systemSounds,
                          ISaveEnabledStore  saveEnabledStore,
                          ILocationNameStore locationNameStore,
                          IPlayTimeStore     playTimeStore,
-                         ICountdownStore    countdownStore) : base(partyMenuUI, inputRouter, menuModule, audioIntentPlayer)
+                         ICountdownStore    countdownStore) : base(partyMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds)
         {
             m_SaveEnabledStore  = saveEnabledStore;
             m_LocationNameStore = locationNameStore;
@@ -113,7 +115,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (action == CoreActions.Cancel)
             {
-                m_AudioIntentPlayer.PlayAsync(AudioIntent.Cancel, AudioContext.Menu).FireAndForget();
+                PlaySound(m_SystemSounds.Cancel);
                 m_MenuModule.PopMenu().FireAndForget();
             }
 
@@ -122,7 +124,7 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnConfigPressed()
         {
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Confirm);
             m_MenuModule.PushMenu(MenuIds.Config).FireAndForget();
         }
 
@@ -130,17 +132,17 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (!m_SaveEnabled)
             {
-                m_AudioIntentPlayer.PlayAsync(AudioIntent.Error, AudioContext.Menu).FireAndForget();
+                PlaySound(m_SystemSounds.Error);
                 return;
             }
 
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Confirm);
             m_MenuModule.PushMenu(MenuIds.Save).FireAndForget();
         }
 
         private void OnLoadPressed()
         {
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Confirm);
             m_MenuModule.PushMenu(MenuIds.Load).FireAndForget();
         }
     }

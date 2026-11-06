@@ -20,7 +20,6 @@ namespace RPGFramework.Menu.SubMenus
         private readonly ISaveDataService     m_SaveDataService;
         private readonly ISettingsStore       m_SettingsStore;
         private readonly IMusicPlayer         m_MusicPlayer;
-        private readonly ISfxPlayer           m_SfxPlayer;
         private readonly IPlayTimeStore       m_PlayTimeStore;
 
         public BeginMenu(ILocalisationService localisationService,
@@ -32,13 +31,12 @@ namespace RPGFramework.Menu.SubMenus
                          IBeginMenuUI         beginMenuUI,
                          IInputRouter         inputRouter,
                          IMenuModule          menuModule,
-                         IAudioIntentPlayer   audioIntentPlayer) : base(beginMenuUI, inputRouter, menuModule, audioIntentPlayer)
+                         ISystemSoundConfig   systemSounds) : base(beginMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds)
         {
             m_LocalisationService = localisationService;
             m_SaveDataService     = saveDataService;
             m_SettingsStore       = settingsStore;
             m_MusicPlayer         = musicPlayer;
-            m_SfxPlayer           = sfxPlayer;
             m_PlayTimeStore       = playTimeStore;
 
             m_MenuUI.OnNewGamePressed  += OnNewGamePressed;
@@ -81,7 +79,7 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnNewGamePressed()
         {
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.NewGame, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.NewGame);
 
             string filename = m_SaveDataService.GetUnusedSaveFileName();
 
@@ -97,17 +95,17 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (m_SaveDataService.GetListOfSaveFiles().Length == 0)
             {
-                m_AudioIntentPlayer.PlayAsync(AudioIntent.Error, AudioContext.Menu).FireAndForget();
+                PlaySound(m_SystemSounds.Error);
                 return;
             }
 
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Confirm);
             m_MenuModule.PushMenu(MenuIds.Load).FireAndForget();
         }
 
         private void OnConfigPressed()
         {
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Confirm);
             m_MenuModule.PushMenu(MenuIds.Config).FireAndForget();
         }
 
@@ -115,7 +113,7 @@ namespace RPGFramework.Menu.SubMenus
         // The room plays a playthrough begun here, as New Game begins one.
         private void OnDebugRoomPressed()
         {
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Confirm);
 
             m_SaveDataService.BeginSave(m_SaveDataService.GetUnusedSaveFileName());
 
@@ -126,21 +124,24 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnQuitPressed()
         {
-            Task cancelSound = m_AudioIntentPlayer.PlayAsync(AudioIntent.Cancel, AudioContext.Menu);
-
-            QuitAsync(cancelSound).FireAndForget();
+            QuitAsync().FireAndForget();
         }
 
         // The cancel sound plays out before the game closes: quitting at once also cut its bundle's load short, which
         // in the editor left the bundle loaded into the next play session. It quits even if the sound failed, which is
         // logged as it passes on.
-        private async Task QuitAsync(Task cancelSound)
+        private async Task QuitAsync()
         {
             SetInputEnabled(false);
 
             try
             {
-                await cancelSound;
+                if (m_SystemSounds.Cancel != 0)
+                {
+                    ISfxReference cancel = await m_SfxPlayer.PlayAsync(m_SystemSounds.Cancel);
+
+                    await cancel.Completion;
+                }
             }
             finally
             {

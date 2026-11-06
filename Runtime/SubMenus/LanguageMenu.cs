@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
@@ -24,7 +25,8 @@ namespace RPGFramework.Menu.SubMenus
                             ILocalisationService localisationService,
                             ISettingsService     settingsService,
                             ISettingsStore       settingsStore,
-                            IAudioIntentPlayer   audioIntentPlayer) : base(languageMenuUI, inputRouter, menuModule, audioIntentPlayer)
+                            ISfxPlayer           sfxPlayer,
+                            ISystemSoundConfig   systemSounds) : base(languageMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds)
         {
             m_LocalisationService = localisationService;
             m_SettingsService     = settingsService;
@@ -45,7 +47,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (action == MenuActions.Submit || action == CoreActions.Cancel)
             {
-                m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+                PlaySound(m_SystemSounds.Cursor);
                 m_MenuModule.PopMenu().FireAndForget();
             }
 
@@ -54,7 +56,7 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnLanguageChanged(int direction)
         {
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Cursor);
 
             async Task Run()
             {

@@ -20,7 +20,6 @@ namespace RPGFramework.Menu.SubMenus
         private readonly ISettingsStore       m_SettingsStore;
         private readonly ILocalisationService m_LocalisationService;
         private readonly IMusicPlayer         m_MusicPlayer;
-        private readonly ISfxPlayer           m_SfxPlayer;
 
         public ConfigMenu(IMenuModule          menuModule,
                           IConfigMenuUI        configMenuUI,
@@ -30,13 +29,12 @@ namespace RPGFramework.Menu.SubMenus
                           ILocalisationService localisationService,
                           IMusicPlayer         musicPlayer,
                           ISfxPlayer           sfxPlayer,
-                          IAudioIntentPlayer   audioIntentPlayer) : base(configMenuUI, inputRouter, menuModule, audioIntentPlayer)
+                          ISystemSoundConfig   systemSounds) : base(configMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds)
         {
             m_SettingsService     = settingsService;
             m_SettingsStore       = settingsStore;
             m_LocalisationService = localisationService;
             m_MusicPlayer         = musicPlayer;
-            m_SfxPlayer           = sfxPlayer;
 
             m_MenuUI.OnLanguageChanged           += OnLanguageChanged;
             m_MenuUI.OnControlsPressed           += OnControlsPressed;
@@ -65,7 +63,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (action == CoreActions.Cancel)
             {
-                m_AudioIntentPlayer.PlayAsync(AudioIntent.Cancel, AudioContext.Menu).FireAndForget();
+                PlaySound(m_SystemSounds.Cancel);
                 m_MenuModule.PopMenu().FireAndForget();
             }
 
@@ -74,7 +72,7 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnLanguageChanged(int direction)
         {
-            PlayNavigate();
+            PlaySound(m_SystemSounds.Cursor);
 
             async Task Run()
             {
@@ -98,19 +96,14 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnControlsPressed()
         {
-            PlayNavigate();
+            PlaySound(m_SystemSounds.Confirm);
 
             m_MenuModule.PushMenu(MenuIds.Controls).FireAndForget();
         }
 
         private void OnSliderStepped()
         {
-            PlayNavigate();
-        }
-
-        private void PlayNavigate()
-        {
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Cursor);
         }
 
         private void OnMusicVolumeChanged(float value)

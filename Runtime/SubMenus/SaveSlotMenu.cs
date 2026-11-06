@@ -1,3 +1,4 @@
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
@@ -33,8 +34,9 @@ namespace RPGFramework.Menu.SubMenus
         protected SaveSlotMenu(ISaveSlotMenuUI    saveSlotMenuUI,
                                IInputRouter       inputRouter,
                                IMenuModule        menuModule,
-                               IAudioIntentPlayer audioIntentPlayer,
-                               ISaveDataService   saveDataService) : base(saveSlotMenuUI, inputRouter, menuModule, audioIntentPlayer)
+                               ISfxPlayer         sfxPlayer,
+                               ISystemSoundConfig systemSounds,
+                               ISaveDataService   saveDataService) : base(saveSlotMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds)
         {
             m_SaveDataService = saveDataService;
             m_Files           = Array.Empty<string>();
@@ -88,7 +90,7 @@ namespace RPGFramework.Menu.SubMenus
             m_Question     = Question.Overwrite;
             m_QuestionFile = m_Files[index];
 
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Confirm);
             m_MenuUI.AskToOverwrite();
         }
 
@@ -140,7 +142,7 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnBack()
         {
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Cancel, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Cancel);
 
             if (m_Question == Question.None)
             {
@@ -165,14 +167,14 @@ namespace RPGFramework.Menu.SubMenus
 
             if (index < 0)
             {
-                m_AudioIntentPlayer.PlayAsync(AudioIntent.Error, AudioContext.Menu).FireAndForget();
+                PlaySound(m_SystemSounds.Error);
                 return;
             }
 
             m_Question     = Question.Delete;
             m_QuestionFile = m_Files[index];
 
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Confirm);
             m_MenuUI.AskToDelete();
         }
 
@@ -186,7 +188,7 @@ namespace RPGFramework.Menu.SubMenus
 
             if (!yes)
             {
-                m_AudioIntentPlayer.PlayAsync(AudioIntent.Cancel, AudioContext.Menu).FireAndForget();
+                PlaySound(m_SystemSounds.Cancel);
                 return;
             }
 
@@ -209,7 +211,7 @@ namespace RPGFramework.Menu.SubMenus
 
             m_SaveDataService.DeleteSave(file);
 
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Confirm, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Confirm);
 
             ShowSlots(focusFile);
         }

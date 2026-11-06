@@ -61,7 +61,9 @@ one, a Status menu, say:
    ```
 
 2. **Write it as a pair**: an interface deriving `IMenu`, **declared by its name**, and a class deriving
-   `Menu<IStatusMenuUI>`; an interface deriving `IMenuUI` and a class deriving `MenuUI<IStatusMenuUI>`.
+   `Menu<IStatusMenuUI>`; an interface deriving `IMenuUI` and a class deriving `MenuUI<IStatusMenuUI>`. The menu's
+   constructor passes the base its UI, the input router, the menu module, the `ISfxPlayer` and the game's
+   `ISystemSoundConfig`; it sounds the cursor itself, and `PlaySound(m_SystemSounds.Cancel)` plays any other.
 
    ```csharp
    [MenuName(GameMenus.STATUS)]
@@ -120,9 +122,10 @@ asset, so is a menu it has no layout for.
 - **The cursor moves the same way by key, pad or pointer**, between each menu's buttons, with the cursor sound, and
   nothing in a menu reacts while the screen fades. A menu and its UI are bound transient, as the sample binds them:
   each menu listens to its own UI.
-- **Sounds are requested by what happened**, such as navigating, cancelling or saving, through Core's audio intents, so
-  your game decides which sound each one is. The menus play them, never their UIs: a UI reports what the player did
-  and holds no audio player, so a menu UI of your own plays nothing either.
+- **Sounds are your game's system sounds** — the cursor, a confirm, a cancel, an error, a new game, a load and a save
+  — which your game picks in Core's **System Sound Config**. Choosing an entry plays the confirm sound, moving between
+  them the cursor sound. The menus play them, never their UIs: a UI reports what the player did and holds no audio
+  player, so a menu UI of your own plays nothing either.
 - **Settings are read and written through Core's settings store** and written to its settings file, never the save,
   and the music and sound effect volumes are applied as the title opens.
 

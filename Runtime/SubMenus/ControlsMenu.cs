@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
@@ -25,9 +26,10 @@ namespace RPGFramework.Menu.SubMenus
         public ControlsMenu(IControlsMenuUI        controlsMenuUI,
                             IInputRouter           inputRouter,
                             IMenuModule            menuModule,
-                            IAudioIntentPlayer     audioIntentPlayer,
+                            ISfxPlayer             sfxPlayer,
+                            ISystemSoundConfig     systemSounds,
                             IInputRebindingService rebindingService,
-                            ISettingsService       settingsService) : base(controlsMenuUI, inputRouter, menuModule, audioIntentPlayer)
+                            ISettingsService       settingsService) : base(controlsMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds)
         {
             m_RebindingService = rebindingService;
             m_SettingsService  = settingsService;
@@ -55,7 +57,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (!m_Waiting && action == CoreActions.Cancel)
             {
-                Play(AudioIntent.Cancel);
+                PlaySound(m_SystemSounds.Cancel);
                 m_MenuModule.PopMenu().FireAndForget();
             }
 
@@ -69,7 +71,7 @@ namespace RPGFramework.Menu.SubMenus
                 return;
             }
 
-            Play(AudioIntent.Confirm);
+            PlaySound(m_SystemSounds.Confirm);
 
             WaitForControl(button).FireAndForget();
         }
@@ -85,7 +87,7 @@ namespace RPGFramework.Menu.SubMenus
 
             m_MenuUI.ShowPrompt(false);
             ShowControlNames();
-            Play(outcome == RebindOutcome.Bound ? AudioIntent.Confirm : outcome == RebindOutcome.Refused ? AudioIntent.Error : AudioIntent.Cancel);
+            PlaySound(outcome == RebindOutcome.Bound ? m_SystemSounds.Confirm : outcome == RebindOutcome.Refused ? m_SystemSounds.Error : m_SystemSounds.Cancel);
 
             // The press that bound it, still held, is not also a press on the page.
             await Task.Yield();
@@ -103,7 +105,7 @@ namespace RPGFramework.Menu.SubMenus
 
             m_RebindingService.ResetAll();
             ShowControlNames();
-            Play(AudioIntent.Confirm);
+            PlaySound(m_SystemSounds.Confirm);
         }
 
         private void ShowControlNames()
@@ -114,11 +116,6 @@ namespace RPGFramework.Menu.SubMenus
 
                 m_MenuUI.SetControlName(i, name.Length > 0 ? name : NO_CONTROL);
             }
-        }
-
-        private void Play(AudioIntent intent)
-        {
-            m_AudioIntentPlayer.PlayAsync(intent, AudioContext.Menu).FireAndForget();
         }
     }
 }

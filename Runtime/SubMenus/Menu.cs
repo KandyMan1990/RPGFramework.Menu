@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
@@ -17,17 +18,20 @@ namespace RPGFramework.Menu.SubMenus
         protected readonly TMenuUI            m_MenuUI;
         protected readonly IInputRouter       m_InputRouter;
         protected readonly IMenuModule        m_MenuModule;
-        protected readonly IAudioIntentPlayer m_AudioIntentPlayer;
+        protected readonly ISfxPlayer         m_SfxPlayer;
+        protected readonly ISystemSoundConfig m_SystemSounds;
 
         protected Menu(TMenuUI            menuUI,
                        IInputRouter       inputRouter,
                        IMenuModule        menuModule,
-                       IAudioIntentPlayer audioIntentPlayer)
+                       ISfxPlayer         sfxPlayer,
+                       ISystemSoundConfig systemSounds)
         {
-            m_MenuUI            = menuUI;
-            m_InputRouter       = inputRouter;
-            m_MenuModule        = menuModule;
-            m_AudioIntentPlayer = audioIntentPlayer;
+            m_MenuUI       = menuUI;
+            m_InputRouter  = inputRouter;
+            m_MenuModule   = menuModule;
+            m_SfxPlayer    = sfxPlayer;
+            m_SystemSounds = systemSounds;
 
             m_MenuUI.OnCursorMoved += OnCursorMoved;
         }
@@ -87,7 +91,16 @@ namespace RPGFramework.Menu.SubMenus
 
         private void OnCursorMoved()
         {
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.Navigate, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.Cursor);
+        }
+
+        /// <summary>Plays a sound, one of <see cref="m_SystemSounds" /> or the menu's own, unless it is none.</summary>
+        protected void PlaySound(ulong sound)
+        {
+            if (sound != 0)
+            {
+                m_SfxPlayer.PlayAsync(sound).FireAndForget();
+            }
         }
 
         protected virtual Task OnEnterAsync(Dictionary<string, object> args)

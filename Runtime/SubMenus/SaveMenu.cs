@@ -1,3 +1,4 @@
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
@@ -13,8 +14,9 @@ namespace RPGFramework.Menu.SubMenus
         public SaveMenu(ISaveSlotMenuUI    saveSlotMenuUI,
                         IInputRouter       inputRouter,
                         IMenuModule        menuModule,
-                        IAudioIntentPlayer audioIntentPlayer,
-                        ISaveDataService   saveDataService) : base(saveSlotMenuUI, inputRouter, menuModule, audioIntentPlayer, saveDataService)
+                        ISfxPlayer         sfxPlayer,
+                        ISystemSoundConfig systemSounds,
+                        ISaveDataService   saveDataService) : base(saveSlotMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds, saveDataService)
         {
         }
 
@@ -37,7 +39,7 @@ namespace RPGFramework.Menu.SubMenus
         {
             m_SaveDataService.CommitSave(file);
 
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.SaveGame, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.SaveGame);
 
             ShowSlots(file);
         }

@@ -1,3 +1,4 @@
+using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
@@ -17,9 +18,10 @@ namespace RPGFramework.Menu.SubMenus
         public LoadMenu(ISaveSlotMenuUI     saveSlotMenuUI,
                         IInputRouter        inputRouter,
                         IMenuModule         menuModule,
-                        IAudioIntentPlayer  audioIntentPlayer,
+                        ISfxPlayer          sfxPlayer,
+                        ISystemSoundConfig  systemSounds,
                         ISaveDataService    saveDataService,
-                        IPlayTimeStore      playTimeStore) : base(saveSlotMenuUI, inputRouter, menuModule, audioIntentPlayer, saveDataService)
+                        IPlayTimeStore      playTimeStore) : base(saveSlotMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds, saveDataService)
         {
             m_PlayTimeStore = playTimeStore;
         }
@@ -28,13 +30,13 @@ namespace RPGFramework.Menu.SubMenus
         {
             if (!CanLoad(index))
             {
-                m_AudioIntentPlayer.PlayAsync(AudioIntent.Error, AudioContext.Menu).FireAndForget();
+                PlaySound(m_SystemSounds.Error);
                 return;
             }
 
             m_SaveDataService.BeginSave(m_Files[index]);
 
-            m_AudioIntentPlayer.PlayAsync(AudioIntent.LoadGame, AudioContext.Menu).FireAndForget();
+            PlaySound(m_SystemSounds.LoadGame);
 
             m_PlayTimeStore.StartCounting();
 
