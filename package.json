@@ -5,9 +5,9 @@
   "description": "Menu system for the RPG Framework",
   "dependencies": {
     "com.rpgframework.audio": "6.0.0",
-    "com.rpgframework.core": "0.9.0",
+    "com.rpgframework.core": "0.9.1",
     "com.rpgframework.core.sharedtypes": "0.3.0",
-    "com.rpgframework.di": "5.0.0",
+    "com.rpgframework.di": "6.0.0",
     "com.rpgframework.hashing": "2.0.2",
     "com.rpgframework.localisation": "4.0.0",
     "com.rpgframework.menu.sharedtypes": "0.4.0",
