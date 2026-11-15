@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using RPGFramework.Menu.Editor;
 using RPGFramework.Menu.SharedTypes.Constants;
+using Unity.Scripting.LifecycleManagement;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,6 +12,7 @@ namespace RPGFramework.Menu.Tests
     /// A Menu UI Provider as the Menu Sample's is: a layout for each of the framework's menus, under the names they are
     /// declared by, and a save slot, authored through the inspector's serialized properties.
     /// </summary>
+    [NoAutoStaticsCleanup]
     internal sealed class MenusToCheck
     {
         internal const string STATUS = "Status";

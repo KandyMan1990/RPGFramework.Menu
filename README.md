@@ -3,7 +3,7 @@
 The menus of an RPG Framework game, as a module with a scene of its own: the title screen and its settings, and the
 menus opened from the field. Menus are UI Toolkit documents, stacked one over another.
 
-Requires Unity 6000.6 or newer, RPGFramework.Core and its shared types, RPGFramework.Menu.SharedTypes,
+Requires Unity 6000.7 or newer, RPGFramework.Core and its shared types, RPGFramework.Menu.SharedTypes,
 RPGFramework.DI, RPGFramework.Audio, RPGFramework.Hashing, RPGFramework.Localisation and Unity.Mathematics.
 
 ---

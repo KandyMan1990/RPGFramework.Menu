@@ -1,5 +1,6 @@
 using RPGFramework.Core.Input;
 using RPGFramework.Hashing;
+using Unity.Scripting.LifecycleManagement;
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace RPGFramework.Menu.SubMenus
     /// which UI Toolkit reads too: its confirm is that map's <c>Submit</c>. Every action the menus read is declared for
     /// the editor's check of the menu scene's map.
     /// </summary>
+    [NoAutoStaticsCleanup]
     internal sealed class MenuActions
 #if UNITY_EDITOR
         : IRequiredActions

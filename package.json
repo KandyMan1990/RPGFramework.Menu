@@ -13,7 +13,7 @@
     "com.rpgframework.menu.sharedtypes": "0.4.0",
     "com.unity.mathematics": "1.4.0"
   },
-  "unity": "6000.6",
+  "unity": "6000.7",
   "samples": [
     {
       "displayName": "Menu Sample",
