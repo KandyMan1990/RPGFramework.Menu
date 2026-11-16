@@ -1,6 +1,6 @@
 {
   "name": "com.rpgframework.menu",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "displayName": "RPG Framework Menu",
   "description": "Menu system for the RPG Framework",
   "dependencies": {
