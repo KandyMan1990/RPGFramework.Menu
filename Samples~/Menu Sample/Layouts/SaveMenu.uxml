@@ -15,11 +15,11 @@
             </ui:Label>
         </ui:VisualElement>
         <ui:ScrollView name="SlotsScrollView">
-            <RPGFramework.Core.UI.RPGUIButton focusable="true" name="NewSaveBtn" text="New Save">
+            <ui:Label name="NewSaveBtn" text="New Save" class="rpg-ui-label">
                 <Bindings>
                     <RPGFramework.Localisation.StaticLocalisedText property="text" key="SaveMenu/New_Save"/>
                 </Bindings>
-            </RPGFramework.Core.UI.RPGUIButton>
+            </ui:Label>
         </ui:ScrollView>
         <ui:VisualElement name="QuestionPanel">
             <ui:Label text="Overwrite?" name="OverwriteQuestionLabel" class="rpg-ui-label">
@@ -33,16 +33,16 @@
                 </Bindings>
             </ui:Label>
             <ui:VisualElement name="QuestionButtons">
-                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="YesBtn" text="Yes">
+                <ui:Label name="YesBtn" text="Yes" class="rpg-ui-label">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/Yes"/>
                     </Bindings>
-                </RPGFramework.Core.UI.RPGUIButton>
-                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="NoBtn" text="No">
+                </ui:Label>
+                <ui:Label name="NoBtn" text="No" class="rpg-ui-label">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/No"/>
                     </Bindings>
-                </RPGFramework.Core.UI.RPGUIButton>
+                </ui:Label>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

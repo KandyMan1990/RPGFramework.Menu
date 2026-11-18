@@ -1,5 +1,4 @@
-﻿using System;
-using RPGFramework.Core.UI;
+using System;
 using RPGFramework.Localisation;
 using UnityEngine.UIElements;
 
@@ -17,7 +16,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private event Action<int> m_OnLanguageChanged;
 
-        private RPGUIButton m_LanguageBtn;
+        private VisualElement m_LanguageBtn;
 
         public LanguageMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
             : base(uiProvider, localisationService)
@@ -26,8 +25,9 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override void HookupUI()
         {
-            m_LanguageBtn = m_UIInstance.Q<RPGUIButton>("LanguageBtn");
+            m_LanguageBtn = m_UIInstance.Q("LanguageBtn");
 
+            m_Selection.LinkColumn(new[] { m_LanguageBtn }, false);
             m_LanguageBtn.RegisterCallback<NavigationMoveEvent>(OnLanguageBtnNavigate);
         }
 

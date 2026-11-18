@@ -4,21 +4,21 @@
     <ui:VisualElement name="PartyMenu" class="rpg-menu">
         <ui:VisualElement name="ContentContainer" class="rpg-menu-content">
             <ui:VisualElement name="ButtonsContainer" class="rpg-menu-buttons">
-                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="ConfigBtn" text="Config">
+                <ui:Label name="ConfigBtn" text="Config" class="rpg-ui-label">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/Settings"/>
                     </Bindings>
-                </RPGFramework.Core.UI.RPGUIButton>
-                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="SaveBtn" text="Save">
+                </ui:Label>
+                <ui:Label name="SaveBtn" text="Save" class="rpg-ui-label">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="PartyMenu/Save"/>
                     </Bindings>
-                </RPGFramework.Core.UI.RPGUIButton>
-                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="LoadBtn" text="Load">
+                </ui:Label>
+                <ui:Label name="LoadBtn" text="Load" class="rpg-ui-label">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="PartyMenu/Load"/>
                     </Bindings>
-                </RPGFramework.Core.UI.RPGUIButton>
+                </ui:Label>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="FooterContainer" class="rpg-menu-footer">

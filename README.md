@@ -120,7 +120,9 @@ asset, so is a menu it has no layout for.
   own: the sample's are the starting point. A layout keeps the names of the elements
   its UI looks for — `NewGameBtn`, `SaveTitleLabel` — and its text's keys are its own.
 - **The cursor moves the same way by key, pad or pointer**, between each menu's buttons, with the cursor sound, and
-  nothing in a menu reacts while the screen fades. A menu and its UI are bound transient, as the sample binds them:
+  nothing in a menu reacts while the screen fades. A button is any element the menu links (Core's `SelectionScope`):
+  the sample's are plain labels, found by name. The hand is Core's `.rpg-selectable:focus`, which your stylesheet can
+  restyle. A menu and its UI are bound transient, as the sample binds them:
   each menu listens to its own UI.
 - **Sounds are your game's system sounds** — the cursor, a confirm, a cancel, an error, a new game, a load and a save
   — which your game picks in Core's **System Sound Config**. Choosing an entry plays the confirm sound, moving between

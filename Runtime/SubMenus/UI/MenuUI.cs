@@ -38,8 +38,10 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected VisualElement m_LastFocusedElement;
 
-        private SelectionScope m_Selection;
-        private string[]       m_SheetNames;
+        /// <summary>The scope the UI's elements are linked in, for the cursor to move between them and be chosen.</summary>
+        protected SelectionScope m_Selection;
+
+        private string[] m_SheetNames;
 
         protected MenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
         {

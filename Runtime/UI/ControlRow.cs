@@ -6,12 +6,15 @@ namespace RPGFramework.Menu.UI
 {
     /// <summary>
     /// A row of the Controls page: one control the player can rebind, the actions it is in — <c>Player/Confirm,
-    /// UI/Submit</c>, rebound as one — and, for a direction, the part it is, such as <c>up</c>. Its buttons are named
-    /// for the control schemes they rebind it in, <c>Keyboard&amp;Mouse</c> or <c>Gamepad</c>.
+    /// UI/Submit</c>, rebound as one — and, for a direction, the part it is, such as <c>up</c>. Its buttons are labels
+    /// of the class <c>rpg-menu-control</c>, named for the control schemes they rebind it in, <c>Keyboard&amp;Mouse</c>
+    /// or <c>Gamepad</c>.
     /// </summary>
     [UxmlElement]
     public sealed partial class ControlRow : VisualElement
     {
+        internal const string BUTTON_CLASS = "rpg-menu-control";
+
         private static readonly char[] m_Separators = { ',' };
 
         /// <summary>The actions the control is in, each <c>Map/Action</c>, separated by commas.</summary>

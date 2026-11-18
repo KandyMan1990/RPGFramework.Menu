@@ -31,10 +31,10 @@ namespace RPGFramework.Menu.SubMenus.UI
         private event Action m_OnSavePressed;
         private event Action m_OnLoadPressed;
 
-        private RPGUIButton m_ConfigBtn;
-        private RPGUIButton m_SaveBtn;
-        private RPGUIButton m_LoadBtn;
-        private Label       m_PlayTimeLabel;
+        private VisualElement m_ConfigBtn;
+        private VisualElement m_SaveBtn;
+        private VisualElement m_LoadBtn;
+        private Label         m_PlayTimeLabel;
 
         private DynamicLocalisedText m_LocationName;
 
@@ -47,17 +47,17 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override void HookupUI()
         {
-            m_ConfigBtn     = m_UIInstance.Q<RPGUIButton>("ConfigBtn");
-            m_SaveBtn       = m_UIInstance.Q<RPGUIButton>("SaveBtn");
-            m_LoadBtn       = m_UIInstance.Q<RPGUIButton>("LoadBtn");
+            m_ConfigBtn     = m_UIInstance.Q("ConfigBtn");
+            m_SaveBtn       = m_UIInstance.Q("SaveBtn");
+            m_LoadBtn       = m_UIInstance.Q("LoadBtn");
             m_PlayTimeLabel = m_UIInstance.Q<Label>("PlayTimeLabel");
             m_LocationName  = (DynamicLocalisedText)m_UIInstance.Q<Label>("LocationLabel").GetBinding("text");
 
-            RPGUIButton.LinkColumn(new RPGUIButton[] { m_ConfigBtn, m_SaveBtn, m_LoadBtn }, true);
+            m_Selection.LinkColumn(new[] { m_ConfigBtn, m_SaveBtn, m_LoadBtn }, true);
 
-            m_ConfigBtn.Chosen += OnConfigChosen;
-            m_SaveBtn.Chosen   += OnSaveChosen;
-            m_LoadBtn.Chosen   += OnLoadChosen;
+            m_Selection.RegisterChosen(m_ConfigBtn, OnConfigChosen);
+            m_Selection.RegisterChosen(m_SaveBtn, OnSaveChosen);
+            m_Selection.RegisterChosen(m_LoadBtn, OnLoadChosen);
         }
 
         void IPartyMenuUI.SetSaveEnabled(bool enabled)

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using RPGFramework.Core.Input;
-using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.UI;
 using Unity.Mathematics;
@@ -34,16 +33,16 @@ namespace RPGFramework.Menu.SubMenus.UI
         private event Action      m_OnResetPressed;
 
         private RebindableControl[] m_Controls;
-        private RPGUIButton[]       m_Buttons;
+        private TextElement[]       m_Buttons;
         private int[]               m_ButtonRows;
-        private RPGUIButton         m_ResetBtn;
+        private VisualElement       m_ResetBtn;
         private VisualElement       m_Prompt;
 
         public ControlsMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
             : base(uiProvider, localisationService)
         {
             m_Controls   = Array.Empty<RebindableControl>();
-            m_Buttons    = Array.Empty<RPGUIButton>();
+            m_Buttons    = Array.Empty<TextElement>();
             m_ButtonRows = Array.Empty<int>();
         }
 
@@ -66,7 +65,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         protected override void HookupUI()
         {
             List<ControlRow> rows  = m_UIInstance.Query<ControlRow>().ToList();
-            RPGUIButton[][]  cells = new RPGUIButton[rows.Count][];
+            TextElement[][]  cells = new TextElement[rows.Count][];
             int              count = 0;
 
             m_Controls = new RebindableControl[rows.Count];
@@ -74,11 +73,11 @@ namespace RPGFramework.Menu.SubMenus.UI
             for (int i = 0; i < rows.Count; i++)
             {
                 m_Controls[i] =  rows[i].ToControl();
-                cells[i]      =  rows[i].Query<RPGUIButton>().ToList().ToArray();
+                cells[i]      =  rows[i].Query<TextElement>(className: ControlRow.BUTTON_CLASS).ToList().ToArray();
                 count         += cells[i].Length;
             }
 
-            m_Buttons    = new RPGUIButton[count];
+            m_Buttons    = new TextElement[count];
             m_ButtonRows = new int[count];
 
             int button = 0;
@@ -89,18 +88,20 @@ namespace RPGFramework.Menu.SubMenus.UI
                 {
                     int chosen = button;
 
-                    m_Buttons[button]        =  cells[row][i];
-                    m_ButtonRows[button]     =  row;
-                    m_Buttons[button].Chosen += () => m_OnControlChosen?.Invoke(chosen);
+                    m_Buttons[button]    = cells[row][i];
+                    m_ButtonRows[button] = row;
+
+                    m_Selection.RegisterChosen(m_Buttons[button], () => m_OnControlChosen?.Invoke(chosen));
 
                     button++;
                 }
 
-                RPGUIButton.LinkRow(cells[row], false);
+                m_Selection.LinkRow(cells[row], false);
             }
 
-            m_ResetBtn        =  m_UIInstance.Q<RPGUIButton>(RESET_BUTTON);
-            m_ResetBtn.Chosen += () => m_OnResetPressed?.Invoke();
+            m_ResetBtn = m_UIInstance.Q(RESET_BUTTON);
+
+            m_Selection.RegisterChosen(m_ResetBtn, () => m_OnResetPressed?.Invoke());
 
             m_Prompt                  = m_UIInstance.Q(PROMPT);
             m_Prompt.style.visibility = Visibility.Hidden;
@@ -109,7 +110,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         }
 
         // Each column runs down the rows that have a button in it, a direction's having none for a pad, to Reset.
-        private void LinkColumns(RPGUIButton[][] cells)
+        private void LinkColumns(TextElement[][] cells)
         {
             int columns = 0;
 
@@ -127,7 +128,7 @@ namespace RPGFramework.Menu.SubMenus.UI
                     length += column < cells[row].Length ? 1 : 0;
                 }
 
-                RPGUIButton[] buttons = new RPGUIButton[length];
+                VisualElement[] buttons = new VisualElement[length];
                 int           next    = 0;
 
                 for (int row = 0; row < cells.Length; row++)
@@ -140,7 +141,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
                 buttons[next] = m_ResetBtn;
 
-                RPGUIButton.LinkColumn(buttons, true);
+                m_Selection.LinkColumn(buttons, true);
             }
         }
     }

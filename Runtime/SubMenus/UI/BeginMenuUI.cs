@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using RPGFramework.Core;
-using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -46,7 +45,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private event Action m_OnDebugRoomPressed;
 
-        private RPGUIButton m_DebugRoomBtn;
+        private Label m_DebugRoomBtn;
 #endif
 
         private event Action m_OnNewGamePressed;
@@ -54,11 +53,11 @@ namespace RPGFramework.Menu.SubMenus.UI
         private event Action m_OnConfigPressed;
         private event Action m_OnQuitPressed;
 
-        private RPGUIButton m_NewGameBtn;
-        private RPGUIButton m_LoadGameBtn;
-        private RPGUIButton m_ConfigBtn;
-        private RPGUIButton m_QuitBtn;
-        private Label       m_VersionLabel;
+        private VisualElement m_NewGameBtn;
+        private VisualElement m_LoadGameBtn;
+        private VisualElement m_ConfigBtn;
+        private VisualElement m_QuitBtn;
+        private Label         m_VersionLabel;
 
         protected override VisualElement GetDefaultFocusedElement() => m_NewGameBtn;
 
@@ -69,31 +68,31 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override void HookupUI()
         {
-            m_NewGameBtn   = m_UIInstance.Q<RPGUIButton>("NewGameBtn");
-            m_LoadGameBtn  = m_UIInstance.Q<RPGUIButton>("LoadGameBtn");
-            m_ConfigBtn    = m_UIInstance.Q<RPGUIButton>("ConfigBtn");
-            m_QuitBtn      = m_UIInstance.Q<RPGUIButton>("QuitBtn");
+            m_NewGameBtn   = m_UIInstance.Q("NewGameBtn");
+            m_LoadGameBtn  = m_UIInstance.Q("LoadGameBtn");
+            m_ConfigBtn    = m_UIInstance.Q("ConfigBtn");
+            m_QuitBtn      = m_UIInstance.Q("QuitBtn");
             m_VersionLabel = m_UIInstance.Q<Label>("VersionLabel");
 
             m_VersionLabel.text = $"v{Application.version}";
 
 #if ENABLE_RPG_FRAMEWORK_DEBUG
-            m_DebugRoomBtn      = new RPGUIButton();
+            m_DebugRoomBtn      = new Label();
             m_DebugRoomBtn.name = "DebugRoomBtn";
             m_DebugRoomBtn.text = "Debug Room";
+            m_DebugRoomBtn.AddToClassList("rpg-ui-label");
             m_QuitBtn.parent.Insert(m_QuitBtn.parent.IndexOf(m_QuitBtn), m_DebugRoomBtn);
 
-            m_DebugRoomBtn.Chosen += OnDebugRoomChosen;
-
-            RPGUIButton.LinkColumn(new RPGUIButton[] { m_NewGameBtn, m_LoadGameBtn, m_ConfigBtn, m_DebugRoomBtn, m_QuitBtn }, true);
+            m_Selection.RegisterChosen(m_DebugRoomBtn, OnDebugRoomChosen);
+            m_Selection.LinkColumn(new[] { m_NewGameBtn, m_LoadGameBtn, m_ConfigBtn, m_DebugRoomBtn, m_QuitBtn }, true);
 #else
-            RPGUIButton.LinkColumn(new RPGUIButton[] { m_NewGameBtn, m_LoadGameBtn, m_ConfigBtn, m_QuitBtn }, true);
+            m_Selection.LinkColumn(new[] { m_NewGameBtn, m_LoadGameBtn, m_ConfigBtn, m_QuitBtn }, true);
 #endif
 
-            m_NewGameBtn.Chosen  += OnNewGameChosen;
-            m_LoadGameBtn.Chosen += OnLoadGameChosen;
-            m_ConfigBtn.Chosen   += OnConfigChosen;
-            m_QuitBtn.Chosen     += OnQuitChosen;
+            m_Selection.RegisterChosen(m_NewGameBtn, OnNewGameChosen);
+            m_Selection.RegisterChosen(m_LoadGameBtn, OnLoadGameChosen);
+            m_Selection.RegisterChosen(m_ConfigBtn, OnConfigChosen);
+            m_Selection.RegisterChosen(m_QuitBtn, OnQuitChosen);
         }
 
         private void OnNewGameChosen()

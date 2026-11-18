@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using RPGFramework.Core;
-using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using Unity.Mathematics;
 using UnityEngine.UIElements;
@@ -61,16 +60,16 @@ namespace RPGFramework.Menu.SubMenus.UI
         private event Action<float> m_OnBattleMessageSpeedChanged;
         private event Action<float> m_OnFieldMessageSpeedChanged;
 
-        private RPGUIButton m_LanguageBtn;
-        private RPGUIButton m_ControlsBtn;
-        private RPGUIButton m_MusicVolumeBtn;
-        private Slider      m_MusicVolumeSlider;
-        private RPGUIButton m_SfxVolumeBtn;
-        private Slider      m_SfxVolumeSlider;
-        private RPGUIButton m_BattleMessageSpeedBtn;
-        private Slider      m_BattleMessageSpeedSlider;
-        private RPGUIButton m_FieldMessageSpeedBtn;
-        private Slider      m_FieldMessageSpeedSlider;
+        private VisualElement m_LanguageBtn;
+        private VisualElement m_ControlsBtn;
+        private VisualElement m_MusicVolumeBtn;
+        private Slider        m_MusicVolumeSlider;
+        private VisualElement m_SfxVolumeBtn;
+        private Slider        m_SfxVolumeSlider;
+        private VisualElement m_BattleMessageSpeedBtn;
+        private Slider        m_BattleMessageSpeedSlider;
+        private VisualElement m_FieldMessageSpeedBtn;
+        private Slider        m_FieldMessageSpeedSlider;
 
         protected override VisualElement GetDefaultFocusedElement() => m_LanguageBtn;
 
@@ -81,24 +80,24 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override void HookupUI()
         {
-            m_LanguageBtn              = m_UIInstance.Q<RPGUIButton>("LanguageBtn");
-            m_ControlsBtn              = m_UIInstance.Q<RPGUIButton>("ControlsBtn");
-            m_MusicVolumeBtn           = m_UIInstance.Q<RPGUIButton>("MusicVolumeBtn");
+            m_LanguageBtn              = m_UIInstance.Q("LanguageBtn");
+            m_ControlsBtn              = m_UIInstance.Q("ControlsBtn");
+            m_MusicVolumeBtn           = m_UIInstance.Q("MusicVolumeBtn");
             m_MusicVolumeSlider        = m_UIInstance.Q<Slider>("MusicVolumeSlider");
-            m_SfxVolumeBtn             = m_UIInstance.Q<RPGUIButton>("SfxVolumeBtn");
+            m_SfxVolumeBtn             = m_UIInstance.Q("SfxVolumeBtn");
             m_SfxVolumeSlider          = m_UIInstance.Q<Slider>("SfxVolumeSlider");
-            m_BattleMessageSpeedBtn    = m_UIInstance.Q<RPGUIButton>("BattleMessageSpeedBtn");
+            m_BattleMessageSpeedBtn    = m_UIInstance.Q("BattleMessageSpeedBtn");
             m_BattleMessageSpeedSlider = m_UIInstance.Q<Slider>("BattleMessageSpeedSlider");
-            m_FieldMessageSpeedBtn     = m_UIInstance.Q<RPGUIButton>("FieldMessageSpeedBtn");
+            m_FieldMessageSpeedBtn     = m_UIInstance.Q("FieldMessageSpeedBtn");
             m_FieldMessageSpeedSlider  = m_UIInstance.Q<Slider>("FieldMessageSpeedSlider");
 
-            RPGUIButton[] rows =
+            VisualElement[] rows =
             {
                 m_LanguageBtn, m_ControlsBtn, m_MusicVolumeBtn,
                 m_SfxVolumeBtn, m_BattleMessageSpeedBtn, m_FieldMessageSpeedBtn
             };
 
-            RPGUIButton.LinkColumn(rows, true);
+            m_Selection.LinkColumn(rows, true);
 
             // Its row's button takes left and right for a slider; one taking focus on a click would leave the cursor
             // with no neighbours to move by.
@@ -107,7 +106,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_BattleMessageSpeedSlider.focusable = false;
             m_FieldMessageSpeedSlider.focusable  = false;
 
-            m_ControlsBtn.Chosen += OnControlsChosen;
+            m_Selection.RegisterChosen(m_ControlsBtn, OnControlsChosen);
 
             m_LanguageBtn.RegisterCallback<NavigationMoveEvent>(OnLanguageBtnNavigate);
             m_MusicVolumeBtn.RegisterCallback<NavigationMoveEvent>(OnMusicVolumeBtnNavigate);

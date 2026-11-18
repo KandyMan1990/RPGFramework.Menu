@@ -11,26 +11,26 @@
         </ui:VisualElement>
         <ui:VisualElement name="ContentContainer" class="rpg-menu-content">
             <ui:VisualElement name="ButtonsContainer" class="rpg-menu-buttons">
-                <RPGFramework.Core.UI.RPGUIButton focusable="true" text="New Game" name="NewGameBtn">
+                <ui:Label text="New Game" name="NewGameBtn" class="rpg-ui-label">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="BeginMenu/New_Game"/>
                     </Bindings>
-                </RPGFramework.Core.UI.RPGUIButton>
-                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="LoadGameBtn" text="Load Game">
+                </ui:Label>
+                <ui:Label name="LoadGameBtn" text="Load Game" class="rpg-ui-label">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="BeginMenu/Load_Game"/>
                     </Bindings>
-                </RPGFramework.Core.UI.RPGUIButton>
-                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="ConfigBtn" text="Settings">
+                </ui:Label>
+                <ui:Label name="ConfigBtn" text="Settings" class="rpg-ui-label">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/Settings"/>
                     </Bindings>
-                </RPGFramework.Core.UI.RPGUIButton>
-                <RPGFramework.Core.UI.RPGUIButton focusable="true" name="QuitBtn" text="Quit">
+                </ui:Label>
+                <ui:Label name="QuitBtn" text="Quit" class="rpg-ui-label">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="BeginMenu/Quit_Game"/>
                     </Bindings>
-                </RPGFramework.Core.UI.RPGUIButton>
+                </ui:Label>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="FooterContainer" class="rpg-menu-footer">

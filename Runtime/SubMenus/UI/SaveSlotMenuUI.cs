@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using RPGFramework.Core.SaveData;
-using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using UnityEngine.UIElements;
 
@@ -33,18 +32,18 @@ namespace RPGFramework.Menu.SubMenus.UI
         private event Action       m_OnNewSaveChosen;
         private event Action<bool> m_OnQuestionAnswered;
 
-        private RPGUIButton[]        m_Rows;
+        private VisualElement[]      m_Rows;
         private ISaveSlotElement[][] m_SlotElements;
 
         private Label         m_SaveTitleLabel;
         private Label         m_LoadTitleLabel;
         private ScrollView    m_SlotsScrollView;
-        private RPGUIButton   m_NewSaveRow;
+        private VisualElement m_NewSaveRow;
         private VisualElement m_QuestionPanel;
         private Label         m_OverwriteQuestionLabel;
         private Label         m_DeleteQuestionLabel;
-        private RPGUIButton   m_YesBtn;
-        private RPGUIButton   m_NoBtn;
+        private VisualElement m_YesBtn;
+        private VisualElement m_NoBtn;
 
         private bool                       m_Saving;
         private IReadOnlyList<SavePreview> m_Slots;
@@ -57,7 +56,7 @@ namespace RPGFramework.Menu.SubMenus.UI
         public SaveSlotMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
             : base(uiProvider, localisationService)
         {
-            m_Rows         = Array.Empty<RPGUIButton>();
+            m_Rows         = Array.Empty<VisualElement>();
             m_SlotElements = Array.Empty<ISaveSlotElement[]>();
             m_Slots        = Array.Empty<SavePreview>();
         }
@@ -67,12 +66,12 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_SaveTitleLabel         = m_UIInstance.Q<Label>("SaveTitleLabel");
             m_LoadTitleLabel         = m_UIInstance.Q<Label>("LoadTitleLabel");
             m_SlotsScrollView        = m_UIInstance.Q<ScrollView>("SlotsScrollView");
-            m_NewSaveRow             = m_UIInstance.Q<RPGUIButton>("NewSaveBtn");
+            m_NewSaveRow             = m_UIInstance.Q("NewSaveBtn");
             m_QuestionPanel          = m_UIInstance.Q<VisualElement>("QuestionPanel");
             m_OverwriteQuestionLabel = m_UIInstance.Q<Label>("OverwriteQuestionLabel");
             m_DeleteQuestionLabel    = m_UIInstance.Q<Label>("DeleteQuestionLabel");
-            m_YesBtn                 = m_UIInstance.Q<RPGUIButton>("YesBtn");
-            m_NoBtn                  = m_UIInstance.Q<RPGUIButton>("NoBtn");
+            m_YesBtn                 = m_UIInstance.Q("YesBtn");
+            m_NoBtn                  = m_UIInstance.Q("NoBtn");
 
             m_QuestionPanel.style.display = DisplayStyle.None;
 
@@ -80,10 +79,10 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_NewSaveRow.RemoveFromHierarchy();
             HookUpRow(m_NewSaveRow, () => m_OnNewSaveChosen?.Invoke());
 
-            RPGUIButton.LinkRow(new RPGUIButton[] { m_YesBtn, m_NoBtn }, true);
+            m_Selection.LinkRow(new[] { m_YesBtn, m_NoBtn }, true);
 
-            m_YesBtn.Chosen += OnYesChosen;
-            m_NoBtn.Chosen  += OnNoChosen;
+            m_Selection.RegisterChosen(m_YesBtn, OnYesChosen);
+            m_Selection.RegisterChosen(m_NoBtn, OnNoChosen);
         }
 
         // A slot's layout is cloned per save once the slots are known, after the sheets load.
@@ -116,7 +115,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_Slots = slots;
 
             m_SlotsScrollView.Clear();
-            m_Rows         = new RPGUIButton[FirstSlotRow + slots.Count];
+            m_Rows         = new VisualElement[FirstSlotRow + slots.Count];
             m_SlotElements = new ISaveSlotElement[slots.Count][];
 
             if (m_Saving)
@@ -128,7 +127,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             {
                 int index = i;
 
-                RPGUIButton row = AddRow(FirstSlotRow + i, () => m_OnSlotChosen?.Invoke(index));
+                VisualElement row = AddRow(FirstSlotRow + i, () => m_OnSlotChosen?.Invoke(index));
 
                 m_SlotElements[i] = AddSlotLayout(row);
 
@@ -139,7 +138,7 @@ namespace RPGFramework.Menu.SubMenus.UI
                 }
             }
 
-            RPGUIButton.LinkColumn(m_Rows, false);
+            m_Selection.LinkColumn(m_Rows, false);
 
             Localise();
 
@@ -151,7 +150,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         int ISaveSlotMenuUI.GetFocusedSlot()
         {
-            int row  = Array.IndexOf(m_Rows, m_UIInstance.focusController.focusedElement as RPGUIButton);
+            int row  = Array.IndexOf(m_Rows, m_UIInstance.focusController.focusedElement as VisualElement);
             int slot = row >= FirstSlotRow ? row - FirstSlotRow : -1;
 
             return slot;
@@ -197,9 +196,9 @@ namespace RPGFramework.Menu.SubMenus.UI
             element.style.display = shown ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
-        private RPGUIButton AddRow(int index, Action choose)
+        private VisualElement AddRow(int index, Action choose)
         {
-            RPGUIButton row = new RPGUIButton { focusable = true };
+            VisualElement row = new VisualElement();
 
             HookUpRow(row, choose);
             PlaceRow(index, row);
@@ -207,23 +206,22 @@ namespace RPGFramework.Menu.SubMenus.UI
             return row;
         }
 
-        private void HookUpRow(RPGUIButton row, Action choose)
+        private void HookUpRow(VisualElement row, Action choose)
         {
-            row.Chosen += choose;
+            m_Selection.RegisterChosen(row, choose);
             row.RegisterCallback<FocusInEvent>(_ => m_SlotsScrollView.ScrollTo(row));
         }
 
-        private void PlaceRow(int index, RPGUIButton row)
+        private void PlaceRow(int index, VisualElement row)
         {
             m_Rows[index] = row;
             m_SlotsScrollView.Add(row);
         }
 
-        private ISaveSlotElement[] AddSlotLayout(RPGUIButton row)
+        private ISaveSlotElement[] AddSlotLayout(VisualElement row)
         {
             TemplateContainer layout = m_UIProvider.SaveSlot.Instantiate();
 
-            row.text = string.Empty;
             row.Add(layout);
 
             List<VisualElement> descendants = layout.Query<VisualElement>().ToList();
