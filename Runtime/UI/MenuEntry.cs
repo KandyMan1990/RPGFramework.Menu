@@ -1,3 +1,4 @@
+using RPGFramework.Core.Memory;
 using RPGFramework.Hashing;
 using RPGFramework.Localisation;
 using Unity.Properties;
@@ -26,15 +27,15 @@ namespace RPGFramework.Menu.UI
         }
 
         /// <summary>The name of the menu it opens, such as <c>Save</c> or a game's own; empty for none.</summary>
-        [UxmlAttribute]
+        [UxmlAttribute, DeclaredMenuName]
         public string Opens { get; set; }
 
         /// <summary>The name of the command its menu carries out, such as the title's <c>NewGame</c>; empty for none.</summary>
-        [UxmlAttribute]
+        [UxmlAttribute, DeclaredMenuCommand]
         public string Command { get; set; }
 
         /// <summary>A Bool variable, by name, the entry is greyed while it is false; empty to be offered always.</summary>
-        [UxmlAttribute]
+        [UxmlAttribute, VariableName(VariableWidth.Bool)]
         public string When { get; set; }
 
         /// <summary>The key of its help, <c>Sheet/Key</c>, shown in the menu's help line; empty for none.</summary>

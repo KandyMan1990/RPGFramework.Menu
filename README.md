@@ -113,7 +113,8 @@ Load away, is an edit to the layout and nothing else:
 
 - **`opens`** names the menu it opens, the framework's or your own. Choosing it plays the confirm sound and opens it.
 - **`command`**, instead, names work the menu carries out itself — the title's `NewGame` and `Quit`. A menu of your own
-  carries out its commands by overriding `OnCommand`, playing its own sound.
+  carries out its commands by overriding `OnCommand`, playing its own sound, and declares each on its interface,
+  `[MenuCommand("Credits")]` beside its `[MenuName]`, so the UI Builder offers it.
 - **`when`** names a Bool variable in your variable map: while it is false the entry is greyed — still on the cursor's
   path, choosing it playing the error sound — so your scripts set it as the story goes. Leave it empty to offer the
   entry always. A menu's own conditions come on top: the party menu's Save is greyed without the save flag.
@@ -125,6 +126,9 @@ Load away, is an edit to the layout and nothing else:
   it closes, so an entry a menu turns on shows offered on the way back.
 - An entry with neither `opens` nor `command` is its menu's own to handle, as Config's rows are, its sliders and the
   language taking left and right.
+- **Nothing is typed in the UI Builder**: `opens` is a list of the declared menus, `command` of the commands the menus
+  using the open layout declare (by your Menu UI Providers; none for a layout no menu has yet), `when` of your variable
+  map's single Bools, and `help` of your sheets' keys. A name a list no longer holds is kept as it was.
 
 ### A help line
 

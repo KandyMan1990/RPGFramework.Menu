@@ -5,6 +5,7 @@ using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveData;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes.Constants;
+using RPGFramework.Menu.SubMenus;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu
@@ -156,6 +157,8 @@ namespace RPGFramework.Menu
 
     /// <summary>The title menu: its entries, New Game, Load Game, Settings and Quit in the sample, and the game's version.</summary>
     [MenuName(MenuIds.BEGIN)]
+    [MenuCommand(BeginMenuCommands.NEW_GAME)]
+    [MenuCommand(BeginMenuCommands.QUIT)]
     public interface IBeginMenu : IMenu
     {
     }
