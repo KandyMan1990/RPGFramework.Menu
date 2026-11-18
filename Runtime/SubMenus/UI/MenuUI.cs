@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RPGFramework.Core;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.UI;
