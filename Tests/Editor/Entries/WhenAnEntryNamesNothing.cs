@@ -20,6 +20,12 @@ namespace RPGFramework.Menu.Tests.Entries
         }
 
         [Test]
+        public void ThenItRunsNoCommand()
+        {
+            Assert.AreEqual(0UL, m_Choice.Command);
+        }
+
+        [Test]
         public void ThenNoVariableGreysIt()
         {
             Assert.IsNull(m_Choice.When);

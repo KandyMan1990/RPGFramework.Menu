@@ -85,6 +85,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             m_Selection.Moved += OnSelectionMoved;
 
+            AddEntries();
             FindEntries();
 
             ShowUI(false);
@@ -202,9 +203,29 @@ namespace RPGFramework.Menu.SubMenus.UI
         }
 
         /// <summary>
-        /// The element the cursor starts on as the menu opens: by default the layout's first entry, or none without one.
+        /// Entries the UI makes in code, put into its layout before the layout's entries are found, as the title adds the
+        /// debug room's.
         /// </summary>
-        protected virtual VisualElement GetDefaultFocusedElement() => m_Entries.Length > 0 ? m_Entries[0] : null;
+        protected virtual void AddEntries()
+        {
+        }
+
+        /// <summary>
+        /// The element the cursor starts on as the menu opens: by default the entry marked to, while it is offered, else
+        /// the layout's first entry, or none without one.
+        /// </summary>
+        protected virtual VisualElement GetDefaultFocusedElement()
+        {
+            for (int i = 0; i < m_Entries.Length; i++)
+            {
+                if (m_Entries[i].DefaultFocus && !m_Entries[i].ClassListContains(GREYED_CLASS))
+                {
+                    return m_Entries[i];
+                }
+            }
+
+            return m_Entries.Length > 0 ? m_Entries[0] : null;
+        }
 
         /// <summary>
         /// The sheets the menu loads while it is on top: those its layout's localised texts name.

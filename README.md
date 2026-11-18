@@ -112,20 +112,25 @@ Load away, is an edit to the layout and nothing else:
 ```
 
 - **`opens`** names the menu it opens, the framework's or your own. Choosing it plays the confirm sound and opens it.
+- **`command`**, instead, names work the menu carries out itself — the title's `NewGame` and `Quit`. A menu of your own
+  carries out its commands by overriding `OnCommand`, playing its own sound.
 - **`when`** names a Bool variable in your variable map: while it is false the entry is greyed — still on the cursor's
   path, choosing it playing the error sound — so your scripts set it as the story goes. Leave it empty to offer the
   entry always. A menu's own conditions come on top: the party menu's Save is greyed without the save flag.
 - **`help`** is the key of a line saying what the entry does (below); its text, a localised text's binding, as any
   label's.
 - An entry shows its own text, and holds whatever else you put in it.
-- The cursor moves through a menu's entries in the layout's order, wrapping, and starts on the first. Checked again
-  each time a menu over it closes, so an entry a menu turns on shows offered on the way back.
+- **`default-focus`** marks the entry the cursor starts on, while it is offered; otherwise it starts on the first. The
+  cursor moves through a menu's entries in the layout's order, wrapping. They are checked again each time a menu over
+  it closes, so an entry a menu turns on shows offered on the way back.
+- An entry with neither `opens` nor `command` is its menu's own to handle, as Config's rows are, its sliders and the
+  language taking left and right.
 
 ### A help line
 
 Put a label of the class **`rpg-help-line`** in a menu's layout, and it shows the `help` of the entry the cursor is on,
 in the player's language, empty for an entry with none. A layout without one shows no help. `Menus.uss` places the
-sample's across the party menu's top.
+sample's across the top of the party menu and Config.
 
 **The names are checked before a menu opens.** `[MenuName]` is read only in the editor and left out of a player. The
 provider's inspector shows a declared menu with no layout, a layout no menu declares (with a button removing them) and
@@ -150,7 +155,8 @@ asset, so is a menu it has no layout for.
   Provider): its inspector lists every declared menu — `Begin`, `Config`, `Language`, `Controls`, `Party`, `Save` and
   `Load` for the framework's, Save and Load sharing the sample's save slots layout, and any of your own. The package ships no layouts of its
   own: the sample's are the starting point. A layout keeps the names of the elements
-  its UI looks for — `NewGameBtn`, `SaveTitleLabel` — and its text's keys are its own.
+  its UI looks for — Config's `MusicVolumeBtn`, `SaveTitleLabel` — and its text's keys are its own; its entries need
+  no names.
 - **The cursor moves the same way by key, pad or pointer**, between each menu's buttons, with the cursor sound, and
   nothing in a menu reacts while the screen fades. A button is any element the menu links (Core's `SelectionScope`):
   the sample's are plain labels, found by name. The hand is Core's `.rpg-selectable:focus`, which your stylesheet can
@@ -167,17 +173,20 @@ asset, so is a menu it has no layout for.
 
 ## The menus
 
-- **Begin**: the title screen.
-  - **New Game** begins a save in memory, writing nothing until the player saves, and starts at once in the module
+- **Begin**: the title screen. Its choices are entries in its layout, so you can add your own — Credits, a menu of
+  yours — or leave Quit out, as a console game has none.
+  - **New Game** (`command="NewGame"`) begins a save in memory, writing nothing until the player saves, and starts at once in the module
     your variable map names as the start.
-  - **Load Game** opens the Load menu.
+  - **Load Game** opens the Load menu, and is greyed while there is no save to load. The cursor starts on it when there
+    is one (`default-focus`), and on New Game when there is not.
   - **Settings** opens Config, so the player can set their preferences before starting or loading a game; closing it
     comes back to the title. Its label is `Generic/Settings` in the sample's layout, as the Party menu's is.
   - On the very first launch, before the player has chosen a language, it shows the Language menu first, starting on
     the device's language or the nearest the game ships. Afterwards it applies the language the player chose.
   - **Debug Room**, between Settings and Quit, only where `ENABLE_RPG_FRAMEWORK_DEBUG` is defined, begins a save in
     memory as New Game does and opens the Debug Room package's room through `DebugMenuOutcomes.DEBUG_ROOM`. The
-    button is added in code, so your layout needs nothing for it.
+    entry is added in code, before Quit's or after the last, so your layout needs nothing for it.
+  - **Quit** (`command="Quit"`) plays the cancel sound out and quits.
 - **Controls**, opened from Config's Controls button: each control's key and pad button, chosen to rebind by pressing
   the new one, waiting a few seconds cancelling, a clash swapped, and Reset to defaults. **Its layout lists the
   controls**: a `ControlRow` per control, naming the actions it rebinds as one (`actions="Player/Confirm, UI/Submit"`)

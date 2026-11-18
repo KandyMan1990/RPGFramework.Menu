@@ -140,12 +140,16 @@ namespace RPGFramework.Menu.SubMenus
                 return;
             }
 
-            ulong opens = m_MenuUI.Entries[entry].Opens;
+            MenuChoice choice = m_MenuUI.Entries[entry];
 
-            if (opens != 0)
+            if (choice.Opens != 0)
             {
                 PlaySound(m_SystemSounds.Confirm);
-                m_MenuModule.PushMenu(opens).FireAndForget();
+                m_MenuModule.PushMenu(choice.Opens).FireAndForget();
+            }
+            else if (choice.Command != 0)
+            {
+                OnCommand(choice.Command);
             }
         }
 
@@ -157,6 +161,14 @@ namespace RPGFramework.Menu.SubMenus
         protected virtual bool CanOpen(ulong menuId)
         {
             return true;
+        }
+
+        /// <summary>
+        /// An offered entry naming <paramref name="command" />, the hash of its name, was chosen: work the menu carries out
+        /// itself, playing its own sound, as the title's New Game and Quit.
+        /// </summary>
+        protected virtual void OnCommand(ulong command)
+        {
         }
 
         /// <summary>Plays a sound, one of <see cref="m_SystemSounds" /> or the menu's own, unless it is none.</summary>

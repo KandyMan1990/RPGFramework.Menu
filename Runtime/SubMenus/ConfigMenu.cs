@@ -9,7 +9,6 @@ using RPGFramework.Core.Settings;
 using RPGFramework.Core.Store;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.SharedTypes;
-using RPGFramework.Menu.SharedTypes.Constants;
 
 namespace RPGFramework.Menu.SubMenus
 {
@@ -46,7 +45,6 @@ namespace RPGFramework.Menu.SubMenus
             m_MusicPlayer         = musicPlayer;
 
             m_MenuUI.OnLanguageChanged           += OnLanguageChanged;
-            m_MenuUI.OnControlsPressed           += OnControlsPressed;
             m_MenuUI.OnSliderStepped             += OnSliderStepped;
             m_MenuUI.OnMusicVolumeChanged        += OnMusicVolumeChanged;
             m_MenuUI.OnSfxVolumeChanged          += OnSfxVolumeChanged;
@@ -101,13 +99,6 @@ namespace RPGFramework.Menu.SubMenus
             }
 
             Run().FireAndForget();
-        }
-
-        private void OnControlsPressed()
-        {
-            PlaySound(m_SystemSounds.Confirm);
-
-            m_MenuModule.PushMenu(MenuIds.Controls).FireAndForget();
         }
 
         private void OnSliderStepped()

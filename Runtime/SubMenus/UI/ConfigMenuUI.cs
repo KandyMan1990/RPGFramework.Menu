@@ -14,12 +14,6 @@ namespace RPGFramework.Menu.SubMenus.UI
             remove => m_OnLanguageChanged -= value;
         }
 
-        event Action IConfigMenuUI.OnControlsPressed
-        {
-            add => m_OnControlsPressed += value;
-            remove => m_OnControlsPressed -= value;
-        }
-
         event Action IConfigMenuUI.OnSliderStepped
         {
             add => m_OnSliderStepped += value;
@@ -53,7 +47,6 @@ namespace RPGFramework.Menu.SubMenus.UI
         private const float SLIDER_INCREMENTAL_VALUE = 0.05f;
 
         private event Action<int>   m_OnLanguageChanged;
-        private event Action        m_OnControlsPressed;
         private event Action        m_OnSliderStepped;
         private event Action<float> m_OnMusicVolumeChanged;
         private event Action<float> m_OnSfxVolumeChanged;
@@ -61,7 +54,6 @@ namespace RPGFramework.Menu.SubMenus.UI
         private event Action<float> m_OnFieldMessageSpeedChanged;
 
         private VisualElement m_LanguageBtn;
-        private VisualElement m_ControlsBtn;
         private VisualElement m_MusicVolumeBtn;
         private Slider        m_MusicVolumeSlider;
         private VisualElement m_SfxVolumeBtn;
@@ -71,8 +63,6 @@ namespace RPGFramework.Menu.SubMenus.UI
         private VisualElement m_FieldMessageSpeedBtn;
         private Slider        m_FieldMessageSpeedSlider;
 
-        protected override VisualElement GetDefaultFocusedElement() => m_LanguageBtn;
-
         public ConfigMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
             : base(uiProvider, localisationService)
         {
@@ -81,7 +71,6 @@ namespace RPGFramework.Menu.SubMenus.UI
         protected override void HookupUI()
         {
             m_LanguageBtn              = m_UIInstance.Q("LanguageBtn");
-            m_ControlsBtn              = m_UIInstance.Q("ControlsBtn");
             m_MusicVolumeBtn           = m_UIInstance.Q("MusicVolumeBtn");
             m_MusicVolumeSlider        = m_UIInstance.Q<Slider>("MusicVolumeSlider");
             m_SfxVolumeBtn             = m_UIInstance.Q("SfxVolumeBtn");
@@ -91,22 +80,12 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_FieldMessageSpeedBtn     = m_UIInstance.Q("FieldMessageSpeedBtn");
             m_FieldMessageSpeedSlider  = m_UIInstance.Q<Slider>("FieldMessageSpeedSlider");
 
-            VisualElement[] rows =
-            {
-                m_LanguageBtn, m_ControlsBtn, m_MusicVolumeBtn,
-                m_SfxVolumeBtn, m_BattleMessageSpeedBtn, m_FieldMessageSpeedBtn
-            };
-
-            m_Selection.LinkColumn(rows, true);
-
             // Its row's button takes left and right for a slider; one taking focus on a click would leave the cursor
             // with no neighbours to move by.
             m_MusicVolumeSlider.focusable        = false;
             m_SfxVolumeSlider.focusable          = false;
             m_BattleMessageSpeedSlider.focusable = false;
             m_FieldMessageSpeedSlider.focusable  = false;
-
-            m_Selection.RegisterChosen(m_ControlsBtn, OnControlsChosen);
 
             m_LanguageBtn.RegisterCallback<NavigationMoveEvent>(OnLanguageBtnNavigate);
             m_MusicVolumeBtn.RegisterCallback<NavigationMoveEvent>(OnMusicVolumeBtnNavigate);
@@ -177,11 +156,6 @@ namespace RPGFramework.Menu.SubMenus.UI
         private void OnFieldMessageSpeedBtnNavigate(NavigationMoveEvent evt)
         {
             OnSliderNavigate(m_FieldMessageSpeedSlider, evt);
-        }
-
-        private void OnControlsChosen()
-        {
-            m_OnControlsPressed?.Invoke();
         }
 
         private void OnSliderNavigate(Slider slider, NavigationMoveEvent evt)

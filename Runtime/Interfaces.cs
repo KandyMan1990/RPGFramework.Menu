@@ -154,7 +154,7 @@ namespace RPGFramework.Menu
     {
     }
 
-    /// <summary>The title menu: New Game, Load Game and Quit.</summary>
+    /// <summary>The title menu: its entries, New Game, Load Game, Settings and Quit in the sample, and the game's version.</summary>
     [MenuName(MenuIds.BEGIN)]
     public interface IBeginMenu : IMenu
     {
@@ -194,23 +194,9 @@ namespace RPGFramework.Menu
         void RefreshLocalisation();
     }
 
-    /// <summary>The title menu's UI.</summary>
+    /// <summary>The title menu's UI: its entries are its layout's, beside the game's version.</summary>
     public interface IBeginMenuUI : IMenuUI
     {
-        /// <summary>Raised when the player chooses New Game.</summary>
-        event Action OnNewGamePressed;
-
-        /// <summary>Raised when the player chooses Load Game.</summary>
-        event Action OnLoadGamePressed;
-
-        /// <summary>
-        /// Raised when the player chooses Config, to set their preferences before playing. A title that offers no Config
-        /// never raises it.
-        /// </summary>
-        event Action OnConfigPressed;
-
-        /// <summary>Raised when the player chooses Quit.</summary>
-        event Action OnQuitPressed;
     }
 
     /// <summary>The Config menu's UI.</summary>
@@ -218,9 +204,6 @@ namespace RPGFramework.Menu
     {
         /// <summary>Raised with -1 or 1 as the player steps to the previous or next language.</summary>
         event Action<int> OnLanguageChanged;
-
-        /// <summary>Raised when the player chooses Controls.</summary>
-        event Action OnControlsPressed;
 
         /// <summary>
         /// Raised as the player steps a slider by a direction, before its value changes; dragging it with the pointer

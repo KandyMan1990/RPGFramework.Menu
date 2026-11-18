@@ -11,26 +11,26 @@
         </ui:VisualElement>
         <ui:VisualElement name="ContentContainer" class="rpg-menu-content">
             <ui:VisualElement name="ButtonsContainer" class="rpg-menu-buttons">
-                <ui:Label text="New Game" name="NewGameBtn" class="rpg-ui-label">
+                <RPGFramework.Menu.UI.MenuEntry command="NewGame" text="New Game">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="BeginMenu/New_Game"/>
                     </Bindings>
-                </ui:Label>
-                <ui:Label name="LoadGameBtn" text="Load Game" class="rpg-ui-label">
+                </RPGFramework.Menu.UI.MenuEntry>
+                <RPGFramework.Menu.UI.MenuEntry opens="Load" default-focus="true" text="Load Game">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="BeginMenu/Load_Game"/>
                     </Bindings>
-                </ui:Label>
-                <ui:Label name="ConfigBtn" text="Settings" class="rpg-ui-label">
+                </RPGFramework.Menu.UI.MenuEntry>
+                <RPGFramework.Menu.UI.MenuEntry opens="Config" text="Settings">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/Settings"/>
                     </Bindings>
-                </ui:Label>
-                <ui:Label name="QuitBtn" text="Quit" class="rpg-ui-label">
+                </RPGFramework.Menu.UI.MenuEntry>
+                <RPGFramework.Menu.UI.MenuEntry command="Quit" text="Quit">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="BeginMenu/Quit_Game"/>
                     </Bindings>
-                </ui:Label>
+                </RPGFramework.Menu.UI.MenuEntry>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="FooterContainer" class="rpg-menu-footer">

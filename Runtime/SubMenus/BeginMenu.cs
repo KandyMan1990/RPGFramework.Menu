@@ -47,19 +47,6 @@ namespace RPGFramework.Menu.SubMenus
             m_SettingsStore       = settingsStore;
             m_MusicPlayer         = musicPlayer;
             m_PlayTimeStore       = playTimeStore;
-
-            m_MenuUI.OnNewGamePressed  += OnNewGamePressed;
-            m_MenuUI.OnLoadGamePressed += OnLoadGamePressed;
-            m_MenuUI.OnConfigPressed   += OnConfigPressed;
-            m_MenuUI.OnQuitPressed     += OnQuitPressed;
-
-#if ENABLE_RPG_FRAMEWORK_DEBUG
-            // A game's own title UI may not offer the room.
-            if (m_MenuUI is IDebugBeginMenuUI debugUI)
-            {
-                debugUI.OnDebugRoomPressed += OnDebugRoomPressed;
-            }
-#endif
         }
 
         protected override async Task OnEnterAsync(Dictionary<string, object> args)
@@ -86,7 +73,30 @@ namespace RPGFramework.Menu.SubMenus
             return false;
         }
 
-        private void OnNewGamePressed()
+        protected override bool CanOpen(ulong menuId)
+        {
+            return menuId != MenuIds.Load || m_SaveDataService.GetListOfSaveFiles().Length > 0;
+        }
+
+        protected override void OnCommand(ulong command)
+        {
+            if (command == BeginMenuCommands.NewGame)
+            {
+                BeginNewGame();
+            }
+            else if (command == BeginMenuCommands.Quit)
+            {
+                QuitAsync().FireAndForget();
+            }
+#if ENABLE_RPG_FRAMEWORK_DEBUG
+            else if (command == BeginMenuCommands.DebugRoom)
+            {
+                OpenDebugRoom();
+            }
+#endif
+        }
+
+        private void BeginNewGame()
         {
             PlaySound(m_SystemSounds.NewGame);
 
@@ -100,27 +110,9 @@ namespace RPGFramework.Menu.SubMenus
             m_MenuModule.PopMenu().FireAndForget();
         }
 
-        private void OnLoadGamePressed()
-        {
-            if (m_SaveDataService.GetListOfSaveFiles().Length == 0)
-            {
-                PlaySound(m_SystemSounds.Error);
-                return;
-            }
-
-            PlaySound(m_SystemSounds.Confirm);
-            m_MenuModule.PushMenu(MenuIds.Load).FireAndForget();
-        }
-
-        private void OnConfigPressed()
-        {
-            PlaySound(m_SystemSounds.Confirm);
-            m_MenuModule.PushMenu(MenuIds.Config).FireAndForget();
-        }
-
 #if ENABLE_RPG_FRAMEWORK_DEBUG
         // The room plays a playthrough begun here, as New Game begins one.
-        private void OnDebugRoomPressed()
+        private void OpenDebugRoom()
         {
             PlaySound(m_SystemSounds.Confirm);
 
@@ -130,11 +122,6 @@ namespace RPGFramework.Menu.SubMenus
             m_MenuModule.PopMenu().FireAndForget();
         }
 #endif
-
-        private void OnQuitPressed()
-        {
-            QuitAsync().FireAndForget();
-        }
 
         // The cancel sound plays out before the game closes: quitting at once also cut its bundle's load short, which
         // in the editor left the bundle loaded into the next play session. It quits even if the sound failed, which is
