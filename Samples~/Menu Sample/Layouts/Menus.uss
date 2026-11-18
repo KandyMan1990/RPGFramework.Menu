@@ -75,6 +75,14 @@
     flex-grow: 1;
 }
 
+/* The help line: what the entry the cursor is on does, across a menu's top. */
+.rpg-help-line {
+    min-height: 60px;
+    margin: 3% 8% 0 8%;
+    font-size: 36px;
+    -unity-text-align: middle-center;
+}
+
 /* The party menu: the location and the clock along its foot. */
 #PartyMenu .rpg-menu-buttons {
     margin-top: 10%;

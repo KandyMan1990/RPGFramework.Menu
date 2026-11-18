@@ -62,8 +62,11 @@ one, a Status menu, say:
 
 2. **Write it as a pair**: an interface deriving `IMenu`, **declared by its name**, and a class deriving
    `Menu<IStatusMenuUI>`; an interface deriving `IMenuUI` and a class deriving `MenuUI<IStatusMenuUI>`. The menu's
-   constructor passes the base its UI, the input router, the menu module, the `ISfxPlayer` and the game's
-   `ISystemSoundConfig`; it sounds the cursor itself, and `PlaySound(m_SystemSounds.Cancel)` plays any other.
+   constructor passes the base its UI, the input router, the menu module, the `ISfxPlayer`, the game's
+   `ISystemSoundConfig`, and Core's `IVariableMap` and `IMemoryService`, which grey its entries; it sounds the cursor
+   itself, and `PlaySound(m_SystemSounds.Cancel)` plays any other. **Its entries need no code** (below): the base
+   offers, greys and opens them. Override `CanOpen` for a condition of the menu's own, as the party menu greys Save
+   without the save flag.
 
    ```csharp
    [MenuName(GameMenus.STATUS)]
@@ -92,8 +95,37 @@ one, a Status menu, say:
 
 4. **Give the Menu UI Provider its layout**: once the menu is declared, the provider's inspector lists it beside the
    framework's, each with a field for its layout.
-5. **Open it**: `PushMenu(GameMenus.Status)` from another menu, or `new MenuArgs(GameMenus.Status)` in
-   `IMenuArgsStore` from another module, as the field opens the party menu.
+5. **Open it**: an entry naming it in another menu's layout (below), `PushMenu(GameMenus.Status)` from another menu's
+   code, or `new MenuArgs(GameMenus.Status)` in `IMenuArgsStore` from another module, as the field opens the party menu.
+
+### An entry of your own
+
+A menu's choices are **entries in its layout**, each a `MenuEntry` — so adding a Journal to the party menu, or taking
+Load away, is an edit to the layout and nothing else:
+
+```xml
+<RPGFramework.Menu.UI.MenuEntry opens="Journal" when="JournalFound" help="PartyMenu/JournalHelp" text="Journal">
+    <Bindings>
+        <RPGFramework.Localisation.StaticLocalisedText property="text" key="PartyMenu/Journal"/>
+    </Bindings>
+</RPGFramework.Menu.UI.MenuEntry>
+```
+
+- **`opens`** names the menu it opens, the framework's or your own. Choosing it plays the confirm sound and opens it.
+- **`when`** names a Bool variable in your variable map: while it is false the entry is greyed — still on the cursor's
+  path, choosing it playing the error sound — so your scripts set it as the story goes. Leave it empty to offer the
+  entry always. A menu's own conditions come on top: the party menu's Save is greyed without the save flag.
+- **`help`** is the key of a line saying what the entry does (below); its text, a localised text's binding, as any
+  label's.
+- An entry shows its own text, and holds whatever else you put in it.
+- The cursor moves through a menu's entries in the layout's order, wrapping, and starts on the first. Checked again
+  each time a menu over it closes, so an entry a menu turns on shows offered on the way back.
+
+### A help line
+
+Put a label of the class **`rpg-help-line`** in a menu's layout, and it shows the `help` of the entry the cursor is on,
+in the player's language, empty for an entry with none. A layout without one shows no help. `Menus.uss` places the
+sample's across the party menu's top.
 
 **The names are checked before a menu opens.** `[MenuName]` is read only in the editor and left out of a player. The
 provider's inspector shows a declared menu with no layout, a layout no menu declares (with a button removing them) and
@@ -156,8 +188,9 @@ asset, so is a menu it has no layout for.
 - **Language**: every language the game ships, written when the menu closes.
 - **Party**: the menu opened from the field, showing Config, Save and Load, with the location name and a live clock:
   the play time as hours and minutes, or the countdown as minutes and seconds in its place while it is on screen, the
-  colon blinking once a second. Save is offered only when the field allows saving, and is greyed out otherwise. Loading from here leaves the field under
-  the menu behind and enters the save's.
+  colon blinking once a second. Its choices are entries in its layout, with a help line: Save is offered only when the
+  field allows saving, and is greyed out otherwise. Loading from here leaves the field under the menu behind and enters
+  the save's.
 - **Save** and **Load**: one list of save slots, each previewed without loading it, newest first. Save also offers a
   new slot. Overwriting or deleting a save asks first, with No selected. A save made by a newer version of the game, or
   a damaged one, is listed and marked, and can't be loaded.

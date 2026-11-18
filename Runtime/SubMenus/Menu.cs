@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
+using RPGFramework.Core.Memory;
 using RPGFramework.Menu.SharedTypes;
 using UnityEngine.UIElements;
 
@@ -21,19 +23,32 @@ namespace RPGFramework.Menu.SubMenus
         protected readonly ISfxPlayer         m_SfxPlayer;
         protected readonly ISystemSoundConfig m_SystemSounds;
 
+        private readonly IVariableMap   m_VariableMap;
+        private readonly IMemoryService m_MemoryService;
+
+        // Whether each of the UI's entries is offered, as it was last greyed: what a choice is judged by is what shows.
+        private bool[] m_Offered;
+
         protected Menu(TMenuUI            menuUI,
                        IInputRouter       inputRouter,
                        IMenuModule        menuModule,
                        ISfxPlayer         sfxPlayer,
-                       ISystemSoundConfig systemSounds)
+                       ISystemSoundConfig systemSounds,
+                       IVariableMap       variableMap,
+                       IMemoryService     memoryService)
         {
-            m_MenuUI       = menuUI;
-            m_InputRouter  = inputRouter;
-            m_MenuModule   = menuModule;
-            m_SfxPlayer    = sfxPlayer;
-            m_SystemSounds = systemSounds;
+            m_MenuUI        = menuUI;
+            m_InputRouter   = inputRouter;
+            m_MenuModule    = menuModule;
+            m_SfxPlayer     = sfxPlayer;
+            m_SystemSounds  = systemSounds;
+            m_VariableMap   = variableMap;
+            m_MemoryService = memoryService;
+            m_Offered       = Array.Empty<bool>();
 
-            m_MenuUI.OnCursorMoved += OnCursorMoved;
+            m_MenuUI.OnCursorMoved  += OnCursorMoved;
+            m_MenuUI.OnEntriesFound += GreyEntries;
+            m_MenuUI.OnEntryChosen  += OnEntryChosen;
         }
 
         async Task IMenu.OnEnterAsync(VisualElement parent, ulong menuId, Dictionary<string, object> args)
@@ -57,6 +72,8 @@ namespace RPGFramework.Menu.SubMenus
         async Task IMenu.OnResumeAsync()
         {
             await OnResumeAsync();
+
+            GreyEntries();
 
             await m_MenuUI.OnResumeAsync();
         }
@@ -92,6 +109,54 @@ namespace RPGFramework.Menu.SubMenus
         private void OnCursorMoved()
         {
             PlaySound(m_SystemSounds.Cursor);
+        }
+
+        // As the menu opens and each time it resumes, as what greys an entry may have changed in a menu opened over it.
+        private void GreyEntries()
+        {
+            IReadOnlyList<MenuChoice> entries = m_MenuUI.Entries;
+
+            if (m_Offered.Length != entries.Count)
+            {
+                m_Offered = new bool[entries.Count];
+            }
+
+            for (int i = 0; i < entries.Count; i++)
+            {
+                MenuChoice entry   = entries[i];
+                bool       offered = (entry.Opens == 0 || CanOpen(entry.Opens)) &&
+                                     MenuEntryConditions.Holds(entry.When, m_VariableMap, m_MemoryService);
+
+                m_Offered[i] = offered;
+                m_MenuUI.SetEntryGreyed(i, !offered);
+            }
+        }
+
+        private void OnEntryChosen(int entry)
+        {
+            if (!m_Offered[entry])
+            {
+                PlaySound(m_SystemSounds.Error);
+                return;
+            }
+
+            ulong opens = m_MenuUI.Entries[entry].Opens;
+
+            if (opens != 0)
+            {
+                PlaySound(m_SystemSounds.Confirm);
+                m_MenuModule.PushMenu(opens).FireAndForget();
+            }
+        }
+
+        /// <summary>
+        /// Whether an entry opening the menu named by <paramref name="menuId" /> is offered now, besides any variable it
+        /// names: the menu's own conditions, such as the party menu's Save needing the save flag. Asked as the menu opens
+        /// and as it resumes.
+        /// </summary>
+        protected virtual bool CanOpen(ulong menuId)
+        {
+            return true;
         }
 
         /// <summary>Plays a sound, one of <see cref="m_SystemSounds" /> or the menu's own, unless it is none.</summary>

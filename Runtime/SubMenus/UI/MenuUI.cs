@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using RPGFramework.Core;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
+using RPGFramework.Menu.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -23,13 +24,30 @@ namespace RPGFramework.Menu.SubMenus.UI
             remove => m_OnCursorMoved -= value;
         }
 
+        event Action IMenuUI.OnEntriesFound
+        {
+            add => m_OnEntriesFound += value;
+            remove => m_OnEntriesFound -= value;
+        }
+
+        event Action<int> IMenuUI.OnEntryChosen
+        {
+            add => m_OnEntryChosen += value;
+            remove => m_OnEntryChosen -= value;
+        }
+
+        IReadOnlyList<MenuChoice> IMenuUI.Entries => m_Choices;
+
         VisualElement IMenuUI.GetDefaultFocusedElement() => GetDefaultFocusedElement();
         VisualElement IMenuUI.GetLastFocusedElement()    => m_LastFocusedElement;
 
-        private event Action m_OnBackButtonPressed;
-        private event Action m_OnCursorMoved;
+        private const string GREYED_CLASS    = "rpg-greyed";
+        private const string HELP_LINE_CLASS = "rpg-help-line";
 
-        protected abstract VisualElement GetDefaultFocusedElement();
+        private event Action      m_OnBackButtonPressed;
+        private event Action      m_OnCursorMoved;
+        private event Action      m_OnEntriesFound;
+        private event Action<int> m_OnEntryChosen;
 
         protected readonly IMenuUIProvider      m_UIProvider;
         protected readonly ILocalisationService m_LocalisationService;
@@ -41,7 +59,10 @@ namespace RPGFramework.Menu.SubMenus.UI
         /// <summary>The scope the UI's elements are linked in, for the cursor to move between them and be chosen.</summary>
         protected SelectionScope m_Selection;
 
-        private string[] m_SheetNames;
+        private string[]     m_SheetNames;
+        private MenuEntry[]  m_Entries;
+        private MenuChoice[] m_Choices;
+        private Label        m_HelpLine;
 
         protected MenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
         {
@@ -49,6 +70,9 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_LocalisationService = localisationService;
             m_Selection           = null;
             m_SheetNames          = Array.Empty<string>();
+            m_Entries             = Array.Empty<MenuEntry>();
+            m_Choices             = Array.Empty<MenuChoice>();
+            m_HelpLine            = null;
         }
 
         async Task IMenuUI.OnEnterAsync(VisualElement parent, ulong menuId, Dictionary<string, object> args)
@@ -61,15 +85,19 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             m_Selection.Moved += OnSelectionMoved;
 
+            FindEntries();
+
             ShowUI(false);
 
-            m_SheetNames = GetSheetNames();
+            m_SheetNames = WithHelpSheets(GetSheetNames());
 
             await m_LocalisationService.LoadNewLocalisationDataAsync(m_SheetNames);
 
             await OnEnterAsync(args);
 
             HookupUI();
+
+            m_OnEntriesFound?.Invoke();
 
             Localise();
 
@@ -122,11 +150,19 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_UIInstance.RemoveFromHierarchy();
             m_UIInstance = null;
             m_Selection  = null;
+            m_Entries    = Array.Empty<MenuEntry>();
+            m_Choices    = Array.Empty<MenuChoice>();
+            m_HelpLine   = null;
         }
 
         void IMenuUI.SetInputEnabled(bool enabled)
         {
             SetInputEnabled(enabled);
+        }
+
+        void IMenuUI.SetEntryGreyed(int entry, bool greyed)
+        {
+            m_Entries[entry].EnableInClassList(GREYED_CLASS, greyed);
         }
 
         private void SetInputEnabled(bool enabled)
@@ -166,6 +202,11 @@ namespace RPGFramework.Menu.SubMenus.UI
         }
 
         /// <summary>
+        /// The element the cursor starts on as the menu opens: by default the layout's first entry, or none without one.
+        /// </summary>
+        protected virtual VisualElement GetDefaultFocusedElement() => m_Entries.Length > 0 ? m_Entries[0] : null;
+
+        /// <summary>
         /// The sheets the menu loads while it is on top: those its layout's localised texts name.
         /// </summary>
         protected virtual string[] GetSheetNames() => new LocalisedTexts(m_UIInstance).SheetNames;
@@ -179,6 +220,8 @@ namespace RPGFramework.Menu.SubMenus.UI
             LocaliseUI();
 
             new LocalisedTexts(m_UIInstance).Show(m_LocalisationService);
+
+            ShowHelp(m_UIInstance.focusController?.focusedElement as VisualElement);
         }
 
         /// <summary>Text the code chooses: which of the layout's texts shows, or the entry one shows by hash.</summary>
@@ -199,6 +242,79 @@ namespace RPGFramework.Menu.SubMenus.UI
         private void OnSelectionMoved()
         {
             m_OnCursorMoved?.Invoke();
+        }
+
+        // The layout's entries in its order, a wrapping column unless the UI links them otherwise as it is hooked up.
+        private void FindEntries()
+        {
+            m_Entries = m_UIInstance.Query<MenuEntry>().ToList().ToArray();
+            m_Choices = new MenuChoice[m_Entries.Length];
+
+            for (int i = 0; i < m_Entries.Length; i++)
+            {
+                int entry = i;
+
+                m_Choices[i] = m_Entries[i].ToChoice();
+                m_Selection.RegisterChosen(m_Entries[i], () => m_OnEntryChosen?.Invoke(entry));
+            }
+
+            m_Selection.LinkColumn(m_Entries, true);
+
+            m_HelpLine = m_UIInstance.Q<Label>(className: HELP_LINE_CLASS);
+
+            if (m_HelpLine != null)
+            {
+                m_UIInstance.RegisterCallback<FocusInEvent>(OnFocusIn);
+            }
+        }
+
+        // The sheets the entries' help is in, beside the layout's own.
+        private string[] WithHelpSheets(string[] sheetNames)
+        {
+            string[] names = new string[sheetNames.Length + m_Entries.Length];
+            int      count = sheetNames.Length;
+
+            Array.Copy(sheetNames, names, count);
+
+            for (int i = 0; i < m_Entries.Length; i++)
+            {
+                string help = m_Entries[i].Help;
+
+                if (string.IsNullOrEmpty(help))
+                {
+                    continue;
+                }
+
+                string sheet = help.Substring(0, help.IndexOf('/'));
+
+                if (Array.IndexOf(names, sheet, 0, count) < 0)
+                {
+                    names[count++] = sheet;
+                }
+            }
+
+            string[] withHelp = new string[count];
+            Array.Copy(names, withHelp, count);
+
+            return withHelp;
+        }
+
+        private void OnFocusIn(FocusInEvent evt)
+        {
+            ShowHelp(evt.target as VisualElement);
+        }
+
+        private void ShowHelp(VisualElement focused)
+        {
+            if (m_HelpLine == null)
+            {
+                return;
+            }
+
+            int    entry = Array.IndexOf(m_Entries, focused);
+            string help  = entry >= 0 ? m_Entries[entry].Help : null;
+
+            m_HelpLine.text = string.IsNullOrEmpty(help) ? string.Empty : m_LocalisationService.Get(help);
         }
 
         protected virtual async Task OnShowAnimationAsync()

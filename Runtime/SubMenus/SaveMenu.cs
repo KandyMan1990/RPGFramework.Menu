@@ -2,6 +2,7 @@ using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
+using RPGFramework.Core.Memory;
 using RPGFramework.Core.SaveData;
 using RPGFramework.Menu.SharedTypes;
 
@@ -16,7 +17,16 @@ namespace RPGFramework.Menu.SubMenus
                         IMenuModule        menuModule,
                         ISfxPlayer         sfxPlayer,
                         ISystemSoundConfig systemSounds,
-                        ISaveDataService   saveDataService) : base(saveSlotMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds, saveDataService)
+                        IVariableMap       variableMap,
+                        IMemoryService     memoryService,
+                        ISaveDataService   saveDataService) : base(saveSlotMenuUI,
+                                                                   inputRouter,
+                                                                   menuModule,
+                                                                   sfxPlayer,
+                                                                   systemSounds,
+                                                                   variableMap,
+                                                                   memoryService,
+                                                                   saveDataService)
         {
         }
 

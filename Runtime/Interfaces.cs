@@ -106,6 +106,21 @@ namespace RPGFramework.Menu
         /// <summary>Raised when the player moves the cursor to another button, for the menu to sound.</summary>
         event Action OnCursorMoved;
 
+        /// <summary>
+        /// Raised as the UI has found its layout's entries, before the cursor is put on one, for the menu to grey those it
+        /// does not offer.
+        /// </summary>
+        event Action OnEntriesFound;
+
+        /// <summary>Raised with an entry's place among <see cref="Entries" /> as the player chooses it, offered or not.</summary>
+        event Action<int> OnEntryChosen;
+
+        /// <summary>What each of the layout's entries does, in the layout's order, once the UI has entered.</summary>
+        IReadOnlyList<MenuChoice> Entries { get; }
+
+        /// <summary>Greys an entry out, or shows it offered again; greyed, it stays on the cursor's path.</summary>
+        void SetEntryGreyed(int entry, bool greyed);
+
         /// <summary>The element focused when the menu opens.</summary>
         VisualElement GetDefaultFocusedElement();
 
@@ -241,23 +256,9 @@ namespace RPGFramework.Menu
         void SetFieldMessageSpeed(float speed);
     }
 
-    /// <summary>The party menu's UI.</summary>
+    /// <summary>The party menu's UI: its entries are the layout's, and beside them where the player is and the clock.</summary>
     public interface IPartyMenuUI : IMenuUI
     {
-        /// <summary>Raised when the player chooses Config.</summary>
-        event Action OnConfigPressed;
-
-        /// <summary>Raised when the player chooses Save, allowed or not.</summary>
-        event Action OnSavePressed;
-
-        /// <summary>Raised when the player chooses Load.</summary>
-        event Action OnLoadPressed;
-
-        /// <summary>
-        /// Greys Save out when saving is not allowed here; it stays focusable, so choosing it can say no.
-        /// </summary>
-        void SetSaveEnabled(bool enabled);
-
         /// <summary>Shows where the player is, by the place's localisation key hash.</summary>
         void SetLocationName(ulong keyHash);
 

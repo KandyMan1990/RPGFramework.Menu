@@ -4,6 +4,7 @@ using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
+using RPGFramework.Core.Memory;
 using RPGFramework.Core.Settings;
 using RPGFramework.Core.Store;
 using RPGFramework.Localisation;
@@ -29,7 +30,15 @@ namespace RPGFramework.Menu.SubMenus
                           ILocalisationService localisationService,
                           IMusicPlayer         musicPlayer,
                           ISfxPlayer           sfxPlayer,
-                          ISystemSoundConfig   systemSounds) : base(configMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds)
+                          ISystemSoundConfig   systemSounds,
+                          IVariableMap         variableMap,
+                          IMemoryService       memoryService) : base(configMenuUI,
+                                                                     inputRouter,
+                                                                     menuModule,
+                                                                     sfxPlayer,
+                                                                     systemSounds,
+                                                                     variableMap,
+                                                                     memoryService)
         {
             m_SettingsService     = settingsService;
             m_SettingsStore       = settingsStore;

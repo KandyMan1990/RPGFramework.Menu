@@ -2,23 +2,24 @@
     <Style src="project://database/Packages/com.rpgframework.core/Runtime/UI%20Toolkit/UIShared.uss?fileID=7433441132597879392&amp;guid=94d472c2b9a84d747912b7c0d4c5d053&amp;type=3#UIShared"/>
     <Style src="Menus.uss"/>
     <ui:VisualElement name="PartyMenu" class="rpg-menu">
+        <ui:Label name="HelpLine" class="rpg-ui-label rpg-help-line"/>
         <ui:VisualElement name="ContentContainer" class="rpg-menu-content">
             <ui:VisualElement name="ButtonsContainer" class="rpg-menu-buttons">
-                <ui:Label name="ConfigBtn" text="Config" class="rpg-ui-label">
+                <RPGFramework.Menu.UI.MenuEntry opens="Config" help="PartyMenu/ConfigHelp" text="Config">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="Generic/Settings"/>
                     </Bindings>
-                </ui:Label>
-                <ui:Label name="SaveBtn" text="Save" class="rpg-ui-label">
+                </RPGFramework.Menu.UI.MenuEntry>
+                <RPGFramework.Menu.UI.MenuEntry opens="Save" help="PartyMenu/SaveHelp" text="Save">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="PartyMenu/Save"/>
                     </Bindings>
-                </ui:Label>
-                <ui:Label name="LoadBtn" text="Load" class="rpg-ui-label">
+                </RPGFramework.Menu.UI.MenuEntry>
+                <RPGFramework.Menu.UI.MenuEntry opens="Load" help="PartyMenu/LoadHelp" text="Load">
                     <Bindings>
                         <RPGFramework.Localisation.StaticLocalisedText property="text" key="PartyMenu/Load"/>
                     </Bindings>
-                </ui:Label>
+                </RPGFramework.Menu.UI.MenuEntry>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="FooterContainer" class="rpg-menu-footer">

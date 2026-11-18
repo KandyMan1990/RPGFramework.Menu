@@ -1,9 +1,9 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
+using RPGFramework.Core.Memory;
 using RPGFramework.Core.PlayerLoop;
 using RPGFramework.Core.Store;
 using RPGFramework.Core.UI;
@@ -14,8 +14,8 @@ using RPGFramework.Menu.SharedTypes.Constants;
 namespace RPGFramework.Menu.SubMenus
 {
     /// <summary>
-    /// The party menu, its clock live while it shows: the play time, or the countdown in its place while it is on
-    /// screen.
+    /// The party menu, its entries its layout's, Save offered only while saving is allowed, and its clock live while it
+    /// shows: the play time, or the countdown in its place while it is on screen.
     /// </summary>
     internal sealed class PartyMenu : Menu<IPartyMenuUI>, IPartyMenu, IUpdatable
     {
@@ -27,39 +27,38 @@ namespace RPGFramework.Menu.SubMenus
         private readonly ICountdownStore    m_CountdownStore;
         private readonly ClockBlink         m_Blink;
 
-        private bool m_SaveEnabled;
-
         public PartyMenu(IPartyMenuUI       partyMenuUI,
                          IInputRouter       inputRouter,
                          IMenuModule        menuModule,
                          ISfxPlayer         sfxPlayer,
                          ISystemSoundConfig systemSounds,
+                         IVariableMap       variableMap,
+                         IMemoryService     memoryService,
                          ISaveEnabledStore  saveEnabledStore,
                          ILocationNameStore locationNameStore,
                          IPlayTimeStore     playTimeStore,
-                         ICountdownStore    countdownStore) : base(partyMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds)
+                         ICountdownStore    countdownStore) : base(partyMenuUI,
+                                                                   inputRouter,
+                                                                   menuModule,
+                                                                   sfxPlayer,
+                                                                   systemSounds,
+                                                                   variableMap,
+                                                                   memoryService)
         {
             m_SaveEnabledStore  = saveEnabledStore;
             m_LocationNameStore = locationNameStore;
             m_PlayTimeStore     = playTimeStore;
             m_CountdownStore    = countdownStore;
             m_Blink             = new ClockBlink();
-
-            m_MenuUI.OnConfigPressed += OnConfigPressed;
-            m_MenuUI.OnSavePressed   += OnSavePressed;
-            m_MenuUI.OnLoadPressed   += OnLoadPressed;
         }
 
-        protected override Task OnEnterAsync(Dictionary<string, object> args)
+        protected override bool CanOpen(ulong menuId)
         {
-            m_SaveEnabled = m_SaveEnabledStore.IsSaveEnabled;
-
-            return base.OnEnterAsync(args);
+            return menuId != MenuIds.Save || m_SaveEnabledStore.IsSaveEnabled;
         }
 
         protected override Task OnEnterComplete()
         {
-            m_MenuUI.SetSaveEnabled(m_SaveEnabled);
             m_MenuUI.SetLocationName(m_LocationNameStore.LocationName);
 
             ShowClock(0f);
@@ -120,30 +119,6 @@ namespace RPGFramework.Menu.SubMenus
             }
 
             return true;
-        }
-
-        private void OnConfigPressed()
-        {
-            PlaySound(m_SystemSounds.Confirm);
-            m_MenuModule.PushMenu(MenuIds.Config).FireAndForget();
-        }
-
-        private void OnSavePressed()
-        {
-            if (!m_SaveEnabled)
-            {
-                PlaySound(m_SystemSounds.Error);
-                return;
-            }
-
-            PlaySound(m_SystemSounds.Confirm);
-            m_MenuModule.PushMenu(MenuIds.Save).FireAndForget();
-        }
-
-        private void OnLoadPressed()
-        {
-            PlaySound(m_SystemSounds.Confirm);
-            m_MenuModule.PushMenu(MenuIds.Load).FireAndForget();
         }
     }
 }

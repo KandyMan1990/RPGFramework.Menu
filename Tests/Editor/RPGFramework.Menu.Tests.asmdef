@@ -2,6 +2,8 @@
     "name": "RPGFramework.Menu.Tests",
     "rootNamespace": "RPGFramework.Menu.Tests",
     "references": [
+        "RPGFramework.Core",
+        "RPGFramework.Core.SharedTypes",
         "RPGFramework.Hashing",
         "RPGFramework.Menu",
         "RPGFramework.Menu.Editor",

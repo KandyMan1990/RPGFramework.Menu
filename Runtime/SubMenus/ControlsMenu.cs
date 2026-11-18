@@ -3,6 +3,7 @@ using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
+using RPGFramework.Core.Memory;
 using RPGFramework.Core.Settings;
 using RPGFramework.Menu.SharedTypes;
 
@@ -28,8 +29,16 @@ namespace RPGFramework.Menu.SubMenus
                             IMenuModule            menuModule,
                             ISfxPlayer             sfxPlayer,
                             ISystemSoundConfig     systemSounds,
+                            IVariableMap           variableMap,
+                            IMemoryService         memoryService,
                             IInputRebindingService rebindingService,
-                            ISettingsService       settingsService) : base(controlsMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds)
+                            ISettingsService       settingsService) : base(controlsMenuUI,
+                                                                           inputRouter,
+                                                                           menuModule,
+                                                                           sfxPlayer,
+                                                                           systemSounds,
+                                                                           variableMap,
+                                                                           memoryService)
         {
             m_RebindingService = rebindingService;
             m_SettingsService  = settingsService;

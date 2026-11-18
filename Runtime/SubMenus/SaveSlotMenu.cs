@@ -2,6 +2,7 @@ using RPGFramework.Audio;
 using RPGFramework.Core;
 using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
+using RPGFramework.Core.Memory;
 using RPGFramework.Core.SaveData;
 using RPGFramework.Menu.SharedTypes;
 using System;
@@ -36,7 +37,15 @@ namespace RPGFramework.Menu.SubMenus
                                IMenuModule        menuModule,
                                ISfxPlayer         sfxPlayer,
                                ISystemSoundConfig systemSounds,
-                               ISaveDataService   saveDataService) : base(saveSlotMenuUI, inputRouter, menuModule, sfxPlayer, systemSounds)
+                               IVariableMap       variableMap,
+                               IMemoryService     memoryService,
+                               ISaveDataService   saveDataService) : base(saveSlotMenuUI,
+                                                                          inputRouter,
+                                                                          menuModule,
+                                                                          sfxPlayer,
+                                                                          systemSounds,
+                                                                          variableMap,
+                                                                          memoryService)
         {
             m_SaveDataService = saveDataService;
             m_Files           = Array.Empty<string>();
