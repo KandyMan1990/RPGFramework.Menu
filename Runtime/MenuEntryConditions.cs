@@ -15,25 +15,36 @@ namespace RPGFramework.Menu
                 return true;
             }
 
-            bool found = variableMap.TryGetVariable(when, out VariableDefinition variable);
+            variableMap.TryGetVariable(when, out VariableDefinition variable);
 #if UNITY_EDITOR
-            Check(when, found, variable);
+            string problem = ProblemWith(when, variableMap);
+
+            if (problem != null)
+            {
+                throw new InvalidOperationException($"A menu entry {problem}");
+            }
 #endif
             return memoryService.ReadBool(variable.Bank, (ushort)variable.Offset);
         }
 
 #if UNITY_EDITOR
-        private static void Check(string when, bool found, VariableDefinition variable)
+        /// <summary>
+        /// Authoring only. What is wrong with greying an entry by <paramref name="when" />, said of the entry — "is greyed
+        /// by …" — or null: asked as the menu opens in play and as its layout is checked.
+        /// </summary>
+        internal static string ProblemWith(string when, IVariableMap variableMap)
         {
-            if (!found)
+            if (!variableMap.TryGetVariable(when, out VariableDefinition variable))
             {
-                throw new InvalidOperationException($"A menu entry is greyed by {when}, which the variable map does not hold");
+                return $"is greyed by {when}, which the variable map does not hold";
             }
 
             if (variable.Width != VariableWidth.Bool || variable.Count != 1 || variable.IsRecord || variable.Bank == MemoryBank.Temp)
             {
-                throw new InvalidOperationException($"A menu entry is greyed by {when}, which is not a single Bool outside Temp");
+                return $"is greyed by {when}, which is not a single Bool outside Temp";
             }
+
+            return null;
         }
 #endif
     }

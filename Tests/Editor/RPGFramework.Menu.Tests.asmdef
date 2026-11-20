@@ -5,6 +5,7 @@
         "RPGFramework.Core",
         "RPGFramework.Core.SharedTypes",
         "RPGFramework.Hashing",
+        "RPGFramework.Localisation.Editor",
         "RPGFramework.Menu",
         "RPGFramework.Menu.Editor",
         "RPGFramework.Menu.SharedTypes"

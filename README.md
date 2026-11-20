@@ -128,7 +128,8 @@ Load away, is an edit to the layout and nothing else:
   language taking left and right.
 - **Nothing is typed in the UI Builder**: `opens` is a list of the declared menus, `command` of the commands the menus
   using the open layout declare (by your Menu UI Providers; none for a layout no menu has yet), `when` of your variable
-  map's single Bools, and `help` of your sheets' keys. A name a list no longer holds is kept as it was.
+  map's single Bools, and `help` of your sheets' keys. A name a list no longer holds is kept as it was, and checked
+  (below).
 
 ### A help line
 
@@ -138,8 +139,11 @@ sample's across the top of the party menu and Config.
 
 **The names are checked before a menu opens.** `[MenuName]` is read only in the editor and left out of a player. The
 provider's inspector shows a declared menu with no layout, a layout no menu declares (with a button removing them) and
-a missing save slot. The menu scene is checked the same way as it loads in play mode, logging what is wrong, and a
-player build fails on it. As the menu module enters in play mode, every menu in the database is checked too: one added
+a missing save slot. It shows, too, what a layout names that your project does not hold: an entry opening a menu nothing
+declares, naming a command its menu does not declare, doing both, greyed by anything but a single Bool outside
+Temp, or with a help key none of your sheets holds; and a save slot showing a value that is not a persistent variable,
+or a `SaveSlotText` showing one that is not a `ULong`. The menu scene is checked the same way as it loads in play mode,
+logging what is wrong, and a player build fails on it. As the menu module enters in play mode, every menu in the database is checked too: one added
 but never declared, or added under another menu's id, is logged, and with a UI provider of your own rather than the
 asset, so is a menu it has no layout for.
 
@@ -209,8 +213,8 @@ asset, so is a menu it has no layout for.
   a damaged one, is listed and marked, and can't be loaded.
   - **Each slot has a layout of its own**, the **Save Slot** on your Menu UI Provider. The sample's shows the
     location, the play time, the money and its name, and when it was saved.
-  - **Show any saved value by naming its variable** in the layout, as scripts name it: `Money`, `Items[3]`,
-    `Party[0].Level`. **`SaveSlotNumber`** shows a number, **`SaveSlotPlayTime`** hours and minutes,
+  - **Show any saved value by naming its variable** in the layout, as your variable map lists it: `Money`, `Items[3]`,
+    `Party[0].Level`, or `Party.Level` for a single record. **`SaveSlotNumber`** shows a number, **`SaveSlotPlayTime`** hours and minutes,
     **`SaveSlotText`** a text by its localisation key's hash, such as `LocationName`, naming the sheet it is in, and
     **`SaveSlotDate`** when it was saved, in the game's language. Fixed text is a label with a `StaticLocalisedText` —
     what your money is called, say, `Generic/Money` reading "Gil" or "Dollars". What is inside a

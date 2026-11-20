@@ -8,8 +8,8 @@ namespace RPGFramework.Menu.Editor
 {
     /// <summary>
     /// Checks the menu scene's Menu UI Provider as Unity processes the scene: a player build fails on a declared menu with
-    /// no layout, or a layout no menu declares, and a scene loaded in play mode logs it, so it is seen the first time the
-    /// menus run rather than as one menu opens.
+    /// no layout, a layout no menu declares, or a name a layout gives that the project does not hold, and a scene loaded
+    /// in play mode logs it, so it is seen the first time the menus run rather than as one menu opens.
     /// </summary>
     internal sealed class MenuLayoutsSceneCheck : IProcessSceneWithReport
     {

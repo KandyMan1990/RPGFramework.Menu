@@ -7,12 +7,14 @@ namespace RPGFramework.Menu.Editor
 {
     /// <summary>
     /// The Menu UI Provider's inspector: a layout for each declared menu, under the name its <see cref="MenuNameAttribute" />
-    /// gives it, so no name is typed; what the check finds wrong, and a button removing layouts no menu declares.
+    /// gives it, so no name is typed; what the checks find wrong with them and what they name, and a button removing
+    /// layouts no menu declares.
     /// </summary>
     [CustomEditor(typeof(MenuUIProvider))]
     internal sealed class MenuUIProviderEditor : UnityEditor.Editor
     {
         private DeclaredMenu[] m_Declared;
+        private LayoutNames    m_Names;
         private ObjectField[]  m_Layouts;
         private HelpBox        m_Problems;
         private Button         m_RemoveUndeclared;
@@ -22,6 +24,7 @@ namespace RPGFramework.Menu.Editor
             VisualElement root = new VisualElement();
 
             m_Declared         = DeclaredMenus.FindAll();
+            m_Names            = LayoutNames.FindInProject(m_Declared);
             m_Layouts          = new ObjectField[m_Declared.Length];
             m_Problems         = new HelpBox(string.Empty, HelpBoxMessageType.Error);
             m_RemoveUndeclared = new Button(RemoveUndeclared) { text = "Remove Layouts No Menu Declares" };
@@ -120,6 +123,7 @@ namespace RPGFramework.Menu.Editor
             List<string> problems = new List<string>();
 
             MenuLayoutsCheck.Check((MenuUIProvider)target, m_Declared, problems);
+            MenuLayoutContentsCheck.Check((MenuUIProvider)target, m_Names, problems);
 
             m_Problems.text                  = string.Join("\n", problems);
             m_Problems.style.display         = problems.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;

@@ -8,7 +8,7 @@ namespace RPGFramework.Menu.Editor
     /// <summary>
     /// Whether a Menu UI Provider holds a layout for every declared menu, under the name it is declared by, and nothing
     /// else. The names are strings in code and in the asset, so nothing else would notice one wrong: the menu would
-    /// throw only as it opened.
+    /// throw only as it opened. What the layouts name is <see cref="MenuLayoutContentsCheck" />'s, checked beside it.
     /// </summary>
     internal static class MenuLayoutsCheck
     {
@@ -23,10 +23,12 @@ namespace RPGFramework.Menu.Editor
             }
 
             DeclaredMenu[] declared = DeclaredMenus.FindAll();
+            LayoutNames    names    = LayoutNames.FindInProject(declared);
 
             for (int i = 0; i < providers.Count; i++)
             {
                 Check(providers[i], declared, problems);
+                MenuLayoutContentsCheck.Check(providers[i], names, problems);
             }
         }
 

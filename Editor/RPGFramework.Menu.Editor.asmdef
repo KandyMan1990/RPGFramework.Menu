@@ -2,6 +2,9 @@
     "name": "RPGFramework.Menu.Editor",
     "rootNamespace": "RPGFramework.Menu.Editor",
     "references": [
+        "RPGFramework.Core",
+        "RPGFramework.Core.Editor",
+        "RPGFramework.Localisation.Editor",
         "RPGFramework.Menu",
         "RPGFramework.Menu.SharedTypes"
     ],
