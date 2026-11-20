@@ -72,6 +72,28 @@ one, a Status menu, say:
    [MenuName(GameMenus.STATUS)]
    public interface IStatusMenu : IMenu { }
    ```
+
+   **Mark each element the UI finds by name** with `[LayoutElement]` (RPGFramework.Menu.UI) on the field it fills,
+   the name a constant the lookup uses too, so the check (below) can tell a layout that lacks it. The field's type is
+   the element's; given a property, the field holds that property's binding instead. The attribute is left out of a
+   player.
+
+   ```csharp
+   private const string PORTRAIT = "Portrait";
+   private const string NAME     = "NameLabel";
+
+   [LayoutElement(PORTRAIT)]
+   private VisualElement m_Portrait;
+
+   [LayoutElement(NAME, "text")]
+   private DynamicLocalisedText m_Name;
+
+   protected override void HookupUI()
+   {
+       m_Portrait = m_UIInstance.Q(PORTRAIT);
+       m_Name     = (DynamicLocalisedText)m_UIInstance.Q(NAME).GetBinding("text");
+   }
+   ```
 3. **Bind both, and add the menu to a `MenuDatabase`**, in the menu scene's installer, through its
    `IMenuDatabaseBuilder`. The database starts with the framework's menus; bound as `IMenuDatabase`, which only looks
    menus up, it replaces the one the Menu Module would bind.
@@ -141,9 +163,12 @@ sample's across the top of the party menu and Config.
 provider's inspector shows a declared menu with no layout, a layout no menu declares (with a button removing them) and
 a missing save slot. It shows, too, what a layout names that your project does not hold: an entry opening a menu nothing
 declares, naming a command its menu does not declare, doing both, greyed by anything but a single Bool outside
-Temp, or with a help key none of your sheets holds; and a save slot showing a value that is not a persistent variable,
-or a `SaveSlotText` showing one that is not a `ULong`. The menu scene is checked the same way as it loads in play mode,
-logging what is wrong, and a player build fails on it. As the menu module enters in play mode, every menu in the database is checked too: one added
+Temp, or with a help key none of your sheets holds; a save slot showing a value that is not a persistent variable,
+or a `SaveSlotText` showing one that is not a `ULong`; and an element a menu's UI finds by name (`[LayoutElement]`)
+that its layout lacks, holds as another type, or binds otherwise. A menu's UI is the class implementing the UI's
+interface its menu's class names; yours, if you bind one in the framework's place. The menu scene is checked the same
+way as it loads in play mode, logging what is wrong, and a player build fails on it. As the menu module enters in
+play mode, every menu in the database is checked too: one added
 but never declared, or added under another menu's id, is logged, and with a UI provider of your own rather than the
 asset, so is a menu it has no layout for.
 
@@ -163,8 +188,8 @@ asset, so is a menu it has no layout for.
   Provider): its inspector lists every declared menu — `Begin`, `Config`, `Language`, `Controls`, `Party`, `Save` and
   `Load` for the framework's, Save and Load sharing the sample's save slots layout, and any of your own. The package ships no layouts of its
   own: the sample's are the starting point. A layout keeps the names of the elements
-  its UI looks for — Config's `MusicVolumeBtn`, `SaveTitleLabel` — and its text's keys are its own; its entries need
-  no names.
+  its UI looks for — Config's `MusicVolumeBtn`, `SaveTitleLabel` — of the type it looks for, Config's rows entries, and
+  its text's keys are its own; its entries need no names. The provider's inspector says which are missing.
 - **The cursor moves the same way by key, pad or pointer**, between each menu's buttons, with the cursor sound, and
   nothing in a menu reacts while the screen fades. A button is any element the menu links (Core's `SelectionScope`):
   the sample's are plain labels, found by name. The hand is Core's `.rpg-selectable:focus`, which your stylesheet can

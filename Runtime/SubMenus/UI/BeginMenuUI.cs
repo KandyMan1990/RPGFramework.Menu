@@ -7,6 +7,9 @@ namespace RPGFramework.Menu.SubMenus.UI
 {
     internal sealed class BeginMenuUI : MenuUI<IBeginMenuUI>, IBeginMenuUI
     {
+        private const string VERSION_LABEL = "VersionLabel";
+
+        [LayoutElement(VERSION_LABEL)]
         private Label m_VersionLabel;
 
         public BeginMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
@@ -35,7 +38,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override void HookupUI()
         {
-            m_VersionLabel = m_UIInstance.Q<Label>("VersionLabel");
+            m_VersionLabel = m_UIInstance.Q<Label>(VERSION_LABEL);
 
             m_VersionLabel.text = $"v{Application.version}";
         }

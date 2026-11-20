@@ -9,20 +9,27 @@ using Object = UnityEngine.Object;
 namespace RPGFramework.Menu.Editor
 {
     /// <summary>
-    /// What a menu's layouts may name, as the project declares it: the menus and the commands each carries out, the
-    /// variable map's variables, and the keys the sheets recorded at their last pull.
+    /// What a menu's layouts may name, as the project declares it: the menus, the UI each is shown by and the commands
+    /// each carries out, the variable map's variables, and the keys the sheets recorded at their last pull.
     /// </summary>
     internal sealed class LayoutNames
     {
         private readonly DeclaredMenu[]        m_Menus;
+        private readonly Type[]                m_UIs;
         private readonly DeclaredMenuCommand[] m_Commands;
         private readonly VariableMapAsset[]    m_Maps;
         private readonly IPersistentValues[]   m_PersistentValues;
         private readonly string[]              m_Keys;
 
-        internal LayoutNames(DeclaredMenu[] menus, DeclaredMenuCommand[] commands, VariableMapAsset[] maps, LocalisationSheetAsset[] sheets)
+        /// <param name="menus">The declared menus.</param>
+        /// <param name="uis">The class of each menu's UI, in the same order; null for one that cannot be told.</param>
+        /// <param name="commands">The commands the menus declare.</param>
+        /// <param name="maps">The project's variable maps.</param>
+        /// <param name="sheets">The project's localisation sheets.</param>
+        internal LayoutNames(DeclaredMenu[] menus, Type[] uis, DeclaredMenuCommand[] commands, VariableMapAsset[] maps, LocalisationSheetAsset[] sheets)
         {
             m_Menus            = menus;
+            m_UIs              = uis;
             m_Commands         = commands;
             m_Maps             = maps;
             m_PersistentValues = new IPersistentValues[maps.Length];
@@ -37,7 +44,14 @@ namespace RPGFramework.Menu.Editor
         /// <summary>The project's, the menus being those already found.</summary>
         internal static LayoutNames FindInProject(DeclaredMenu[] menus)
         {
-            return new LayoutNames(menus, DeclaredMenuCommands.FindAll(), Load<VariableMapAsset>(), Load<LocalisationSheetAsset>());
+            Type[] uis = new Type[menus.Length];
+
+            for (int i = 0; i < menus.Length; i++)
+            {
+                uis[i] = MenuUITypes.Find(menus[i].Menu);
+            }
+
+            return new LayoutNames(menus, uis, DeclaredMenuCommands.FindAll(), Load<VariableMapAsset>(), Load<LocalisationSheetAsset>());
         }
 
         /// <summary>Whether the project has a variable map, without which none can be checked.</summary>
@@ -54,6 +68,20 @@ namespace RPGFramework.Menu.Editor
             }
 
             return false;
+        }
+
+        /// <summary>The class of the UI <paramref name="menu" /> is shown by, or null when it cannot be told.</summary>
+        internal Type UIOf(string menu)
+        {
+            for (int i = 0; i < m_Menus.Length; i++)
+            {
+                if (m_Menus[i].Name == menu)
+                {
+                    return m_UIs[i];
+                }
+            }
+
+            return null;
         }
 
         internal bool Declares(string menu, string command)

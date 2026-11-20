@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using RPGFramework.Core.SaveData;
 using RPGFramework.Localisation;
+using RPGFramework.Menu.UI;
 using UnityEngine.UIElements;
 
 namespace RPGFramework.Menu.SubMenus.UI
@@ -9,6 +10,16 @@ namespace RPGFramework.Menu.SubMenus.UI
     internal sealed class SaveSlotMenuUI : MenuUI<ISaveSlotMenuUI>, ISaveSlotMenuUI
     {
         private const float UNAVAILABLE_OPACITY = 0.5f;
+
+        private const string SAVE_TITLE_LABEL         = "SaveTitleLabel";
+        private const string LOAD_TITLE_LABEL         = "LoadTitleLabel";
+        private const string SLOTS_SCROLL_VIEW        = "SlotsScrollView";
+        private const string NEW_SAVE_BUTTON          = "NewSaveBtn";
+        private const string QUESTION_PANEL           = "QuestionPanel";
+        private const string OVERWRITE_QUESTION_LABEL = "OverwriteQuestionLabel";
+        private const string DELETE_QUESTION_LABEL    = "DeleteQuestionLabel";
+        private const string YES_BUTTON               = "YesBtn";
+        private const string NO_BUTTON                = "NoBtn";
 
         event Action<int> ISaveSlotMenuUI.OnSlotChosen
         {
@@ -35,14 +46,31 @@ namespace RPGFramework.Menu.SubMenus.UI
         private VisualElement[]      m_Rows;
         private ISaveSlotElement[][] m_SlotElements;
 
-        private Label         m_SaveTitleLabel;
-        private Label         m_LoadTitleLabel;
-        private ScrollView    m_SlotsScrollView;
+        [LayoutElement(SAVE_TITLE_LABEL)]
+        private Label m_SaveTitleLabel;
+
+        [LayoutElement(LOAD_TITLE_LABEL)]
+        private Label m_LoadTitleLabel;
+
+        [LayoutElement(SLOTS_SCROLL_VIEW)]
+        private ScrollView m_SlotsScrollView;
+
+        [LayoutElement(NEW_SAVE_BUTTON)]
         private VisualElement m_NewSaveRow;
+
+        [LayoutElement(QUESTION_PANEL)]
         private VisualElement m_QuestionPanel;
-        private Label         m_OverwriteQuestionLabel;
-        private Label         m_DeleteQuestionLabel;
+
+        [LayoutElement(OVERWRITE_QUESTION_LABEL)]
+        private Label m_OverwriteQuestionLabel;
+
+        [LayoutElement(DELETE_QUESTION_LABEL)]
+        private Label m_DeleteQuestionLabel;
+
+        [LayoutElement(YES_BUTTON)]
         private VisualElement m_YesBtn;
+
+        [LayoutElement(NO_BUTTON)]
         private VisualElement m_NoBtn;
 
         private bool                       m_Saving;
@@ -63,15 +91,15 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override void HookupUI()
         {
-            m_SaveTitleLabel         = m_UIInstance.Q<Label>("SaveTitleLabel");
-            m_LoadTitleLabel         = m_UIInstance.Q<Label>("LoadTitleLabel");
-            m_SlotsScrollView        = m_UIInstance.Q<ScrollView>("SlotsScrollView");
-            m_NewSaveRow             = m_UIInstance.Q("NewSaveBtn");
-            m_QuestionPanel          = m_UIInstance.Q<VisualElement>("QuestionPanel");
-            m_OverwriteQuestionLabel = m_UIInstance.Q<Label>("OverwriteQuestionLabel");
-            m_DeleteQuestionLabel    = m_UIInstance.Q<Label>("DeleteQuestionLabel");
-            m_YesBtn                 = m_UIInstance.Q("YesBtn");
-            m_NoBtn                  = m_UIInstance.Q("NoBtn");
+            m_SaveTitleLabel         = m_UIInstance.Q<Label>(SAVE_TITLE_LABEL);
+            m_LoadTitleLabel         = m_UIInstance.Q<Label>(LOAD_TITLE_LABEL);
+            m_SlotsScrollView        = m_UIInstance.Q<ScrollView>(SLOTS_SCROLL_VIEW);
+            m_NewSaveRow             = m_UIInstance.Q(NEW_SAVE_BUTTON);
+            m_QuestionPanel          = m_UIInstance.Q(QUESTION_PANEL);
+            m_OverwriteQuestionLabel = m_UIInstance.Q<Label>(OVERWRITE_QUESTION_LABEL);
+            m_DeleteQuestionLabel    = m_UIInstance.Q<Label>(DELETE_QUESTION_LABEL);
+            m_YesBtn                 = m_UIInstance.Q(YES_BUTTON);
+            m_NoBtn                  = m_UIInstance.Q(NO_BUTTON);
 
             m_QuestionPanel.style.display = DisplayStyle.None;
 

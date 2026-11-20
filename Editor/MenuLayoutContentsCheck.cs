@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 using RPGFramework.Core.Memory;
 using RPGFramework.Menu.UI;
 using UnityEditor;
@@ -7,13 +9,16 @@ using UnityEngine.UIElements;
 namespace RPGFramework.Menu.Editor
 {
     /// <summary>
-    /// What a Menu UI Provider's layouts name that the project does not hold: an entry's menu, command, variable and help
-    /// key, and the persistent values its save slot shows. The UI Builder offers each from a list, but nothing notices one
-    /// gone since — a menu renamed, a variable or key removed, a layout given to another menu, the file edited by hand —
-    /// and in play each is a menu that throws as it opens, or a choice that does nothing.
+    /// What a Menu UI Provider's layouts name that the project does not hold — an entry's menu, command, variable and
+    /// help key, and the persistent values its save slot shows — and the elements each menu's UI finds by name that its
+    /// layout lacks. The UI Builder offers each name from a list, but nothing notices one gone since — a menu renamed, a
+    /// variable or key removed, a layout given to another menu, an element renamed, the file edited by hand — and in play
+    /// each is a menu that throws as it opens, or a choice that does nothing.
     /// </summary>
     internal static class MenuLayoutContentsCheck
     {
+        private const BindingFlags FIELDS = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+
         internal static void Check(MenuUIProvider provider, LayoutNames names, List<string> problems)
         {
             SerializedObject   serialized = new SerializedObject(provider);
@@ -25,9 +30,20 @@ namespace RPGFramework.Menu.Editor
                 VisualTreeAsset layout = MenuLayoutsCheck.Layout(layouts, i) as VisualTreeAsset;
 
                 // A layout no menu declares is the structural check's to report; its commands would all be wrong here.
-                if (layout != null && names.IsMenu(menu))
+                if (layout == null || !names.IsMenu(menu))
                 {
-                    CheckEntries($"{layout.name} ({menu})", menu, layout.Instantiate(), names, problems);
+                    continue;
+                }
+
+                string        where    = $"{layout.name} ({menu})";
+                VisualElement instance = layout.Instantiate();
+                Type          ui       = names.UIOf(menu);
+
+                CheckEntries(where, menu, instance, names, problems);
+
+                if (ui != null)
+                {
+                    CheckElements(where, ui, instance, problems);
                 }
             }
 
@@ -81,6 +97,37 @@ namespace RPGFramework.Menu.Editor
             }
         }
 
+        /// <summary>
+        /// The problems of the elements <paramref name="ui" /> finds in <paramref name="layout" /> by name: each field it
+        /// marks with <see cref="LayoutElementAttribute" />, as its code looks the element up.
+        /// </summary>
+        internal static void CheckElements(string where, Type ui, VisualElement layout, List<string> problems)
+        {
+            for (Type type = ui; type != null; type = type.BaseType)
+            {
+                FieldInfo[] fields = type.GetFields(FIELDS);
+
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    LayoutElementAttribute element = fields[i].GetCustomAttribute<LayoutElementAttribute>(false);
+
+                    if (element == null)
+                    {
+                        continue;
+                    }
+
+                    if (string.IsNullOrEmpty(element.BoundProperty))
+                    {
+                        CheckElement(where, ui, element.Name, fields[i].FieldType, layout, problems);
+                    }
+                    else
+                    {
+                        CheckBinding(where, ui, element.Name, element.BoundProperty, fields[i].FieldType, layout, problems);
+                    }
+                }
+            }
+        }
+
         /// <summary>The problems of the values a save slot's layout shows.</summary>
         internal static void CheckSaveSlot(string where, VisualElement slot, LayoutNames names, List<string> problems)
         {
@@ -105,6 +152,45 @@ namespace RPGFramework.Menu.Editor
                 {
                     CheckValue(where, nameof(SaveSlotPlayTime), playTime.Variable, false, names, problems);
                 }
+            }
+        }
+
+        // As Q<T>(name) finds it: the first element so named that is of the type.
+        private static void CheckElement(string where, Type ui, string name, Type type, VisualElement layout, List<string> problems)
+        {
+            List<VisualElement> named = layout.Query(name).ToList();
+
+            for (int i = 0; i < named.Count; i++)
+            {
+                if (type.IsInstanceOfType(named[i]))
+                {
+                    return;
+                }
+            }
+
+            problems.Add(named.Count == 0
+                             ? $"{where}: there is no {type.Name} named {name}, which {ui.Name} finds by name"
+                             : $"{where}: {name} is a {named[0].GetType().Name}, where {ui.Name} finds a {type.Name}");
+        }
+
+        // As Q(name).GetBinding(property) finds it: the first element so named, of any type.
+        private static void CheckBinding(string where, Type ui, string name, string property, Type binding, VisualElement layout, List<string> problems)
+        {
+            VisualElement element = layout.Q(name);
+
+            if (element == null)
+            {
+                problems.Add($"{where}: there is no element named {name}, whose {property} {ui.Name} reads through its binding");
+                return;
+            }
+
+            Binding found = element.GetBinding(property);
+
+            if (!binding.IsInstanceOfType(found))
+            {
+                string bound = found == null ? "is not bound" : $"is bound by a {found.GetType().Name}";
+
+                problems.Add($"{where}: {name}'s {property} {bound}, where {ui.Name} reads a {binding.Name}");
             }
         }
 

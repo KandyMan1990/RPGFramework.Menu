@@ -35,8 +35,12 @@ namespace RPGFramework.Menu.SubMenus.UI
         private RebindableControl[] m_Controls;
         private TextElement[]       m_Buttons;
         private int[]               m_ButtonRows;
-        private VisualElement       m_ResetBtn;
-        private VisualElement       m_Prompt;
+
+        [LayoutElement(RESET_BUTTON)]
+        private VisualElement m_ResetBtn;
+
+        [LayoutElement(PROMPT)]
+        private VisualElement m_Prompt;
 
         public ControlsMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
             : base(uiProvider, localisationService)
