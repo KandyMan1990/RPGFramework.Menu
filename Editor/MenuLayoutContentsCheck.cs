@@ -218,7 +218,7 @@ namespace RPGFramework.Menu.Editor
             }
             else if (!names.TryGetPersistentWidth(path, out VariableWidth width))
             {
-                problems.Add($"{where}: a {element} shows {path}, which is no persistent value of the variable map: name one as the map lists it — Money, Items[3], Party[0].Level, or Party.Level for a single record");
+                problems.Add($"{where}: a {element} shows {path}, which is no persistent value of the variable map: name one as the map lists it — Money, Items[3], Roster[0].Level, or Hero.Level for a single record");
             }
             else if (readsHash && width != VariableWidth.ULong)
             {

@@ -120,7 +120,7 @@ namespace RPGFramework.Menu.Editor
 
         /// <summary>
         /// Whether <paramref name="path" /> names a persistent value as the map lists it — <c>Money</c>,
-        /// <c>Items[3]</c>, <c>Party[0].Level</c> — and its width.
+        /// <c>Items[3]</c>, <c>Roster[0].Level</c> — and its width.
         /// </summary>
         internal bool TryGetPersistentWidth(string path, out VariableWidth width)
         {

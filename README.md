@@ -242,7 +242,7 @@ asset, so is a menu it has no layout for.
   - **Each slot has a layout of its own**, the **Save Slot** on your Menu UI Provider. The sample's shows the
     location, the play time, the money and its name, and when it was saved.
   - **Show any saved value by naming its variable** in the layout, as your variable map lists it: `Money`, `Items[3]`,
-    `Party[0].Level`, or `Party.Level` for a single record. **`SaveSlotNumber`** shows a number, **`SaveSlotPlayTime`** hours and minutes,
+    `Roster[0].Level`, or `Hero.Level` for a single record. **`SaveSlotNumber`** shows a number, **`SaveSlotPlayTime`** hours and minutes,
     **`SaveSlotText`** a text by its localisation key's hash, such as `LocationName`, naming the sheet it is in, and
     **`SaveSlotDate`** when it was saved, in the game's language. Fixed text is a label with a `StaticLocalisedText` —
     what your money is called, say, `Generic/Money` reading "Gil" or "Dollars". What is inside a

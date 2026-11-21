@@ -8,7 +8,7 @@ namespace RPGFramework.Menu.UI
     [UxmlElement]
     public sealed partial class SaveSlotNumber : Label, ISaveSlotElement
     {
-        /// <summary>The value shown, named as scripts name it: <c>Money</c>, <c>Party[0].Level</c>.</summary>
+        /// <summary>The value shown, named as scripts name it: <c>Money</c>, <c>Roster[0].Level</c>.</summary>
         [UxmlAttribute]
         public string Variable { get; set; }
 
