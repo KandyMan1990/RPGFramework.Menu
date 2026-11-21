@@ -11,7 +11,7 @@ namespace RPGFramework.Menu.Tests.Entries
         [SetUp]
         public void SetUp()
         {
-            m_Choice = new MenuEntry { Opens = MenuIds.SAVE, When = "SaveUnsealed" }.ToChoice();
+            m_Choice = new MenuEntry { Opens = MenuIds.SAVE, When = new[] { "SaveUnsealed" } }.ToChoice();
         }
 
         [Test]
@@ -23,7 +23,7 @@ namespace RPGFramework.Menu.Tests.Entries
         [Test]
         public void ThenItIsGreyedByTheVariableItNames()
         {
-            Assert.AreEqual("SaveUnsealed", m_Choice.When);
+            CollectionAssert.AreEqual(new[] { "SaveUnsealed" }, m_Choice.When);
         }
     }
 }

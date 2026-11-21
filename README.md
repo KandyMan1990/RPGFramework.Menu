@@ -137,9 +137,11 @@ Load away, is an edit to the layout and nothing else:
 - **`command`**, instead, names work the menu carries out itself — the title's `NewGame` and `Quit`. A menu of your own
   carries out its commands by overriding `OnCommand`, playing its own sound, and declares each on its interface,
   `[MenuCommand("Credits")]` beside its `[MenuName]`, so the UI Builder offers it.
-- **`when`** names a Bool variable in your variable map: while it is false the entry is greyed — still on the cursor's
-  path, choosing it playing the error sound — so your scripts set it as the story goes. Leave it empty to offer the
-  entry always. A menu's own conditions come on top: the party menu's Save is greyed without the save flag.
+- **`when`** names Bool variables in your variable map, one or several separated by commas —
+  `when="HasMenuAbility, GfUnsealed"`: while any is false the entry is greyed — still on the cursor's path, choosing
+  it playing the error sound — so your scripts set them as the story goes. Name each for what offers the entry
+  (`GfUnsealed`, true until a seal clears it), as there is no "not" and no "or". Leave it empty to offer the entry
+  always. A menu's own conditions come on top: the party menu's Save is greyed without the save flag.
 - **`help`** is the key of a line saying what the entry does (below); its text, a localised text's binding, as any
   label's.
 - An entry shows its own text, and holds whatever else you put in it.
@@ -149,9 +151,9 @@ Load away, is an edit to the layout and nothing else:
 - An entry with neither `opens` nor `command` is its menu's own to handle, as Config's rows are, its sliders and the
   language taking left and right.
 - **Nothing is typed in the UI Builder**: `opens` is a list of the declared menus, `command` of the commands the menus
-  using the open layout declare (by your Menu UI Providers; none for a layout no menu has yet), `when` of your variable
-  map's single Bools, and `help` of your sheets' keys. A name a list no longer holds is kept as it was, and checked
-  (below).
+  using the open layout declare (by your Menu UI Providers; none for a layout no menu has yet), `when` a list, each row
+  one of your variable map's single Bools, and `help` of your sheets' keys. A name a list no longer holds is kept as it
+  was, and checked (below).
 
 ### A help line
 
@@ -163,8 +165,9 @@ sample's across the top of the party menu and Config.
 provider's inspector shows a declared menu with no layout, a layout no menu declares (with a button removing them) and
 a missing save slot. It shows, too, what a layout names that your project does not hold: an entry opening a menu nothing
 declares, naming a command its menu does not declare, doing both, greyed by anything but a single Bool outside
-Temp, or with a help key none of your sheets holds; a save slot showing a value that is not a persistent variable,
-or a `SaveSlotText` showing one that is not a `ULong`; and an element a menu's UI finds by name (`[LayoutElement]`)
+Temp — each name of its `when` on its own, a row left at None among them — or with a help key none of your sheets
+holds; a save slot showing a value that is not a persistent variable, or a `SaveSlotText` showing one that is not a
+`ULong`; and an element a menu's UI finds by name (`[LayoutElement]`)
 that its layout lacks, holds as another type, or binds otherwise. A menu's UI is the class implementing the UI's
 interface its menu's class names; yours, if you bind one in the framework's place. The menu scene is checked the same
 way as it loads in play mode, logging what is wrong, and a player build fails on it. As the menu module enters in

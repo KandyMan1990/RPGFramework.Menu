@@ -4,20 +4,38 @@ using RPGFramework.Core.SharedTypes;
 
 namespace RPGFramework.Menu.Tests.Entries
 {
-    /// <summary>Memory whose every Bool reads <see cref="Bool" />, remembering where it was last read.</summary>
+    /// <summary>Memory whose Bools read as set for their bank, false until set, remembering where one was last read.</summary>
     internal sealed class FakeMemory : IMemoryService
     {
-        internal bool       Bool        { get; set; }
+        private const int BANKS = 4;
+
+        private readonly bool[] m_Bools;
+
         internal int        Reads       { get; private set; }
         internal MemoryBank LastBank    { get; private set; }
         internal ushort     LastAddress { get; private set; }
 
         internal FakeMemory()
         {
-            Bool        = false;
+            m_Bools     = new bool[BANKS];
             Reads       = 0;
             LastBank    = MemoryBank.Persistent;
             LastAddress = 0;
+        }
+
+        /// <summary>Sets what every Bool reads, in every bank.</summary>
+        internal void SetBools(bool value)
+        {
+            for (int i = 0; i < m_Bools.Length; i++)
+            {
+                m_Bools[i] = value;
+            }
+        }
+
+        /// <summary>Sets what every Bool of <paramref name="bank" /> reads.</summary>
+        internal void SetBool(MemoryBank bank, bool value)
+        {
+            m_Bools[(int)bank] = value;
         }
 
         bool IMemoryService.ReadBool(MemoryBank bank, ushort address)
@@ -26,7 +44,7 @@ namespace RPGFramework.Menu.Tests.Entries
             LastBank    = bank;
             LastAddress = address;
 
-            return Bool;
+            return m_Bools[(int)bank];
         }
 
         byte IMemoryService.ReadByte(MemoryBank bank, ushort address) => throw new NotSupportedException();

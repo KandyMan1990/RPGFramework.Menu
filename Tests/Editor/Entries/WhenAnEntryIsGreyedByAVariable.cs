@@ -13,12 +13,14 @@ namespace RPGFramework.Menu.Tests.Entries
     {
         private VariableMapAsset m_Map;
         private FakeMemory       m_Memory;
+        private string[]         m_When;
 
         [SetUp]
         public void SetUp()
         {
             m_Map    = ScriptableObject.CreateInstance<VariableMapAsset>();
             m_Memory = new FakeMemory();
+            m_When   = new[] { CoreVariables.SAVE_ENABLED };
         }
 
         [TearDown]
@@ -30,23 +32,23 @@ namespace RPGFramework.Menu.Tests.Entries
         [Test]
         public void ThenItIsOfferedWhileTheVariableIsTrue()
         {
-            m_Memory.Bool = true;
+            m_Memory.SetBools(true);
 
-            Assert.IsTrue(MenuEntryConditions.Holds(CoreVariables.SAVE_ENABLED, m_Map, m_Memory));
+            Assert.IsTrue(MenuEntryConditions.Holds(m_When, m_Map, m_Memory));
         }
 
         [Test]
         public void ThenItIsGreyedWhileTheVariableIsFalse()
         {
-            m_Memory.Bool = false;
+            m_Memory.SetBools(false);
 
-            Assert.IsFalse(MenuEntryConditions.Holds(CoreVariables.SAVE_ENABLED, m_Map, m_Memory));
+            Assert.IsFalse(MenuEntryConditions.Holds(m_When, m_Map, m_Memory));
         }
 
         [Test]
         public void ThenTheVariablesBankIsRead()
         {
-            MenuEntryConditions.Holds(CoreVariables.SAVE_ENABLED, m_Map, m_Memory);
+            MenuEntryConditions.Holds(m_When, m_Map, m_Memory);
 
             Assert.AreEqual(MemoryBank.Session, m_Memory.LastBank);
         }
@@ -57,7 +59,7 @@ namespace RPGFramework.Menu.Tests.Entries
             IVariableMap map = m_Map;
 
             map.TryGetVariable(CoreVariables.SAVE_ENABLED, out VariableDefinition variable);
-            MenuEntryConditions.Holds(CoreVariables.SAVE_ENABLED, m_Map, m_Memory);
+            MenuEntryConditions.Holds(m_When, m_Map, m_Memory);
 
             Assert.AreEqual(variable.Offset, m_Memory.LastAddress);
         }
@@ -65,13 +67,13 @@ namespace RPGFramework.Menu.Tests.Entries
         [Test]
         public void ThenAnEntryNamingNoVariableIsOffered()
         {
-            Assert.IsTrue(MenuEntryConditions.Holds(null, m_Map, m_Memory));
+            Assert.IsTrue(MenuEntryConditions.Holds(Array.Empty<string>(), m_Map, m_Memory));
         }
 
         [Test]
         public void ThenNoVariableIsReadForAnEntryNamingNone()
         {
-            MenuEntryConditions.Holds(null, m_Map, m_Memory);
+            MenuEntryConditions.Holds(Array.Empty<string>(), m_Map, m_Memory);
 
             Assert.AreEqual(0, m_Memory.Reads);
         }
@@ -79,7 +81,7 @@ namespace RPGFramework.Menu.Tests.Entries
         [Test]
         public void ThenAVariableTheMapLacksIsRefusedInTheEditor()
         {
-            Assert.Throws<InvalidOperationException>(() => MenuEntryConditions.Holds("NoSuchVariable", m_Map, m_Memory));
+            Assert.Throws<InvalidOperationException>(() => MenuEntryConditions.Holds(new[] { "NoSuchVariable" }, m_Map, m_Memory));
         }
     }
 }

@@ -28,7 +28,7 @@ namespace RPGFramework.Menu.Tests.Entries
         [Test]
         public void ThenNoVariableGreysIt()
         {
-            Assert.IsNull(m_Choice.When);
+            Assert.IsEmpty(m_Choice.When);
         }
     }
 }

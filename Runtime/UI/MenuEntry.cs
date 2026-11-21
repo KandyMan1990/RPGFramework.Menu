@@ -1,3 +1,4 @@
+using System;
 using RPGFramework.Core.Memory;
 using RPGFramework.Hashing;
 using RPGFramework.Localisation;
@@ -9,7 +10,7 @@ namespace RPGFramework.Menu.UI
     /// <summary>
     /// Anything the cursor stops on in a menu, laid out by the menu's layout: a line of text of its own, and whatever
     /// else the layout puts in it. It opens a menu, by name, or runs a command the menu carries out itself, or neither,
-    /// for its menu to handle; it is greyed while the variable <see cref="When" /> names is false; and its help is the
+    /// for its menu to handle; it is greyed while any variable <see cref="When" /> names is false; and its help is the
     /// text <see cref="Help" /> names, shown in the menu's help line while the cursor is on it.
     /// </summary>
     [UxmlElement]
@@ -34,9 +35,12 @@ namespace RPGFramework.Menu.UI
         [UxmlAttribute, DeclaredMenuCommand]
         public string Command { get; set; }
 
-        /// <summary>A Bool variable, by name, the entry is greyed while it is false; empty to be offered always.</summary>
+        /// <summary>
+        /// Bool variables, by name, the entry is greyed while any is false — comma-separated in the layout,
+        /// <c>HasMenuAbility, GfUnsealed</c>; none to be offered always.
+        /// </summary>
         [UxmlAttribute, VariableName(VariableWidth.Bool)]
-        public string When { get; set; }
+        public string[] When { get; set; }
 
         /// <summary>The key of its help, <c>Sheet/Key</c>, shown in the menu's help line; empty for none.</summary>
         [UxmlAttribute, LocalisationKey]
@@ -63,7 +67,7 @@ namespace RPGFramework.Menu.UI
 
         internal MenuChoice ToChoice()
         {
-            return new MenuChoice(HashOf(Opens), HashOf(Command), string.IsNullOrEmpty(When) ? null : When);
+            return new MenuChoice(HashOf(Opens), HashOf(Command), When ?? Array.Empty<string>());
         }
 
         private static ulong HashOf(string name)

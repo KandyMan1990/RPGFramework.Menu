@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 namespace RPGFramework.Menu.Editor
 {
     /// <summary>
-    /// What a Menu UI Provider's layouts name that the project does not hold — an entry's menu, command, variable and
+    /// What a Menu UI Provider's layouts name that the project does not hold — an entry's menu, command, variables and
     /// help key, and the persistent values its save slot shows — and the elements each menu's UI finds by name that its
     /// layout lacks. The UI Builder offers each name from a list, but nothing notices one gone since — a menu renamed, a
     /// variable or key removed, a layout given to another menu, an element renamed, the file edited by hand — and in play
@@ -80,13 +80,16 @@ namespace RPGFramework.Menu.Editor
                     problems.Add($"{which} both opens a menu and names a command: choosing it opens the menu, and the command never runs");
                 }
 
-                if (!string.IsNullOrEmpty(entry.When) && names.HasVariableMap)
+                if (entry.When != null && names.HasVariableMap)
                 {
-                    string problem = names.ProblemWithWhen(entry.When);
-
-                    if (problem != null)
+                    for (int j = 0; j < entry.When.Length; j++)
                     {
-                        problems.Add($"{which} {problem}");
+                        string problem = names.ProblemWithWhen(entry.When[j]);
+
+                        if (problem != null)
+                        {
+                            problems.Add($"{which} {problem}");
+                        }
                     }
                 }
 

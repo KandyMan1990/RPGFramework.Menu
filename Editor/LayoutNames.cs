@@ -98,16 +98,16 @@ namespace RPGFramework.Menu.Editor
         }
 
         /// <summary>
-        /// What is wrong with greying an entry by <paramref name="when" />, as the menu would say it in play, or null when
-        /// a map holds it as it should.
+        /// What is wrong with greying an entry by <paramref name="name" />, one of the variables its <c>when</c> names, as
+        /// the menu would say it in play, or null when a map holds it as it should.
         /// </summary>
-        internal string ProblemWithWhen(string when)
+        internal string ProblemWithWhen(string name)
         {
             string problem = null;
 
             for (int i = 0; i < m_Maps.Length; i++)
             {
-                problem = MenuEntryConditions.ProblemWith(when, m_Maps[i]);
+                problem = MenuEntryConditions.ProblemWith(name, m_Maps[i]);
 
                 if (problem == null)
                 {

@@ -7,7 +7,7 @@ using RPGFramework.Menu.UI;
 
 namespace RPGFramework.Menu.Tests.LayoutContents
 {
-    /// <summary>The party menu's Save as the sample lays it out, and the title's New Game.</summary>
+    /// <summary>The party menu's Save greyed by two of a new map's Bools, with the sample's help, and the title's New Game.</summary>
     internal sealed class WhenEntriesNameWhatTheProjectHolds
     {
         private NamesToCheck m_Names;
@@ -23,7 +23,7 @@ namespace RPGFramework.Menu.Tests.LayoutContents
             {
                 name  = "SaveBtn",
                 Opens = MenuIds.SAVE,
-                When  = CoreVariables.SAVE_ENABLED,
+                When  = new[] { CoreVariables.SAVE_ENABLED, CoreVariables.COUNTDOWN_SHOWN },
                 Help  = NamesToCheck.HELP
             });
 

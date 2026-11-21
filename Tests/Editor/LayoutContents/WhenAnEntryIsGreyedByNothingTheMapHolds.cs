@@ -15,7 +15,7 @@ namespace RPGFramework.Menu.Tests.LayoutContents
         public void SetUp()
         {
             m_Names    = new NamesToCheck();
-            m_Problems = m_Names.CheckEntries(MenuIds.PARTY, new MenuEntry { name = "SaveBtn", Opens = MenuIds.SAVE, When = "SaveUnsealed" });
+            m_Problems = m_Names.CheckEntries(MenuIds.PARTY, new MenuEntry { name = "SaveBtn", Opens = MenuIds.SAVE, When = new[] { "SaveUnsealed" } });
         }
 
         [TearDown]

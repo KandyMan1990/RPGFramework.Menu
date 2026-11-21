@@ -5,19 +5,28 @@ using RPGFramework.Core.SharedTypes;
 
 namespace RPGFramework.Menu
 {
-    /// <summary>Whether an entry's variable holds: a Bool the game's scripts keep, read as the menu opens and resumes.</summary>
+    /// <summary>Whether an entry's variables hold: Bools the game's scripts keep, read as the menu opens and resumes.</summary>
     internal static class MenuEntryConditions
     {
-        internal static bool Holds(string when, IVariableMap variableMap, IMemoryService memoryService)
+        /// <summary>Whether every variable <paramref name="when" /> names is true; true for none.</summary>
+        internal static bool Holds(string[] when, IVariableMap variableMap, IMemoryService memoryService)
         {
-            if (when == null)
+            for (int i = 0; i < when.Length; i++)
             {
-                return true;
+                if (!IsTrue(when[i], variableMap, memoryService))
+                {
+                    return false;
+                }
             }
 
-            variableMap.TryGetVariable(when, out VariableDefinition variable);
+            return true;
+        }
+
+        private static bool IsTrue(string name, IVariableMap variableMap, IMemoryService memoryService)
+        {
+            variableMap.TryGetVariable(name, out VariableDefinition variable);
 #if UNITY_EDITOR
-            string problem = ProblemWith(when, variableMap);
+            string problem = ProblemWith(name, variableMap);
 
             if (problem != null)
             {
@@ -29,19 +38,26 @@ namespace RPGFramework.Menu
 
 #if UNITY_EDITOR
         /// <summary>
-        /// Authoring only. What is wrong with greying an entry by <paramref name="when" />, said of the entry — "is greyed
-        /// by …" — or null: asked as the menu opens in play and as its layout is checked.
+        /// Authoring only. What is wrong with greying an entry by the variable <paramref name="name" />, one of its
+        /// <c>when</c>, said of the entry — "is greyed by …" — or null: asked as the menu opens in play and as its layout
+        /// is checked.
         /// </summary>
-        internal static string ProblemWith(string when, IVariableMap variableMap)
+        internal static string ProblemWith(string name, IVariableMap variableMap)
         {
-            if (!variableMap.TryGetVariable(when, out VariableDefinition variable))
+            // Among several names Unity keeps an empty one, which a row of the UI Builder's list left at None writes.
+            if (string.IsNullOrEmpty(name))
             {
-                return $"is greyed by {when}, which the variable map does not hold";
+                return "is greyed by an empty name, a row of its When left at None";
+            }
+
+            if (!variableMap.TryGetVariable(name, out VariableDefinition variable))
+            {
+                return $"is greyed by {name}, which the variable map does not hold";
             }
 
             if (variable.Width != VariableWidth.Bool || variable.Count != 1 || variable.IsRecord || variable.Bank == MemoryBank.Temp)
             {
-                return $"is greyed by {when}, which is not a single Bool outside Temp";
+                return $"is greyed by {name}, which is not a single Bool outside Temp";
             }
 
             return null;

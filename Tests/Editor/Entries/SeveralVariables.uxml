@@ -1,0 +1,3 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <RPGFramework.Menu.UI.MenuEntry name="SaveBtn" opens="Save" when="SaveEnabled, CountdownShown"/>
+</ui:UXML>
