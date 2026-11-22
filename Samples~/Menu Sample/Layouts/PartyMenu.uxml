@@ -4,6 +4,24 @@
     <ui:VisualElement name="PartyMenu" class="rpg-menu">
         <ui:Label name="HelpLine" class="rpg-ui-label rpg-help-line"/>
         <ui:VisualElement name="ContentContainer" class="rpg-menu-content">
+            <ui:VisualElement name="Party" class="rpg-party">
+                <RPGFramework.Menu.UI.PartyMember party-slot="0" class="rpg-party-member">
+                    <RPGFramework.Menu.UI.PartyMemberPortrait class="rpg-party-portrait"/>
+                    <RPGFramework.Menu.UI.PartyMemberName sheet="Characters" class="rpg-ui-label rpg-party-name"/>
+                </RPGFramework.Menu.UI.PartyMember>
+                <RPGFramework.Menu.UI.PartyMember party-slot="1" class="rpg-party-member">
+                    <RPGFramework.Menu.UI.PartyMemberPortrait class="rpg-party-portrait"/>
+                    <RPGFramework.Menu.UI.PartyMemberName sheet="Characters" class="rpg-ui-label rpg-party-name"/>
+                </RPGFramework.Menu.UI.PartyMember>
+                <RPGFramework.Menu.UI.PartyMember party-slot="2" class="rpg-party-member">
+                    <RPGFramework.Menu.UI.PartyMemberPortrait class="rpg-party-portrait"/>
+                    <RPGFramework.Menu.UI.PartyMemberName sheet="Characters" class="rpg-ui-label rpg-party-name"/>
+                </RPGFramework.Menu.UI.PartyMember>
+                <RPGFramework.Menu.UI.PartyMember party-slot="3" class="rpg-party-member">
+                    <RPGFramework.Menu.UI.PartyMemberPortrait class="rpg-party-portrait"/>
+                    <RPGFramework.Menu.UI.PartyMemberName sheet="Characters" class="rpg-ui-label rpg-party-name"/>
+                </RPGFramework.Menu.UI.PartyMember>
+            </ui:VisualElement>
             <ui:VisualElement name="ButtonsContainer" class="rpg-menu-buttons">
                 <RPGFramework.Menu.UI.MenuEntry opens="Config" help="PartyMenu/ConfigHelp" text="Config">
                     <Bindings>

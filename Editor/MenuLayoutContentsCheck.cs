@@ -10,7 +10,7 @@ namespace RPGFramework.Menu.Editor
 {
     /// <summary>
     /// What a Menu UI Provider's layouts name that the project does not hold — an entry's menu, command, variables and
-    /// help key, and the persistent values its save slot shows — and the elements each menu's UI finds by name that its
+    /// help key, the persistent values its save slot shows, and the party's slots and fields its members show — and the elements each menu's UI finds by name that its
     /// layout lacks. The UI Builder offers each name from a list, but nothing notices one gone since — a menu renamed, a
     /// variable or key removed, a layout given to another menu, an element renamed, the file edited by hand — and in play
     /// each is a menu that throws as it opens, or a choice that does nothing.
@@ -40,6 +40,7 @@ namespace RPGFramework.Menu.Editor
                 Type          ui       = names.UIOf(menu);
 
                 CheckEntries(where, menu, instance, names, problems);
+                CheckMembers(where, instance, names, problems);
 
                 if (ui != null)
                 {
@@ -49,7 +50,10 @@ namespace RPGFramework.Menu.Editor
 
             if (serialized.FindProperty("m_SaveSlot").objectReferenceValue is VisualTreeAsset slot)
             {
-                CheckSaveSlot($"{slot.name} (the save slot)", slot.Instantiate(), names, problems);
+                VisualElement instance = slot.Instantiate();
+
+                CheckSaveSlot($"{slot.name} (the save slot)", instance, names, problems);
+                CheckMembers($"{slot.name} (the save slot)", instance, names, problems);
             }
         }
 
@@ -155,6 +159,60 @@ namespace RPGFramework.Menu.Editor
                 {
                     CheckValue(where, nameof(SaveSlotPlayTime), playTime.Variable, false, names, problems);
                 }
+            }
+        }
+
+        /// <summary>
+        /// The problems of the party members a layout shows: each slot one the map's party holds, each element inside a
+        /// member, and each field a number shows one of the roster's records.
+        /// </summary>
+        internal static void CheckMembers(string where, VisualElement layout, LayoutNames names, List<string> problems)
+        {
+            List<VisualElement> elements = layout.Query<VisualElement>().ToList();
+
+            for (int i = 0; i < elements.Count; i++)
+            {
+                VisualElement element = elements[i];
+
+                if (element is PartyMember member)
+                {
+                    if (names.HasVariableMap && !HoldsSlot(member.PartySlot, names))
+                    {
+                        problems.Add($"{where}: a {nameof(PartyMember)} shows slot {member.PartySlot}, which the map's {CoreVariables.PARTY} does not hold");
+                    }
+                }
+                else if (element is IPartyMemberElement)
+                {
+                    if (element.GetFirstAncestorOfType<PartyMember>() == null)
+                    {
+                        problems.Add($"{where}: a {element.GetType().Name} is not inside a {nameof(PartyMember)}, which gives it the member it shows");
+                    }
+                    else if (element is PartyMemberNumber number && names.HasVariableMap)
+                    {
+                        CheckField(where, number.Field, names, problems);
+                    }
+                }
+            }
+        }
+
+        // A party of one is listed as the map lists any single value, by its name alone.
+        private static bool HoldsSlot(int slot, LayoutNames names)
+        {
+            return slot >= 0 && (names.TryGetPersistentWidth($"{CoreVariables.PARTY}[{slot}]", out VariableWidth _) ||
+                                 slot == 0 && names.TryGetPersistentWidth(CoreVariables.PARTY, out VariableWidth _));
+        }
+
+        // A roster of one record is listed as Roster.Level, any other as Roster[0].Level.
+        private static void CheckField(string where, string field, LayoutNames names, List<string> problems)
+        {
+            if (string.IsNullOrEmpty(field))
+            {
+                problems.Add($"{where}: a {nameof(PartyMemberNumber)} names no field");
+            }
+            else if (!names.TryGetPersistentWidth($"{CoreVariables.ROSTER}[0].{field}", out VariableWidth _) &&
+                     !names.TryGetPersistentWidth($"{CoreVariables.ROSTER}.{field}", out VariableWidth _))
+            {
+                problems.Add($"{where}: a {nameof(PartyMemberNumber)} shows {field}, which is no field of the map's {CoreVariables.ROSTER}: name one as scripts do, Level or Stats[2]");
             }
         }
 

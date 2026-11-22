@@ -29,7 +29,7 @@ make it your own:
    `Delete` button action.
 2. **Make the layouts your own.** Each label and button names its localisation key with a `StaticLocalisedText`
    binding (RPGFramework.Localisation), and each menu loads the sheets its keys are in as it opens. They name the sample's
-   sheets — `Generic`, `BeginMenu`, `ConfigMenu`, `PartyMenu`, `SaveMenu` and `Locations` — so with text of your own,
+   sheets — `Generic`, `BeginMenu`, `ConfigMenu`, `PartyMenu`, `SaveMenu`, `Locations` and `Characters` — so with text of your own,
    choose each label's key in the UI Builder, from a list of the keys your sheets hold, and add or leave out any text
    you like. A player build refuses a layout naming a key none of your sheets holds. **`Menus.uss`** holds how they
    look — the panel, its colours and borders, each menu's sizes — so restyling every menu is one file.
@@ -38,6 +38,8 @@ make it your own:
    splash screen sets `new MenuArgs(MenuIds.Begin)` before it finishes, as the Starter's does, and the field names the
    party menu.
 4. **Add the scene to your game's module and scene databases**, under `MenuConstants.MODULE_ID`.
+5. **Bind your Character Database** (RPGFramework.Core) as `ICharacterDatabase` in your global installer: the party menu
+   and the save slots show each member's name and portrait from it.
 
 **Or make the layouts without the sample**, from **Assets > Create > RPG Framework > Menu > Layouts**: one entry per
 menu, and the save slot, or **All Menus** for every layout and a Menu UI Provider holding them, in the folder selected.
@@ -167,7 +169,8 @@ a missing save slot. It shows, too, what a layout names that your project does n
 declares, naming a command its menu does not declare, doing both, greyed by anything but a single Bool outside
 Temp — each name of its `when` on its own, a row left at None among them — or with a help key none of your sheets
 holds; a save slot showing a value that is not a persistent variable, or a `SaveSlotText` showing one that is not a
-`ULong`; and an element a menu's UI finds by name (`[LayoutElement]`)
+`ULong`; a `PartyMember` showing a slot your `Party` does not hold, a `PartyMemberNumber` showing a field your
+`Roster` lacks, or a member's element outside any `PartyMember`; and an element a menu's UI finds by name (`[LayoutElement]`)
 that its layout lacks, holds as another type, or binds otherwise. A menu's UI is the class implementing the UI's
 interface its menu's class names; yours, if you bind one in the framework's place. The menu scene is checked the same
 way as it loads in play mode, logging what is wrong, and a player build fails on it. As the menu module enters in
@@ -231,11 +234,12 @@ asset, so is a menu it has no layout for.
 - **Config**: music and sound effect volumes and the message speeds, each volume heard live as its slider moves, and
   written when the menu closes.
 - **Language**: every language the game ships, written when the menu closes.
-- **Party**: the menu opened from the field, showing Config, Save and Load, with the location name and a live clock:
+- **Party**: the menu opened from the field, showing the party, Config, Save and Load, with the location name and a live clock:
   the play time as hours and minutes, or the countdown as minutes and seconds in its place while it is on screen, the
   colon blinking once a second. Its choices are entries in its layout, with a help line: Save is offered only when the
   field allows saving, and is greyed out otherwise. Loading from here leaves the field under the menu behind and enters
-  the save's.
+  the save's. The sample's party is a row a slot down its left, each member's portrait and name; show more of a member
+  as the next point says.
 - **Save** and **Load**: one list of save slots, each previewed without loading it, newest first. Save also offers a
   new slot. Overwriting or deleting a save asks first, with No selected. A save made by a newer version of the game, or
   a damaged one, is listed and marked, and can't be loaded.
@@ -248,5 +252,12 @@ asset, so is a menu it has no layout for.
     what your money is called, say, `Generic/Money` reading "Gil" or "Dollars". What is inside a
     **`SaveSlotShownWhen`** shows only for a damaged save, or only for a newer one, as its `problem` says — the
     sample's holds the text saying so — and what is inside a **`SaveSlotDetails`** is hidden for a damaged save.
-  - **Anything else is an element of your own** implementing `ISaveSlotElement`, which is handed each save to show:
-    the party's portraits, say, from sprites it references in the layout.
+  - **Anything else is an element of your own** implementing `ISaveSlotElement`, which is handed each save to show.
+- **The party, in any layout** — the party menu's, a save slot's, a menu of your own: a **`PartyMember`** shows one slot
+  of the party, its `party-slot` 0 the leader, hidden while the slot is empty, from the playthrough in a menu and from the
+  save in a slot. Inside it, **`PartyMemberPortrait`** and **`PartyMemberName`** (naming the sheet your characters'
+  names are in, as `Characters`) show the member as your Character Database defines them, and **`PartyMemberNumber`**
+  any field of their `Roster` record, as scripts name it — `Level`, `Hp`, `Stats[2]`. An element of your own, such as a
+  bar of HP against its maximum, implements `IPartyMemberElement`. A level your game works out rather than saves
+  cannot be read from a save, so write the leader's into a field of its own as you save. The sample's slot shows the
+  party's portraits and the leader's name.

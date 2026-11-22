@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RPGFramework.Core.Databases;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.SaveData;
 using RPGFramework.Localisation;
@@ -29,12 +30,29 @@ namespace RPGFramework.Menu
     /// <summary>
     /// An element of a save slot's layout that shows something of the save, filled as the slot is shown and again as
     /// the language changes. The framework's show a variable as a number, a play time or a text, a caption, the date
-    /// and why a save cannot be loaded; a game's own, such as the party's portraits, implements this.
+    /// and why a save cannot be loaded; a game's own implements this. The party is shown by
+    /// <see cref="IPartyMemberElement" />s.
     /// </summary>
     public interface ISaveSlotElement
     {
         /// <summary>Shows <paramref name="preview" />, its text in <paramref name="localisation" />'s language.</summary>
         void Show(SavePreview preview, ILocalisationService localisation);
+    }
+
+    /// <summary>
+    /// An element inside a <see cref="UI.PartyMember" /> that shows something of the member in its slot — a field of
+    /// their record, their name, their portrait — in a save slot or a menu alike, from a save's values or the
+    /// playthrough's. The framework's show a field as a number, the name and the portrait; a game's own, such as a bar
+    /// of HP against its maximum, implements this.
+    /// </summary>
+    public interface IPartyMemberElement
+    {
+        /// <summary>
+        /// Shows the member in roster record <paramref name="record" /> of <paramref name="values" />, defined by
+        /// <paramref name="character" />, their text in <paramref name="localisation" />'s language: -1 and null for an
+        /// empty slot, and null for a character the game's database does not hold.
+        /// </summary>
+        void Show(SavePreview values, int record, CharacterDefinition character, ILocalisationService localisation);
     }
 
     /// <summary>
@@ -256,6 +274,9 @@ namespace RPGFramework.Menu
         /// not as it blinks.
         /// </summary>
         void SetCountdown(uint seconds, bool colonLit);
+
+        /// <summary>Shows the party, each of the layout's <see cref="UI.PartyMember" />s its slot of the playthrough.</summary>
+        void ShowParty(SavePreview playthrough);
     }
 
     /// <summary>The save slots' UI, shared by the Save and Load menus.</summary>

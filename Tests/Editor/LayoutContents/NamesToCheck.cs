@@ -83,6 +83,16 @@ namespace RPGFramework.Menu.Tests.LayoutContents
             return problems;
         }
 
+        /// <summary>The problems of the party members a layout holding <paramref name="elements" /> shows.</summary>
+        internal List<string> CheckMembers(params VisualElement[] elements)
+        {
+            List<string> problems = new List<string>();
+
+            MenuLayoutContentsCheck.CheckMembers("Layout", LayoutOf(elements), m_Names, problems);
+
+            return problems;
+        }
+
         internal void Destroy()
         {
             Object.DestroyImmediate(m_Map);

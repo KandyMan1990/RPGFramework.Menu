@@ -106,6 +106,50 @@
     margin-right: 24px;
 }
 
+/* The party menu: the party down its left, a row a member, and its entries beside them. */
+#PartyMenu .rpg-menu-content {
+    flex-direction: row;
+    align-items: center;
+}
+
+.rpg-party {
+    flex-grow: 1;
+    justify-content: space-evenly;
+    margin-left: 8%;
+    margin-right: 4%;
+}
+
+.rpg-party-member {
+    flex-direction: row;
+    align-items: center;
+}
+
+.rpg-party-portrait {
+    width: 120px;
+    height: 120px;
+    margin-right: 32px;
+}
+
+.rpg-party-name {
+    flex-grow: 1;
+}
+
+.rpg-party-caption {
+    margin-left: 40px;
+    font-size: 36px;
+}
+
+.rpg-party-number {
+    margin-left: 12px;
+}
+
+/* A save slot's portraits of the party, beside its other values. */
+.rpg-save-slot .rpg-party-portrait {
+    width: 64px;
+    height: 64px;
+    margin-right: 8px;
+}
+
 /* Save and Load: the slots, and the question asked over them. */
 #SaveMenu .rpg-menu-title-area {
     height: 20%;
@@ -162,6 +206,15 @@
 
 .rpg-save-slot #MoneyName {
     margin-left: 8px;
+}
+
+.rpg-save-slot #Party {
+    flex-direction: row;
+    margin-right: 24px;
+}
+
+.rpg-save-slot #Leader {
+    margin-right: 40px;
 }
 
 /* The Controls page: a control's name, then its button in each control scheme. */

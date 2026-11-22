@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using RPGFramework.Core.Databases;
+using RPGFramework.Core.SaveData;
 using RPGFramework.Core.UI;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.UI;
@@ -17,15 +21,49 @@ namespace RPGFramework.Menu.SubMenus.UI
         [LayoutElement(LOCATION_LABEL, TEXT)]
         private DynamicLocalisedText m_LocationName;
 
-        public PartyMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
+        private readonly ICharacterDatabase m_Characters;
+
+        private PartyMember[] m_Members;
+        private SavePreview   m_SavePreview;
+
+        public PartyMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService, ICharacterDatabase characters)
             : base(uiProvider, localisationService)
         {
+            m_Characters  = characters;
+            m_Members     = Array.Empty<PartyMember>();
+            m_SavePreview = null;
         }
 
         protected override void HookupUI()
         {
             m_PlayTimeLabel = m_UIInstance.Q<Label>(PLAY_TIME_LABEL);
             m_LocationName  = (DynamicLocalisedText)m_UIInstance.Q(LOCATION_LABEL).GetBinding(TEXT);
+
+            List<PartyMember> members = new List<PartyMember>();
+
+            m_UIInstance.Query<PartyMember>().ToList(members);
+
+            m_Members = members.ToArray();
+        }
+
+        protected override void LocaliseUI()
+        {
+            if (m_SavePreview == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < m_Members.Length; i++)
+            {
+                m_Members[i].Show(m_SavePreview, m_Characters, m_LocalisationService);
+            }
+        }
+
+        void IPartyMenuUI.ShowParty(SavePreview playthrough)
+        {
+            m_SavePreview = playthrough;
+
+            Localise();
         }
 
         void IPartyMenuUI.SetLocationName(ulong keyHash)

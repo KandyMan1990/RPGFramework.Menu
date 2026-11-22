@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RPGFramework.Core.Databases;
 using RPGFramework.Core.SaveData;
 using RPGFramework.Localisation;
 using RPGFramework.Menu.UI;
@@ -45,6 +46,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         private VisualElement[]      m_Rows;
         private ISaveSlotElement[][] m_SlotElements;
+        private PartyMember[][]      m_SlotMembers;
 
         [LayoutElement(SAVE_TITLE_LABEL)]
         private Label m_SaveTitleLabel;
@@ -81,11 +83,15 @@ namespace RPGFramework.Menu.SubMenus.UI
 
         protected override VisualElement GetDefaultFocusedElement() => m_Rows.Length > 0 ? m_Rows[0] : null;
 
-        public SaveSlotMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService)
+        private readonly ICharacterDatabase m_Characters;
+
+        public SaveSlotMenuUI(IMenuUIProvider uiProvider, ILocalisationService localisationService, ICharacterDatabase characters)
             : base(uiProvider, localisationService)
         {
+            m_Characters   = characters;
             m_Rows         = Array.Empty<VisualElement>();
             m_SlotElements = Array.Empty<ISaveSlotElement[]>();
+            m_SlotMembers  = Array.Empty<PartyMember[]>();
             m_Slots        = Array.Empty<SavePreview>();
         }
 
@@ -130,6 +136,13 @@ namespace RPGFramework.Menu.SubMenus.UI
                 {
                     elements[j].Show(m_Slots[i], m_LocalisationService);
                 }
+
+                PartyMember[] members = m_SlotMembers[i];
+
+                for (int j = 0; j < members.Length; j++)
+                {
+                    members[j].Show(m_Slots[i], m_Characters, m_LocalisationService);
+                }
             }
         }
 
@@ -145,6 +158,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_SlotsScrollView.Clear();
             m_Rows         = new VisualElement[FirstSlotRow + slots.Count];
             m_SlotElements = new ISaveSlotElement[slots.Count][];
+            m_SlotMembers  = new PartyMember[slots.Count][];
 
             if (m_Saving)
             {
@@ -157,7 +171,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
                 VisualElement row = AddRow(FirstSlotRow + i, () => m_OnSlotChosen?.Invoke(index));
 
-                m_SlotElements[i] = AddSlotLayout(row);
+                m_SlotElements[i] = AddSlotLayout(row, out m_SlotMembers[i]);
 
                 // Still focusable when it cannot be loaded, so choosing it can say no.
                 if (!m_Saving && !slots[i].CanLoad)
@@ -246,7 +260,7 @@ namespace RPGFramework.Menu.SubMenus.UI
             m_SlotsScrollView.Add(row);
         }
 
-        private ISaveSlotElement[] AddSlotLayout(VisualElement row)
+        private ISaveSlotElement[] AddSlotLayout(VisualElement row, out PartyMember[] members)
         {
             TemplateContainer layout = m_UIProvider.SaveSlot.Instantiate();
 
@@ -254,6 +268,7 @@ namespace RPGFramework.Menu.SubMenus.UI
 
             List<VisualElement> descendants = layout.Query<VisualElement>().ToList();
             int                 count       = 0;
+            int                 memberCount = 0;
 
             for (int i = 0; i < descendants.Count; i++)
             {
@@ -261,16 +276,27 @@ namespace RPGFramework.Menu.SubMenus.UI
                 {
                     count++;
                 }
+                else if (descendants[i] is PartyMember)
+                {
+                    memberCount++;
+                }
             }
 
-            ISaveSlotElement[] elements = new ISaveSlotElement[count];
-            int                next     = 0;
+            ISaveSlotElement[] elements   = new ISaveSlotElement[count];
+            int                next       = 0;
+            int                nextMember = 0;
+
+            members = new PartyMember[memberCount];
 
             for (int i = 0; i < descendants.Count; i++)
             {
                 if (descendants[i] is ISaveSlotElement element)
                 {
                     elements[next++] = element;
+                }
+                else if (descendants[i] is PartyMember member)
+                {
+                    members[nextMember++] = member;
                 }
             }
 

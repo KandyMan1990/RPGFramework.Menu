@@ -5,6 +5,7 @@ using RPGFramework.Core.Audio;
 using RPGFramework.Core.Input;
 using RPGFramework.Core.Memory;
 using RPGFramework.Core.PlayerLoop;
+using RPGFramework.Core.SaveData;
 using RPGFramework.Core.Store;
 using RPGFramework.Core.UI;
 using UnityEngine;
@@ -14,8 +15,8 @@ using RPGFramework.Menu.SharedTypes.Constants;
 namespace RPGFramework.Menu.SubMenus
 {
     /// <summary>
-    /// The party menu, its entries its layout's, Save offered only while saving is allowed, and its clock live while it
-    /// shows: the play time, or the countdown in its place while it is on screen.
+    /// The party menu, its entries its layout's, Save offered only while saving is allowed, the party as the playthrough
+    /// holds it, and its clock live while it shows: the play time, or the countdown in its place while it is on screen.
     /// </summary>
     internal sealed class PartyMenu : Menu<IPartyMenuUI>, IPartyMenu, IUpdatable
     {
@@ -25,6 +26,7 @@ namespace RPGFramework.Menu.SubMenus
         private readonly ILocationNameStore m_LocationNameStore;
         private readonly IPlayTimeStore     m_PlayTimeStore;
         private readonly ICountdownStore    m_CountdownStore;
+        private readonly ISaveDataService   m_SaveDataService;
         private readonly ClockBlink         m_Blink;
 
         public PartyMenu(IPartyMenuUI       partyMenuUI,
@@ -37,7 +39,8 @@ namespace RPGFramework.Menu.SubMenus
                          ISaveEnabledStore  saveEnabledStore,
                          ILocationNameStore locationNameStore,
                          IPlayTimeStore     playTimeStore,
-                         ICountdownStore    countdownStore) : base(partyMenuUI,
+                         ICountdownStore    countdownStore,
+                         ISaveDataService   saveDataService) : base(partyMenuUI,
                                                                    inputRouter,
                                                                    menuModule,
                                                                    sfxPlayer,
@@ -49,6 +52,7 @@ namespace RPGFramework.Menu.SubMenus
             m_LocationNameStore = locationNameStore;
             m_PlayTimeStore     = playTimeStore;
             m_CountdownStore    = countdownStore;
+            m_SaveDataService   = saveDataService;
             m_Blink             = new ClockBlink();
         }
 
@@ -60,6 +64,7 @@ namespace RPGFramework.Menu.SubMenus
         protected override Task OnEnterComplete()
         {
             m_MenuUI.SetLocationName(m_LocationNameStore.LocationName);
+            m_MenuUI.ShowParty(m_SaveDataService.PreviewPlaythrough());
 
             ShowClock(0f);
             UpdateManager.RegisterUpdatable(this);
@@ -74,8 +79,10 @@ namespace RPGFramework.Menu.SubMenus
             return base.OnSuspendAsync(hideUI);
         }
 
+        // A menu opened over this one may have changed the party or a member's values.
         protected override Task OnResumeAsync()
         {
+            m_MenuUI.ShowParty(m_SaveDataService.PreviewPlaythrough());
             ShowClock(0f);
             UpdateManager.RegisterUpdatable(this);
 
